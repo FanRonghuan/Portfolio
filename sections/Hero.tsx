@@ -50,7 +50,7 @@ const heroCards = [
       color: '#FF7F27', 
       rotate: -2,      
       scale: 1.4,       
-      img: 'https://raw.githubusercontent.com/Rachel-ahua/picture-storage/refs/heads/main/project1.jpg'
+      img: '/assets/hero-p1.jpg'
   }, 
   { 
       id: 2, 
@@ -112,7 +112,7 @@ const DEPTHS = {
 
 const ImageRevealHeroTitle: React.FC = () => {
     const [isHovered, setIsHovered] = useState(false);
-    const REVEAL_IMAGE = "https://picsum.photos/seed/pulse-reveal/400/600";
+    const REVEAL_IMAGE = "/assets/hero-p1.jpg";
 
     return (
         <div 
@@ -128,7 +128,7 @@ const ImageRevealHeroTitle: React.FC = () => {
                 }}
                 transition={{ type: "spring", stiffness: 150, damping: 16 }}
             >
-                A-FA
+                Fan
             </motion.h1>
 
             <motion.div
@@ -169,7 +169,7 @@ const ImageRevealHeroTitle: React.FC = () => {
                 }}
                 transition={{ type: "spring", stiffness: 150, damping: 16 }}
             >
-                FA-FA
+                Ronghuan
             </motion.h1>
         </div>
     );
@@ -211,9 +211,9 @@ const PulsingSlogan: React.FC = () => {
                 Always F.A.F.A
             </motion.div>
             <div className="flex items-center gap-4 text-white/80 font-albert-light text-lg md:text-xl">
-                <span className="tracking-widest">发疯是灵感</span>
+                <span className="tracking-widest">一名喜欢</span>
                 <div className="w-1 h-1 rounded-full bg-pulse-orange" />
-                <span className="tracking-widest">发力是专业</span>
+                <span className="tracking-widest">设计与科技的学习者</span>
             </div>
         </div>
     );
