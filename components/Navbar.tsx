@@ -104,7 +104,7 @@ const Navbar: React.FC = () => {
       >
           <div className="flex items-center">
              <Magnetic strength={20}>
-                <div className="font-albert-black text-xl tracking-tighter text-white/90">GLEI</div>
+                <div className="font-albert-black text-xl tracking-tighter text-white/90">樊荣欢</div>
              </Magnetic>
           </div>
 

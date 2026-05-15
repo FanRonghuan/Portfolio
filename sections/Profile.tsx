@@ -18,49 +18,77 @@ const CARD_HEIGHT = '180px';
 
 // 🟢 3. CARD POSITIONS: Adjust each timeline card's Top, Left, and Rotation
 const CARD_POSITIONS = [
-    { top: '0%',  left: '55%', rotate: '-2deg' }, // was 5%
-    { top: '23%', left: '60%', rotate: '1deg' },  // was 28%
-    { top: '46%', left: '56%', rotate: '-1deg' }, // was 51%
-    { top: '69%', left: '59%', rotate: '2deg' },  // was 74%
+    { top: '0%',  left: '55%', rotate: '-2deg' }, // legacy
+    { top: '23%', left: '60%', rotate: '1deg' },
+    { top: '46%', left: '56%', rotate: '-1deg' },
+    { top: '69%', left: '59%', rotate: '2deg' },
+];
+
+// New: explicit left (education) and right (work) positions
+const EDU_POSITIONS = [
+    { top: '10%', left: '-12%', rotate: '-2deg', zIndex: 35 },
+    { top: '36%', left: '-12%', rotate: '1deg', zIndex: 34 },
+    { top: '62%', left: '-12%', rotate: '-1deg', zIndex: 33 },
+];
+
+const WORK_POSITIONS = [
+    { top: '10%', left: '62%', rotate: '-2deg', zIndex: 36 },
+    { top: '32%', left: '62%', rotate: '1deg', zIndex: 35 },
+    { top: '54%', left: '62%', rotate: '-1deg', zIndex: 34 },
+    { top: '76%', left: '62%', rotate: '2deg', zIndex: 33 },
 ];
 
 // --- DATA ---
 const experienceData = [
   { 
       id: '1', 
-      year: '2024 - 2025', 
-      role: 'Senior Visual Designer', 
-      company: 'Global Design Agency', 
+      year: '2025.10 - 2026.03', 
+      role: '多媒体设计实习生', 
+      company: '腾讯科技有限公司', 
       color: '#FF7F27', 
-      desc: '1. Led visual strategy for major marketing campaigns, resulting in a significant increase in user engagement and conversion rates.\n2. Developed comprehensive brand identity systems for international markets, ensuring visual consistency across various digital and physical touchpoints.\n3. Managed cross-functional design projects, including UI/UX, motion graphics, and high-end presentation design.',
-      tags: ['VISUAL DESIGN', 'BRANDING', 'LEADERSHIP']
+      desc: '1. 美学评调体系构建：参与WXG基础视觉训练的中式审美框架搭建，调研HPSv3等评测方法；\n2. 数据与质量管控：负责内部平台Prompt Tag的数据整理与素材采集，提升模型风格泛化能力。',
+      tags: ['多媒体设计', '数据管理', 'AI应用'],
+      type: 'work'
   },
   { 
       id: '2', 
-      year: '2021 - 2024', 
-      role: 'Master of Visual Communication', 
-      company: 'Prestigious Art University', 
+      year: '2025.05 - 2025.09', 
+      role: '电商设计实习生', 
+      company: '珀莱雅化妆品股份有限公司', 
       color: '#005C4B', 
-      desc: 'Awarded academic scholarships and actively participated in international design competitions, focusing on advanced design theory and experimental visual language.',
-      tags: ['MASTER DEGREE', 'THEORY', 'AWARDS'] 
+      desc: '1. 大促视觉全链路设计：参与618/七夕/双十一等大促物料视觉与交付；\n2. 电商直播与详情页：负责详情页视觉与拍摄。',
+      tags: ['电商设计', '品牌视觉', '直播设计'],
+      type: 'work'
   },
   { 
       id: '3', 
-      year: '2021 - 2022', 
-      role: 'Illustrator & Art Director', 
-      company: 'Creative Studio Ltd', 
+      year: '2024.05 - 2024.09', 
+      role: '视觉设计实习生', 
+      company: '美图公司', 
       color: '#FFCC00',
-      desc: 'Created diverse illustrations for brand identities, posters, and key visuals, blending traditional techniques with modern digital aesthetics.',
-      tags: ['ILLUSTRATION', 'ART DIRECTION', 'CREATIVE'] 
+      desc: '1. 活动视觉与海报：负责在线平台活动视觉与系列海报；\n2. AIGC 工具物料：为 AIGC 平台设计营销物料，提升产出效率。',
+      tags: ['AIGC设计', '产品视觉', '海报创作'],
+      type: 'work'
   },
   { 
       id: '4', 
-      year: '2017 - 2021', 
-      role: 'Junior Visual Designer', 
-      company: 'Innovative Tech Firm', 
+      year: '2024.09 - 2027.06', 
+      role: '硕士研究生', 
+      company: '湖北大学', 
       color: '#55FF55',
-      desc: '1. Built standardized component libraries and visual design systems, improving design efficiency by 30% across multiple product lines.\n2. Developed modular animation assets, reducing production cycles and ensuring a cohesive motion language throughout the application.',
-      tags: ['SYSTEM DESIGN', 'EFFICIENCY', 'ANIMATION']
+      desc: '视觉传达设计硕士在读，主修：创意方法论、设计管理与品牌策划等。GPA：专业排名前20%，获学年二、三等奖学金。',
+      tags: ['硕士学位', '视觉传达', '学术研究'],
+      type: 'edu'
+  },
+  { 
+      id: '5', 
+      year: '2019.09 - 2024.06', 
+      role: '本科生', 
+      company: '湖南涉外经济学院', 
+      color: '#4DA6FF',
+      desc: '视觉传达设计本科，主修：设计基础、色彩、海报、包装与插画等。GPA: 3.77，专业排名前8%，获校一等奖学金。',
+      tags: ['本科学位', '视觉传达', '优秀毕业生'],
+      type: 'edu'
   },
 ];
 
@@ -248,27 +276,20 @@ const ProfileTimelineCard: React.FC<{
                     <div className="absolute inset-0 bg-gradient-to-br from-pulse-orange/5 to-transparent opacity-40 pointer-events-none" />
 
                     {/* Reverted Content Sizes */}
-                    <div className="relative p-6 flex flex-col justify-center h-full z-20">
-                        <div className="flex justify-between items-start mb-2">
-                             <div className="flex items-center gap-3">
-                                 <span className="font-space-grotesk font-bold text-2xl text-white group-hover:text-pulse-orange transition-colors">
-                                    {item.role}
-                                 </span>
-                             </div>
-
-                             <span 
-                                className="px-3 py-1 rounded-md text-[10px] font-jetbrains-mono border border-pulse-orange/30 bg-pulse-orange/10 text-pulse-orange tracking-tighter"
-                             >
-                                {item.year}
-                             </span>
-                        </div>
-                        
-                        <div className="text-white/80 font-jetbrains-mono text-sm flex items-center gap-2 mb-3">
-                             <span className="w-2 h-2 rounded-full bg-pulse-orange/40" />
-                             {item.company}
+                    <div className={`relative p-6 flex flex-col justify-center h-full z-20 ${item.type === 'work' ? 'text-left' : 'text-right'}`}>
+                        <div className={`flex flex-col gap-1 mb-2 ${item.type === 'work' ? 'items-start' : 'items-end'}`}>
+                            <span className="px-3 py-1 rounded-md text-[10px] font-jetbrains-mono border border-pulse-orange/30 bg-pulse-orange/10 text-pulse-orange tracking-tighter">
+                               {item.year}
+                            </span>
+                            <span className={`font-space-grotesk font-bold text-2xl text-white group-hover:text-pulse-orange transition-colors truncate ${item.type === 'work' ? 'text-left' : 'text-right'}`}>
+                               {item.company}
+                            </span>
+                            <span className={`text-white/70 font-jetbrains-mono text-sm truncate ${item.type === 'work' ? 'text-left' : 'text-right'}`}>
+                               {item.role}
+                            </span>
                         </div>
 
-                        <p className="text-xs text-white/40 font-albert-light leading-relaxed line-clamp-2 whitespace-pre-line group-hover:text-white/60 transition-colors">
+                        <p className={`text-xs text-white/40 font-albert-light leading-relaxed line-clamp-2 whitespace-pre-line group-hover:text-white/60 transition-colors ${item.type === 'work' ? 'text-left' : 'text-right'}`}>
                             {item.desc}
                         </p>
                     </div>
@@ -420,9 +441,9 @@ const StablePhoto: React.FC = () => {
             ref={ref}
             className="absolute w-[320px] h-[440px] md:w-[400px] md:h-[550px]"
             style={{
-                top: '-6%',
-                left: '15%',
-                zIndex: 20,
+                top: '8%',
+                left: '28%',
+                zIndex: 24,
                 transformStyle: "preserve-3d",
                 z: DEPTHS.MAIN,
             }}
@@ -451,13 +472,12 @@ const StablePhoto: React.FC = () => {
             >
                 <div className="w-full h-full relative overflow-hidden rounded-[1.5rem] bg-white/5 transform-style-3d">
                     <img 
-                        src="https://picsum.photos/seed/profile/800/1100" 
+                        src="/assets/profile-p1.jpg" 
                         alt="Profile" 
-                        className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700 ease-out will-change-filter"
+                        className="w-full h-full object-cover transition-transform duration-700 ease-out will-change-transform group-hover:scale-105"
                         decoding="async"
                         loading="lazy"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-tr from-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-overlay" />
                     <div className="absolute inset-0 shadow-[inset_0_0_40px_rgba(0,0,0,0.1)] rounded-[1.5rem] pointer-events-none" />
                 </div>
             </motion.div>
@@ -500,9 +520,14 @@ const NameTilt: React.FC = () => {
             }}
             className="inline-block"
         >
-            <h2 className="text-7xl font-space-grotesk font-bold text-white leading-none mb-4 mix-blend-screen tracking-tighter transform -skew-x-6 hover:text-pulse-orange transition-colors duration-300 pointer-events-none">
-                A-FA<br/>FA-FA
-            </h2>
+            <div className="text-center w-full">
+                <h2 className="text-6xl md:text-7xl font-space-grotesk font-bold text-white leading-none mb-2 tracking-tighter transform -skew-x-4 pointer-events-none">
+                    樊荣欢
+                </h2>
+                <div className="text-sm text-white/40 font-albert-regular tracking-wider">
+                    视觉设计师 • 湖北大学 硕士在读
+                </div>
+            </div>
         </motion.div>
     );
 };
@@ -534,6 +559,9 @@ const Profile: React.FC = () => {
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["40deg", "20deg"]);
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-15deg", "15deg"]);
   const translateX = useTransform(mouseXSpring, [-0.5, 0.5], ["-6%", "6%"]);
+    const nameFloatX = useTransform(mouseXSpring, [-0.5, 0.5], [-24, 24]);
+    const nameFloatY = useTransform(mouseYSpring, [-0.5, 0.5], [14, -14]);
+    const nameTiltZ = useTransform(mouseXSpring, [-0.5, 0.5], [-3, 3]);
 
   return (
     <section 
@@ -581,8 +609,7 @@ const Profile: React.FC = () => {
                          zIndex: 5
                     }}
                 >
-                    {/* Reverted Text */}
-                    <h2 className="text-6xl font-space-grotesk font-bold text-white/10 tracking-tighter uppercase">Inspiration Pulse</h2>
+            
                 </div>
 
                 <div className="absolute top-[10%] left-[50%] w-full h-[1px] opacity-20" style={{ transform: `translateZ(${DEPTHS.FLOOR + 10}px)` }}>
@@ -596,13 +623,16 @@ const Profile: React.FC = () => {
                 <StablePhoto />
 
                 <motion.div 
-                    className="absolute text-left pointer-events-auto"
+                    className="absolute pointer-events-auto"
                     style={{ 
-                        top: '70%', 
-                        left: '22%', 
-                        transform: `translateZ(${DEPTHS.MAIN}px) rotateX(-10deg) rotateZ(-5deg)`,
-                        width: '450px',
-                        zIndex: 25
+                        top: '72%', 
+                        left: '33%',
+                        x: nameFloatX,
+                        y: nameFloatY,
+                        rotateZ: nameTiltZ,
+                        transform: `translateZ(${DEPTHS.MAIN + 10}px) rotateX(-8deg)`,
+                        width: '460px',
+                        zIndex: 40
                     }}
                     initial={{ opacity: 0, y: 50, rotate: 10 }}
                     whileInView={{ opacity: 1, y: 0, rotate: -5 }}
@@ -616,10 +646,10 @@ const Profile: React.FC = () => {
                             transition={{ type: "spring", stiffness: 300, damping: 15 }}
                         >
                             <NameTilt />
-                            <div className="flex flex-wrap gap-4 text-sm font-mono text-white/40 pl-4 border-l-2 border-white/10 pointer-events-none">
-                                <span>EST. 1995</span>
+                            <div className="flex flex-wrap justify-center gap-4 text-sm font-mono text-white/40 px-4 border-t border-white/10 pt-3 pointer-events-none">
+                                <span>Born. 2002.11</span>
                                 <span>·</span>
-                                <span>SHANGHAI</span>
+                                <span>湖南·郴州</span>
                                 <span>·</span>
                                 <span>VISUAL DESIGNER</span>
                             </div>
@@ -627,7 +657,7 @@ const Profile: React.FC = () => {
                     </Magnetic>
                 </motion.div>
 
-                {/* Timeline Cards */}
+                {/* Timeline Cards - LEFT: Education, RIGHT: Work/Internships */}
                 <div 
                     className="absolute w-full h-full pointer-events-auto"
                     style={{
@@ -636,15 +666,31 @@ const Profile: React.FC = () => {
                         transform: `translateZ(${DEPTHS.MAIN}px) rotateX(-5deg)`,
                     }}
                 >
-                    {experienceData.map((item, idx) => (
-                        <ProfileTimelineCard 
-                            key={item.id} 
-                            item={item} 
-                            index={idx}
-                            style={CARD_POSITIONS[idx] as React.CSSProperties}
-                            onClick={() => setSelectedExp(item)}
-                        />
-                    ))}
+                    {
+                        // Education cards (left)
+                        experienceData.filter(e => e.type === 'edu').map((item, i) => (
+                            <ProfileTimelineCard
+                                key={item.id}
+                                item={item}
+                                index={i}
+                                style={EDU_POSITIONS[i] as React.CSSProperties}
+                                onClick={() => setSelectedExp(item)}
+                            />
+                        ))
+                    }
+
+                    {
+                        // Work/Internship cards (right)
+                        experienceData.filter(e => e.type === 'work').map((item, i) => (
+                            <ProfileTimelineCard
+                                key={item.id}
+                                item={item}
+                                index={i}
+                                style={WORK_POSITIONS[i] as React.CSSProperties}
+                                onClick={() => setSelectedExp(item)}
+                            />
+                        ))
+                    }
                 </div>
 
             </motion.div>

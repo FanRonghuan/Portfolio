@@ -40,7 +40,7 @@ const CONTACT_CARDS = [
     {
         id: 'phone',
         title: 'PHONE',
-        value: '+86 173 6931 8615',
+        value: '173-6931-8615',
         color: '#3B82F6', // Blue
         icon: ICONS.Phone,
         position: { x: '-150%', y: '13%' }, 
@@ -51,7 +51,7 @@ const CONTACT_CARDS = [
     {
         id: 'email',
         title: 'EMAIL',
-        value: 'rachel.ahua7@gmail.com',
+        value: '1973886674@qq.com',
         color: '#F97316', // Orange
         icon: ICONS.Email,
         position: { x: '-80%', y: '15%' }, 
@@ -69,12 +69,12 @@ const CONTACT_CARDS = [
         rotation: -11,
         // 🟢 👇 修改这里：调整 Hover 时的旋转角度
         hoverRotation: -14,
-        qrCode: WECHAT_QR_CODE_URL = "/assets/wechat-qr.jpg"; // Added QR Code Link
+        qrCode: "/assets/wechat-qr.jpg", // Added QR Code Link
     },
     {
         id: 'xhs',
-        title: 'RED NOTE',
-        value: '577624350',
+        title: 'WECHAT ID',
+        value: 'Ahua_Hi',
         color: '#FF2442', // Xiaohongshu Red
         icon: ICONS.Xiaohongshu,
         position: { x: '100%', y: '14%' }, 

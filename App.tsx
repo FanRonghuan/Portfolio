@@ -118,10 +118,10 @@ const App: React.FC = () => {
                     <div className="mt-[-4vw] flex flex-col items-center gap-4">
                         <p className="text-white/40 font-albert-light tracking-[0.5em] uppercase text-sm md:text-base">Available for new projects</p>
                         <a 
-                            href="mailto:rachel.ahua7@gmail.com" 
+                            href="mailto:1973886674@qq.com" 
                             className="text-white hover:text-white/70 transition-colors font-albert-black text-2xl md:text-4xl tracking-tight border-b border-white/20 pb-2"
                         >
-                            rachel.ahua7@gmail.com
+                            1973886674@qq.com
                         </a>
                     </div>
                 </motion.div>
