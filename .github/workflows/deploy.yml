@@ -22,8 +22,9 @@ jobs:
 
       - name: Install and Build
         run: |
-          npm install
-          npm run build
+          rm -rf node_modules package-lock.json # 删掉旧的干扰项
+          npm install # 重新安装
+          npm run build # 运行刚才改过的 npx 指令
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
