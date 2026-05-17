@@ -1,13 +1,13 @@
-
-
-
-
-
-
-
-
-
-// 🔒 LOCKED DATA: USER CONFIGURATION
+const CARD_POSITIONS = [
+    { left: '35%',  top: '65%',  rotate: -15, zIndex: 1, scale: 0.8 },
+    { left: '55%',  top: '56%',  rotate: 8,   zIndex: 2, scale: 0.81 },
+    { left: '75%',  top: '62%',  rotate: -8,  zIndex: 3, scale: 0.78 },
+    { left: '95%',  top: '59%',  rotate: 12,  zIndex: 4, scale: 0.808 },
+    { left: '115%', top: '56%',  rotate: -5,  zIndex: 5, scale: 0.8 },
+    { left: '135%', top: '63%',  rotate: 15,  zIndex: 6, scale: 0.83 },
+    { left: '155%', top: '61%',  rotate: -10, zIndex: 7, scale: 0.77 },
+    { left: '175%', top: '58%',  rotate: 6,   zIndex: 8, scale: 0.81 },
+]; // 🔒 LOCKED DATA: USER CONFIGURATION
 // Please do not overwrite this file with placeholder data in future updates.
 
 // 自定义长图链接 (Updated to generic placeholders)
@@ -57,17 +57,17 @@ export const WAVE_IMAGES_CONFIG: WaveItemConfig[] = [
 
 // Group 1 Cards Data
 export const GROUP_1_CARDS_DATA = [
-    { id: 1, xOffset: -400, yOffset: 8320, width: 188.52, height: 109.18, rotate: 0, borderRadius: '32px', img: 'https://picsum.photos/seed/card1/400/300' },
-    { id: 2, xOffset: -201.5, yOffset: 8320, width: 188.52, height: 68.61, rotate: 0, borderRadius: '32px', img: 'https://picsum.photos/seed/card2/400/300' },
-    { id: 3, xOffset: -3, yOffset: 8320, width: 188.52, height: 90.28, rotate: 0, borderRadius: '32px', img: 'https://picsum.photos/seed/card3/400/300' },
-    { id: 4, xOffset: 195.52, yOffset: 8320, width: 188.52, height: 109.18, rotate: 0, borderRadius: '32px', img: 'https://picsum.photos/seed/card4/400/300' }
+    { id: 1, xOffset: -400, yOffset: 8320, width: 188.52, height: 109.18, rotate: 0, borderRadius: '32px', img: 'assets/Project1-1.jpg' },
+    { id: 2, xOffset: -201.5, yOffset: 8320, width: 188.52, height: 68.61, rotate: 0, borderRadius: '32px', img: 'assets/Project1-2.jpg' },
+    { id: 3, xOffset: -3, yOffset: 8320, width: 188.52, height: 90.28, rotate: 0, borderRadius: '32px', img: 'assets/Project1-3.jpg' },
+    { id: 4, xOffset: 195.52, yOffset: 8320, width: 188.52, height: 109.18, rotate: 0, borderRadius: '32px', img: 'assets/Project1-4.jpg' }
 ];
 
 // New Scattered Images
 export const CUSTOM_NEW_IMAGES = [
     { 
         id: 'd1', 
-        img: 'https://picsum.photos/seed/d1/400/600', 
+        img: 'assets/Project1-1.jpg', 
         x: 350,      
         y: 9900,    
         w: 220.8,      
@@ -76,7 +76,7 @@ export const CUSTOM_NEW_IMAGES = [
     },
     { 
         id: 'd2', 
-        img: 'https://picsum.photos/seed/d2/400/600', 
+        img: 'assets/Project1-2.jpg', 
         x: 515, 
         y: 10120, 
         w: 220.8, 
@@ -85,7 +85,7 @@ export const CUSTOM_NEW_IMAGES = [
     },
     { 
         id: 'd3', 
-        img: 'https://picsum.photos/seed/d3/400/600', 
+        img: 'assets/Project1-3.jpg', 
         x: 635, 
         y:9750, 
         w: 220.8, 
@@ -94,7 +94,7 @@ export const CUSTOM_NEW_IMAGES = [
     },
     { 
         id: 'd4', 
-        img: 'https://picsum.photos/seed/d4/400/600', 
+        img: 'assets/Project1-5.jpg', 
         x: 920, 
         y: 9980, 
         w: 220.8, 
@@ -105,20 +105,20 @@ export const CUSTOM_NEW_IMAGES = [
 
 // 🇨🇳 CHINA OPTIMIZATION: Replaced standard CDNs with jsDelivr mirror for speed
 export const TOOL_ICONS: Record<string, string> = {
-    'Figma': 'https://jsd.cdn.zzko.cn/gh/devicons/devicon/icons/figma/figma-original.svg',
-    'PS': 'https://jsd.cdn.zzko.cn/gh/devicons/devicon/icons/photoshop/photoshop-plain.svg',
-    'AI': 'https://jsd.cdn.zzko.cn/gh/devicons/devicon/icons/illustrator/illustrator-plain.svg',
-    'AE': 'https://jsd.cdn.zzko.cn/gh/devicons/devicon/icons/aftereffects/aftereffects-original.svg',
-    'Blender': 'https://jsd.cdn.zzko.cn/gh/devicons/devicon/icons/blender/blender-original.svg',
-    'C4D': 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/1197px-C4D_Logo.png',
-    'React': 'https://jsd.cdn.zzko.cn/gh/devicons/devicon/icons/react/react-original.svg',
-    'ThreeJS': 'https://jsd.cdn.zzko.cn/gh/devicons/devicon/icons/threejs/threejs-original.svg', 
-    'Jimeng': 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/%E5%8D%B3%E6%A2%A6icon.png',
-    'Pinterest': 'https://jsd.cdn.zzko.cn/gh/devicons/devicon/icons/pinterest/pinterest-original.svg',
-    'LibLib': 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/liblib.png'
+    'Figma': '/assets/figma-icon.jpg',
+    'PS': '/assets/ps-icon.jpg',
+    'AI': '/assets/ai-icon.jpg',
+    'AE': '/assets/ae-icon.jpg',
+    'Blender': '/assets/blender-icon.jpg',
+    'C4D': '/assets/c4d-icon.jpg',
+    'React': '/assets/React-icon.jpg',
+    'ThreeJS': '/assets/Three.js-icon.jpg', 
+    'Jimeng': '/assets/jimeng-icon.jpg',
+    'Pinterest': '/assets/pinterest-icon.jpg',
+    'LibLib': '/assets/liblib-icon.jpg'
 };
 
-// Project Data
+// Project Data (only projects 1-5 retained per user request)
 export const PROJECTS_DATA = [
   { 
       id: 1, 
@@ -128,8 +128,8 @@ export const PROJECTS_DATA = [
       client: 'CLIENT', 
       color: '#FF7F27', 
       intensity: 5,
-      img: 'https://picsum.photos/seed/p1/800/600', 
-      previewBgImg: 'https://picsum.photos/seed/p1bg/800/600', 
+    img: 'assets/Project1-1.jpg', 
+    previewBgImg: 'assets/Project1-1.jpg', 
       desc: 'This is a default description for the first project. It showcases the layout and interaction.',
       tools: ['Jimeng', 'PS', 'Figma', 'Blender', 'LibLib'],
       previewTextColor: {
@@ -151,7 +151,22 @@ export const PROJECTS_DATA = [
           frameCount: 56,
           startIndex: 1
       },
-      detailImages: [ASSETS.P1_IMG_1, ASSETS.P1_IMG_2, ASSETS.P1_IMG_3],
+            detailImages: [
+                'assets/Project1-1.jpg',
+                'assets/Project1-2.jpg',
+                'assets/Project1-3.jpg',
+                'assets/Project1-4.jpg',
+                'assets/Project1-5.jpg',
+                'assets/Project1-6.jpg',
+                'assets/Project1-7.jpg',
+                'assets/Project1-8.jpg',
+                'assets/Project1-9.jpg',
+                'assets/Project1-10.jpg',
+                'assets/Project1-11.jpg',
+                'assets/Project1-12.jpg',
+                'assets/Project1-13.jpg',
+                'assets/Project1-14.jpg'
+            ],
   },
   { 
       id: 2, 
@@ -160,7 +175,8 @@ export const PROJECTS_DATA = [
       year: '2025.02', 
       color: '#FFA500', 
       intensity: 4,
-      img: 'https://picsum.photos/seed/p2/800/600', 
+      img: 'assets/Project2-1.png', 
+      previewBgImg: 'assets/Project2-1.png',
       desc: 'This is a default description for the second project.',
       tools: ['Figma', 'Jimeng', 'PS', 'Blender', 'LibLib'],
       previewTextColor: {
@@ -216,13 +232,21 @@ export const PROJECTS_DATA = [
             videoUrl: 'https://www.w3schools.com/html/movie.mp4'
         }
       },
-      detailImages: [], 
+      detailImages: [
+          'assets/Project2-1.png',
+          'assets/Project2-2.jpg',
+          'assets/Project2-3.jpg',
+          'assets/Project2-4.jpg',
+          'assets/Project2-5.jpg',
+          'assets/Project2-6.jpg'
+      ], 
   },
   { 
       id: 3, title: 'Default Project Title 3', label: 'VISUAL DESIGN', year: '2022', color: '#4DA6FF', 
       shadowColor: '#4DA6FF',
       intensity: 3,
-      img: 'https://picsum.photos/seed/p3/800/600', 
+      img: 'assets/Project3-1.jpg', 
+      previewBgImg: 'assets/Project3-1.jpg',
       desc: 'Default description for project 3.',
       tools: ['PS', 'AI', 'C4D'],
       previewTextColor: {
@@ -235,7 +259,21 @@ export const PROJECTS_DATA = [
         cardBorder: 'rgba(0,0,0,0.1)'
       },
       layout: 'gallery',
-      detailImages: ['https://picsum.photos/seed/p3detail/1200/800'],
+      detailImages: [
+          'assets/Project3-1.jpg',
+          'assets/Project3-2.jpg',
+          'assets/Project3-3.jpg',
+          'assets/Project3-4.jpg',
+          'assets/Project3-5.jpg',
+          'assets/Project3-6.jpg',
+          'assets/Project3-7.jpg',
+          'assets/Project3-8.jpg',
+          'assets/Project3-9.jpg',
+          'assets/Project3-10.jpg',
+          'assets/Project3-11.jpg',
+          'assets/Project3-12.jpg',
+          'assets/Project3-13.jpg'
+      ],
       detailText: { main: 'Project', sub: 'VISUAL DESIGN', signature: 'Design' }
   },
   { 
@@ -245,7 +283,8 @@ export const PROJECTS_DATA = [
       year: '2022', 
       color: '#EA2F2F', 
       intensity: 5,
-      img: 'https://picsum.photos/seed/p4/800/600', 
+      img: 'assets/Project4-1.jpg', 
+      previewBgImg: 'assets/Project4-1.jpg',
       desc: 'Default description for project 4.',
       tools: ['Figma', 'LibLib', 'PS', 'AI'],
       previewTextColor: {
@@ -259,8 +298,17 @@ export const PROJECTS_DATA = [
       },
       layout: 'gallery',
       detailImages: [
-          'https://picsum.photos/seed/p4d1/1200/800',
-          'https://picsum.photos/seed/p4d2/1200/800'
+          'assets/Project4-1.jpg',
+          'assets/Project4-2.jpg',
+          'assets/Project4-3.jpg',
+          'assets/Project4-4.jpg',
+          'assets/Project4-5.jpg',
+          'assets/Project4-6.jpg',
+          'assets/Project4-7.jpg',
+          'assets/Project4-8.jpg',
+          'assets/Project4-9.jpg',
+          'assets/Project4-10.jpg',
+          'assets/Project4-11.jpg'
       ],
       extraContent: [
           {
@@ -280,7 +328,8 @@ export const PROJECTS_DATA = [
       year: '2025', 
       color: '#E0221E', 
       intensity: 4,
-      img: 'https://picsum.photos/seed/p5/800/600', 
+      img: 'assets/Project5-1.jpg', 
+      previewBgImg: 'assets/Project5-1.jpg',
       desc: 'Default description for project 5.',
       tools: ['AI', 'Figma'],
       previewTextColor: {
@@ -294,161 +343,16 @@ export const PROJECTS_DATA = [
       },
       layout: 'gallery',
       detailImages: [
-          'https://picsum.photos/seed/p5d1/1200/800'
-      ]
-  },
-  { 
-      id: 6, 
-      title: 'Default Project Title 6', 
-      label: 'MOTION ART', 
-      year: '2021-2025', 
-      color: '#AA88EE', 
-      intensity: 5,
-      img: 'https://picsum.photos/seed/p6/800/600', 
-      desc: 'Default description for project 6.',
-      tools: ['C4D', 'AE', 'Blender'],
-      previewTextColor: {
-        year: '#000000',
-        label: '#999999',
-        title: '#000000',
-        description: '#444444',
-        tools: '#000000',
-        arrow: '#000000',
-        cardBorder: 'rgba(0,0,0,0.1)'
-      },
-      layout: 'horizontal-scroll',
-      horizontalData: [
-          {
-              id: 1,
-              img: 'https://picsum.photos/seed/p6c1/320/569', 
-              video: 'https://www.w3schools.com/html/mov_bbb.mp4',
-              title: 'Motion 1',
-              width: 320, 
-              height: 569, 
-              flippedWidth: 484, 
-              flippedHeight: 682.4, 
-              y: 0, 
-              scale: 1,
-              introConfig: {
-                  text: '01\nMOTION 1\n\nDefault description.',
-                  x: -210, 
-                  y: 100, 
-                  rotate: 0,
-                  fontSize: '14px',
-                  width: '200px',
-                  align: 'right'
-              }
-          },
-          {
-              id: 2,
-              img: 'https://picsum.photos/seed/p6c2/320/569', 
-              video: 'https://www.w3schools.com/html/movie.mp4',
-              title: 'Motion 2',
-              width: 320,
-              height: 569,
-              flippedWidth: 800, 
-              flippedHeight: 450,
-              y: 120, 
-              scale: 1,
-              introConfig: {
-                  text: '02\nMOTION 2\n\nDefault description.',
-                  x: -200, 
-                  y: 200,
-                  rotate: -5,
-                  fontSize: '16px',
-                  width: '180px',
-                  align: 'right'
-              }
-          },
-          {
-              id: 3,
-              img: 'https://picsum.photos/seed/p6c3/320/569', 
-              video: 'https://www.w3schools.com/html/mov_bbb.mp4',
-              title: 'Motion 3',
-              width: 320,
-              height: 569,
-              flippedWidth: 800, 
-              flippedHeight: 450,
-              y: -80, 
-              scale: 1,
-              introConfig: {
-                  text: '03\nMOTION 3\n\nDefault description.',
-                  x: -190, 
-                  y: 150,
-                  rotate: 0,
-                  fontSize: '14px',
-                  width: '180px',
-                  align: 'right'
-              }
-          },
-          {
-              id: 4,
-              img: 'https://picsum.photos/seed/p6c4/320/569', 
-              video: 'https://www.w3schools.com/html/movie.mp4',
-              title: 'Motion 4',
-              width: 320,
-              height: 569,
-              flippedWidth: 800, 
-              flippedHeight: 450,
-              y: 40, 
-              scale: 1,
-              introConfig: {
-                  text: '04\nMOTION 4\n\nDefault description.',
-                  x: -180, 
-                  y: 300,
-                  rotate: 5,
-                  fontSize: '12px',
-                  width: '150px',
-                  align: 'right'
-              }
-          }
-      ]
-  },
-  { 
-      id: 7, 
-      title: 'Default Project Title 7', 
-      label: 'Personal Gallery', 
-      year: '2021-2025', 
-      color: '#4ECDC4', 
-      intensity: 3,
-      img: 'https://picsum.photos/seed/p7/800/600', 
-      desc: 'Default description for project 7.', 
-      tools: ['Blender', 'PS', 'AI'], 
-      previewTextColor: {
-        year: '#E6E6E6',
-        label: '#E6E6E6',
-        title: '#FFFFFF',
-        description: '#E6E6E6',
-        tools: '#000000',
-        arrow: '#000000',
-        cardBorder: 'rgba(0,0,0,0.1)'
-      },
-      layout: 'gallery',
-      detailImages: [
-          'https://picsum.photos/seed/p7d1/800/600',
-          'https://picsum.photos/seed/p7d2/800/600',
-          'https://picsum.photos/seed/p7d3/800/600'
-      ]
-  },
-  { 
-      id: 8, title: 'Default Project Title 8', label: 'Personal Growth', year: '2021-2026', color: '#7BC5FF', 
-      intensity: 4,
-      img: 'https://raw.githubusercontent.com/Rachel-ahua/picture-storage/refs/heads/main/project5.jpg', 
-      desc: 'Default description for project 8.',
-      tools: ['Figma', 'PS'], 
-      previewTextColor: {
-        year: '#000000',
-        label: '#999999',
-        title: '#000000',
-        description: '#444444',
-        tools: '#000000',
-        arrow: '#000000',
-        cardBorder: 'rgba(0,0,0,0.1)'
-      },
-      layout: 'pdf',
-      pdfUrl: 'https://raw.githubusercontent.com/Rachel-ahua/picture-storage/main/shengdan_pdf.pdf',
-      detailImages: [
-          'https://picsum.photos/seed/p8d1/1200/800',
+          'assets/Project5-1.jpg',
+          'assets/Project5-2.jpg',
+          'assets/Project5-3.jpg',
+          'assets/Project5-4.jpg',
+          'assets/Project5-5.jpg',
+          'assets/Project5-6.jpg',
+          'assets/Project5-7.jpg',
+          'assets/Project5-8.jpg',
+          'assets/Project5-9.jpg',
+          'assets/Project5-10.jpg'
       ]
   }
 ];

@@ -1,342 +1,1827 @@
-﻿import React, { useMemo, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { PROJECTS_DATA } from '../data/vinylProjectData';
+﻿
+import React, { useState, useRef, useMemo, useEffect } from 'react';
+import { motion, AnimatePresence, useTransform, useMotionValue, useSpring, useScroll, useMotionTemplate, Variants } from 'framer-motion';
+import { createPortal } from 'react-dom'; 
+import Spotlight3D from '../components/Spotlight3D';
 
-interface CuratedProject {
-  id: string;
-  title: string;
-  subtitle: string;
-  year: string;
-  summary: string;
-  details: string;
-  role: string;
-  focus: string;
-  output: string;
-  color: string;
-  cover: string;
-  previewSources: string[];
-  gravity: {
-    left: string;
-    top: string;
-    rotate: number;
-    scale: number;
-    width: string;
-    zIndex: number;
-  };
-}
+// 🔒 DATA IMPORTED FROM SEPARATE FILE TO PREVENT OVERWRITING
+import {
+    ASSETS,
+    MY_CUSTOM_LONG_IMAGE,
+    CUSTOM_FOX_RABBIT_CONFIG,
+    WAVE_IMAGES_CONFIG,
+    GROUP_1_CARDS_DATA,
+    CUSTOM_NEW_IMAGES,
+    TOOL_ICONS,
+    PROJECTS_DATA
+} from '../data/vinylProjectData';
 
-const CURATED_PROJECTS: CuratedProject[] = [
-  {
-    id: 'brand-design',
-    title: '品牌设计',
-    subtitle: 'Brand Identity',
-    year: '2025',
-    summary: '品牌设计项目一的完整视觉方案，按作品集顺序连续展示全部页面。',
-    details: '这个项目按照品牌从概念到落地的叙事方式展开，包含主视觉、延展规范、应用场景与完整排版页。右侧会直接按顺序向下排列 14 张图片，形成接近真实翻页阅读的浏览体验，不会出现 PDF 下载弹窗。',
-    role: '视觉设计 / 排版整合 / 品牌延展',
-    focus: '品牌识别、主视觉、落地应用、完整长页叙事',
-    output: '14 页连续长图展示',
-    color: '#f3c623',
-    cover: '/assets/Project1-1.jpg',
-    previewSources: Array.from({ length: 14 }, (_, index) => `/assets/Project1-${index + 1}.jpg`),
-    gravity: { left: '3%', top: '7%', rotate: -7, scale: 0.98, width: '28%', zIndex: 3 },
-  },
-  {
-    id: 'ui-design',
-    title: 'UI设计项目',
-    subtitle: 'UI / UX',
-    year: '2025',
-    summary: '围绕界面结构、组件状态和动效规范展开的界面设计案例。',
-    details: '这个项目更偏向界面信息组织和视觉层级控制，重点放在页面结构、组件状态、可用性和统一的界面节奏上。右侧内容按你上传的资源从 Project2-1 开始依次展开，完整呈现 UI 方案的过程和结果。',
-    role: 'UI 设计 / 信息架构 / 界面视觉',
-    focus: '布局层级、组件状态、交互节奏',
-    output: '6 页连续长图展示',
-    color: '#7bc5ff',
-    cover: '/assets/Project2-1.png',
-    previewSources: ['/assets/Project2-1.png', '/assets/Project2-2.jpg', '/assets/Project2-3.jpg', '/assets/Project2-4.jpg', '/assets/Project2-5.jpg', '/assets/Project2-6.jpg'],
-    gravity: { left: '34%', top: '0%', rotate: 6, scale: 1.02, width: '31%', zIndex: 5 },
-  },
-  {
-    id: 'brand-campaign',
-    title: '品牌活动全案',
-    subtitle: 'Campaign System',
-    year: '2024',
-    summary: '活动主题、传播视觉、KV延展和多场景落地的整套方案。',
-    details: '这个项目围绕品牌活动的完整传播链路展开，包含主题设定、主视觉、延展物料、现场氛围和多场景应用。右侧按你的 Project3 资源顺序向下排列，形成像作品集 PDF 一样的连续阅读体验。',
-    role: '品牌活动视觉 / KV 设计 / 延展物料',
-    focus: '传播主题、主KV、现场与物料统一',
-    output: '13 页连续长图展示',
-    color: '#ff6b6b',
-    cover: '/assets/Project3-1.jpg',
-    previewSources: ['/assets/Project3-1.jpg', '/assets/Project3-2.jpg', '/assets/Project3-3.jpg', '/assets/Project3-4.jpg', '/assets/Project3-5.jpg', '/assets/Project3-6.jpg', '/assets/Project3-7.jpg', '/assets/Project3-8.jpg', '/assets/Project3-9.jpg', '/assets/Project3-10.jpg', '/assets/Project3-11.jpg', '/assets/Project3-12.jpg', '/assets/Project3-13.jpg'],
-    gravity: { left: '66%', top: '6%', rotate: -4, scale: 0.97, width: '28%', zIndex: 4 },
-  },
-  {
-    id: 'operation-design',
-    title: '运营活动设计',
-    subtitle: 'Operation Design',
-    year: '2024',
-    summary: '围绕增长节点、线上运营及节日活动的高频输出设计。',
-    details: '这个项目更偏增长和运营节奏，强调节点活动的快速产出、节日营销的统一风格，以及适配线上传播的内容效率。右侧按 Project4 资源完整展开，方便连续查看所有页面。',
-    role: '运营视觉 / 节日活动 / 增长物料',
-    focus: '高频更新、传播效率、活动转化',
-    output: '11 页连续长图展示',
-    color: '#8fdf6c',
-    cover: '/assets/Project4-1.jpg',
-    previewSources: ['/assets/Project4-1.jpg', '/assets/Project4-2.jpg', '/assets/Project4-3.jpg', '/assets/Project4-4.jpg', '/assets/Project4-5.jpg', '/assets/Project4-6.jpg', '/assets/Project4-7.jpg', '/assets/Project4-8.jpg', '/assets/Project4-9.jpg', '/assets/Project4-10.jpg', '/assets/Project4-11.jpg'],
-    gravity: { left: '12%', top: '48%', rotate: -11, scale: 1, width: '30%', zIndex: 2 },
-  },
-  {
-    id: 'poster-design',
-    title: '海报设计',
-    subtitle: 'Poster System',
-    year: '2023-2025',
-    summary: '更适合竖版长图叙事的海报作品，直接以长图形式呈现。',
-    details: '这个项目用于展示系列海报和单张海报的视觉表达，适合通过连续长图维持阅读节奏，同时突出主视觉、版式和风格变化。右侧按 Project5 的顺序完整展开。',
-    role: '海报设计 / 系列视觉 / 版式延展',
-    focus: '主视觉、系列统一、风格变化',
-    output: '10 页连续长图展示',
-    color: '#d48cff',
-    cover: '/assets/Project5-1.jpg',
-    previewSources: ['/assets/Project5-1.jpg', '/assets/Project5-2.jpg', '/assets/Project5-3.jpg', '/assets/Project5-4.jpg', '/assets/Project5-5.jpg', '/assets/Project5-6.jpg', '/assets/Project5-7.jpg', '/assets/Project5-8.jpg', '/assets/Project5-9.jpg', '/assets/Project5-10.jpg'],
-    gravity: { left: '52%', top: '48%', rotate: 8, scale: 1.04, width: '32%', zIndex: 6 },
-  },
+// ==========================================
+// 🟢 CONFIGURATION: GLOBAL ZOOM & LAYOUT
+// ==========================================
+
+// 🟢 LEFT SIDE PREVIEW CARD CONFIGURATION (FOR USER ADJUSTMENT)
+const LEFT_SIDE_CONFIG: Record<number, { top: string, left: string }> = {};
+
+// 🟢 PREVIEW CARD ICONS LAYOUT (SCATTERED SOFTWARE ICONS)
+// 💡 您可以在这里控制大卡片里每个软件图标的布局。
+// 🔒 LOCKED DATA: Do not change without user request.
+const PREVIEW_ICONS_LAYOUT = [
+    { left: '86%', top: '88%', rotate: 15,  width: 90 },  // 1. 右上角突破 (Top Right Break)
+    { left: '74%',top: '102%',  rotate: -8,  width: 88 },  // 2. 极右侧突破 (Far Right Break)
+    { left: '59%', top: '97%',  rotate: 12,  width: 85 },  // 3. 右下角 (Bottom Right)
+    { left: '46%', top: '105%',  rotate: -5,  width: 81 },  // 4. 中右下方 (Mid Right Low)
+    { left: '33%', top: '92%',   rotate: 8,   width: 79 },  // 5. 中右上方 (Mid Right Top)
 ];
 
-const LongImagePreview: React.FC<{ sources: string[]; alt: string }> = ({ sources, alt }) => {
-  const [sourceIndex, setSourceIndex] = useState(0);
-  const currentSource = sources[Math.min(sourceIndex, sources.length - 1)] ?? sources[0] ?? '';
-
-  if (sources.length > 1) {
-    return (
-      <div className="flex w-full flex-col gap-6 pb-4">
-        {sources.map((source, index) => (
-          <div
-            key={`${alt}-${index}`}
-            className="overflow-hidden rounded-[20px] border border-white/8 bg-[#111317] shadow-[0_18px_50px_rgba(0,0,0,0.35)]"
-          >
-            <img
-              src={source}
-              alt={`${alt} ${index + 1}`}
-              loading={index < 2 ? 'eager' : 'lazy'}
-              className="h-auto w-full object-cover"
-            />
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  return (
-    <img
-      src={currentSource}
-      alt={alt}
-      onError={() => setSourceIndex((index) => Math.min(index + 1, sources.length - 1))}
-      className="h-auto w-full max-w-none rounded-[20px] object-contain"
-    />
-  );
+// 🟢 TINT CONFIGURATION FOR PROJECTS 2-8
+const PROJECT_TINTS: Record<number, { id: string; r: number; g: number; b: number }> = {
+    2: { id: 'tint-p2', r: 1, g: 0.647, b: 0 },         // #FFA500 (Orange)
+    3: { id: 'tint-p3', r: 0.302, g: 0.651, b: 1 },     // #4DA6FF
+    4: { id: 'tint-p4', r: 0.918, g: 0.184, b: 0.184 }, // #EA2F2F
+    5: { id: 'tint-p5', r: 0.878, g: 0.133, b: 0.118 }, // #E0221E
+    6: { id: 'tint-p6', r: 0.667, g: 0.533, b: 0.933 }, // #AA88EE
+    7: { id: 'tint-p7', r: 0.306, g: 0.804, b: 0.769 }, // #4ECDC4
+    8: { id: 'tint-p8', r: 0.482, g: 0.773, b: 1 },     // #7BC5FF (Updated)
 };
 
-const PosterSequencePreview: React.FC<{ sources: string[]; title: string }> = ({ sources, title }) => {
-  return (
-    <div className="w-full max-w-[920px] pb-10">
-      <div className="sticky top-0 z-10 mb-8 flex items-center justify-between rounded-full border border-white/10 bg-black/70 px-4 py-3 backdrop-blur-md">
-        <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-white/45">Poster Reading Mode</p>
-          <p className="mt-1 text-sm uppercase tracking-[0.2em] text-white/80">{title}</p>
-        </div>
-        <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-white/55">
-          {sources.length} Pages
-        </div>
-      </div>
+// 🔒 LOCKED DATA START --------------------------------------
 
-      <div className="flex flex-col gap-8 snap-y snap-mandatory">
-        {sources.map((source, index) => {
-          const isOdd = index % 2 === 0;
-          return (
-            <section
-              key={`${title}-poster-${index}`}
-              className={`snap-start flex min-h-[78vh] items-center ${isOdd ? 'justify-start' : 'justify-end'}`}
+// 🟢 1. PROJECT 1 HOVER IMAGES CONFIGURATION
+const  PROJECT_1_HOVER_CONFIG = [
+    {
+        id: 'p1-slide-1',
+        // 🇨🇳 CHINA OPTIMIZATION: Replaced raw.githubusercontent with jsd.cdn.zzko.cn
+        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/%E9%95%BF%E5%9B%BE/%E7%8B%90%E7%8B%B8%E5%92%8C%E5%85%94%E5%AD%90.png',
+        x: 50,      
+        y: 20,     
+        scale: 1.25,  
+        rotate: 0,  
+        zIndex: 4,   
+        z: -74,      
+        delay: 0.1   
+    },
+    {
+        id: 'p1-slide-2',
+        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8A%E4%BE%A7.png',
+        x: 950,      
+        y: 80,       
+        scale: 5,
+        rotate: 2,
+        zIndex: 4,   
+        z: -75,      
+        delay: 0.2
+    },
+    {
+        id: 'p1-slide-3',
+        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8B%E4%BE%A7.png',
+        x: 400,      
+        y: 80,       
+        scale: 3.5,
+        rotate: 2,
+        zIndex: 4,   
+        z: -76,      
+        delay: 0.2
+    },
+    {
+        id: 'p1-slide-4',
+        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%B7%A6%E4%BE%A7.png',
+        x: 860,      
+        y: 80,       
+        scale: 3.5,
+        rotate: 2,
+        zIndex: 4,   
+        z: -75,      
+        delay: 0.2
+    },
+    {
+        id: 'p1-slide-5',
+        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%B7%A6%E4%BE%A7.png',
+        x: 800,      
+        y: 80,       
+        scale: 3.5,
+        rotate: 2,
+        zIndex: 4,   
+        z: -75,      
+        delay: 0.2
+    }
+];
+
+const PROJECT_2_HOVER_CONFIG = [
+    {
+        id: 'p2-top',
+        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8A%E4%BE%A7.png',
+        x: 1300,      
+        y: -350,   // Top
+        scale: 3,
+        rotate: 0,
+        zIndex: 4, 
+        z: -75,    
+        delay: 0.1
+    },
+    {
+        id: 'p2-bottom',
+        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8B%E4%BE%A7.png',
+        x: 100,      
+        y: 350,    // Bottom
+        scale: 3,
+        rotate: 0,
+        zIndex: 4, 
+        z: -75,
+        delay: 0.1
+    },
+    {
+        id: 'p2-left',
+        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%B7%A6%E4%BE%A7.png',
+        x: -600,      
+        y: 0,      // Left
+        scale: 3,
+        rotate: 0,
+        zIndex: 4, 
+        z: -75,
+        delay: 0.2
+    },
+    {
+        id: 'p2-right',
+        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%8F%B3%E4%BE%A7.png',
+        x: 400,      
+        y: 0,      // Right
+        scale: 3,
+        rotate: 0,
+        zIndex: 4, 
+        z: -75,
+        delay: 0.2
+    },
+    {
+        id: 'p2-char',
+        // 🇨🇳 CHINA OPTIMIZATION
+        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/%E8%9B%8B%E4%BB%94%E6%B4%BE%E5%AF%B9/%E8%9B%8B%E4%BB%94%E4%BA%BA%E7%89%A91.png',
+        x: -61,
+        y: -300,      // Center
+        scale: 0.8, // Large central figure
+        rotate: 0,
+        zIndex: 10, // Bring forward slightly
+        z: -74,
+        delay: 0.15,
+        noTint: true 
+    }
+];
+
+const PROJECT_3_HOVER_CONFIG = [
+    { id: 'p3-1', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8A%E4%BE%A7.png', x: -450, y: -450, scale: 3.2, rotate: -20, zIndex: 4, z: -75, delay: 0.1 },  // Top Left High
+    { id: 'p3-2', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8B%E4%BE%A7.png', x: 1250, y: 450, scale: 3.2, rotate: 20, zIndex: 4, z: -75, delay: 0.15 }, // Bottom Right Low
+    { id: 'p3-3', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%B7%A6%E4%BE%A7.png', x: -50, y: 50, scale: 2.8, rotate: -10, zIndex: 4, z: -75, delay: 0.2 },   // Extreme Left
+    { id: 'p3-4', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%8F%B3%E4%BE%A7.png', x: 950, y: -50, scale: 2.8, rotate: 10, zIndex: 4, z: -75, delay: 0.25 },   // Extreme Right
+    { 
+        id: 'p3-5', 
+        // 🇨🇳 CHINA OPTIMIZATION
+        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/%E7%8C%BF%E7%BC%96%E7%A8%8B/%E7%8C%B4%E5%AD%90.png', 
+        x: -364, 
+        y: -50, 
+        scale: 0.7, 
+        rotate: -10, 
+        zIndex: 4, 
+        z: -74, 
+        delay: 0.25, 
+        noTint: true 
+    },
+];
+
+const PROJECT_4_HOVER_CONFIG = [
+    { id: 'p4-1', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8A%E4%BE%A7.png', x: 0, y: -500, scale: 3.5, rotate: 0, zIndex: 4, z: -75, delay: 0.1 },    // Top Center
+    { id: 'p4-2', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8B%E4%BE%A7.png', x: 0, y: 500, scale: 3.5, rotate: 0, zIndex: 4, z: -75, delay: 0.1 },     // Bottom Center
+    { id: 'p4-3', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%B7%A6%E4%BE%A7.png', x: -850, y: 100, scale: 4.0, rotate: -90, zIndex: 4, z: -75, delay: 0.2 },  // Extreme Left
+    { id: 'p4-4', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%8F%B3%E4%BE%A7.png', x: 850, y: 100, scale: 4.0, rotate: 90, zIndex: 4, z: -75, delay: 0.2 },   // Extreme Right
+    { 
+        id: 'p4-5', 
+        // 🇨🇳 CHINA OPTIMIZATION
+        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/%E5%8D%AB%E5%B2%97/%E5%A4%A7%E5%8D%AB1.png', 
+        x: 50, 
+        y: -200, 
+        scale: 1.0, 
+        rotate: 0, 
+        zIndex: 4, 
+        z: -74, 
+        delay: 0.25, 
+        noTint: true 
+    },
+];
+
+const PROJECT_5_HOVER_CONFIG = [
+    { id: 'p5-1', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8A%E4%BE%A7.png', x: 950, y: 80, scale: 5, rotate: 2, zIndex: 2, z: -75, delay: 0.1 },
+    { id: 'p5-2', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8B%E4%BE%A7.png', x: 1800, y: 80, scale: 3.5, rotate: 2, zIndex: 4, z: -75, delay: 0.15 },
+    { id: 'p5-3', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%B7%A6%E4%BE%A7.png', x: 860, y: 80, scale: 3.5, rotate: 2, zIndex: 4, z: -75, delay: 0.2 },
+    { id: 'p5-4', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%B7%A6%E4%BE%A7.png', x: 800, y: 80, scale: 3.5, rotate: 2, zIndex: 4, z: -75, delay: 0.25 },
+    { 
+        id: 'p5-5', 
+        // 🇨🇳 CHINA OPTIMIZATION
+        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/nezha/%E5%93%AA%E5%90%92.png', 
+        x: 0, 
+        y: -450, 
+        scale: 0.7, 
+        rotate: 0, 
+        zIndex: 4, 
+        z: -76, 
+        delay: 0.25, 
+        noTint: true 
+    },
+];
+
+const PROJECT_6_HOVER_CONFIG = [
+    { id: 'p6-1', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8A%E4%BE%A7.png', x: 0, y: -380, scale: 3, rotate: 180, zIndex: 4, z: -75, delay: 0.1 },
+    { id: 'p6-2', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8B%E4%BE%A7.png', x: 0, y: 380, scale: 3, rotate: 0, zIndex: 4, z: -75, delay: 0.1 },
+    { id: 'p6-3', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%B7%A6%E4%BE%A7.png', x: -600, y: -100, scale: 2.8, rotate: -45, zIndex: 4, z: -75, delay: 0.2 },
+    { id: 'p6-4', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%B7%A6%E4%BE%A7.png', x: 600, y: 100, scale: 2.8, rotate: 45, zIndex: 4, z: -75, delay: 0.2 },
+];
+
+const PROJECT_7_HOVER_CONFIG = [
+    { id: 'p7-1', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8A%E4%BE%A7.png', x: 1200, y: -450, scale: 3.8, rotate: 20, zIndex: 4, z: -75, delay: 0.1 },   // Extreme Top Right
+    { id: 'p7-2', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8B%E4%BE%A7.png', x: -400, y: 450, scale: 3.8, rotate: -20, zIndex: 4, z: -75, delay: 0.1 },  // Extreme Bottom Left
+    { id: 'p7-3', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%B7%A6%E4%BE%A7.png', x: 50, y: 150, scale: 3.0, rotate: -10, zIndex: 4, z: -75, delay: 0.2 },   // Mid Left
+    { id: 'p7-4', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%B7%A6%E4%BE%A7.png', x: 750, y: -150, scale: 3.0, rotate: 10, zIndex: 4, z: -75, delay: 0.2 },    // Mid Right
+];
+
+const PROJECT_8_HOVER_CONFIG = [
+    { id: 'p8-1', url: 'https://raw.githubusercontent.com/Rachel-ahua/picture-storage/refs/heads/main/project5.jpg', x: 0, y: -350, scale: 3.0, rotate: -30, zIndex: 4, z: -75, delay: 0.1 }, // Top Left
+    { id: 'p8-2', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8B%E4%BE%A7.png', x: 1400, y: 350, scale: 3.0, rotate: -30, zIndex: 4, z: -75, delay: 0.1 },  // Bottom Right
+    { id: 'p8-3', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%B7%A6%E4%BE%A7.png', x: 0, y: 350, scale: 3.0, rotate: 30, zIndex: 4, z: -75, delay: 0.2 },   // Bottom Left
+    { id: 'p8-4', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%B7%A6%E4%BE%A7.png', x: 1400, y: -350, scale: 3.0, rotate: 30, zIndex: 4, z: -75, delay: 0.2 },   // Top Right
+];
+
+// 🔒 LOCKED DATA END --------------------------------------
+
+const HOVER_CONFIGS: Record<number, any[]> = {
+    1: PROJECT_1_HOVER_CONFIG,
+    2: PROJECT_2_HOVER_CONFIG,
+    3: PROJECT_3_HOVER_CONFIG,
+    4: PROJECT_4_HOVER_CONFIG,
+    5: PROJECT_5_HOVER_CONFIG,
+    6: PROJECT_6_HOVER_CONFIG,
+    7: PROJECT_7_HOVER_CONFIG,
+    8: PROJECT_8_HOVER_CONFIG,
+};
+
+// 🟢 2. GLOBAL SCALE: Adjusts the zoom level of the entire section
+const PROJECTS_SCALE = 0.7;
+
+// 🟢 3. CARD DIMENSIONS: Standard dimensions before scaling
+// Changed from square (380px) to landscape (16:9 aspect ratio)
+// Increased from 600×338 to 650×365 for better click target
+const CARD_WIDTH = '650px';
+const CARD_HEIGHT = '365px';
+const PREVIEW_CARD_WIDTH = '750px';
+const PREVIEW_CARD_HEIGHT = '280px';
+
+// 🟢 4. CARD POSITIONS (LOCKED AS REQUESTED)
+// Increased spacing to 25% between cards, middle cards larger for better hover/click
+const CARD_POSITIONS = [
+    { left: '30%',   top: '65%',  rotate: -12, zIndex: 1, scale: 0.82 },
+    { left: '55%',   top: '56%',  rotate: 6,   zIndex: 2, scale: 0.84 },
+    // Middle three - larger and higher zIndex for easier hover/click
+    { left: '80%',   top: '62%',  rotate: -4,  zIndex: 7, scale: 0.95 },
+    { left: '105%',  top: '59%',  rotate: 6,   zIndex: 8, scale: 0.98 },
+    { left: '130%',  top: '56%',  rotate: -2,  zIndex: 7, scale: 0.95 },
+    { left: '155%',  top: '63%',  rotate: 10,  zIndex: 5, scale: 0.83 },
+    { left: '180%',  top: '61%',  rotate: -8,  zIndex: 4, scale: 0.79 },
+    { left: '205%',  top: '58%',  rotate: 4,   zIndex: 3, scale: 0.80 },
+];
+
+// --- DEPTH CONFIGURATION ---
+const DEPTHS = {
+    FLOOR: -300,
+    PROJECTS: -50, // Cards are here
+};
+
+// --- COMPONENTS ---
+
+// 🟢 NEW: DEFINITIONS FOR MISSING COMPONENTS
+const FloorMarquee: React.FC<{ direction: 'left' | 'right', text: string, className?: string, rotate?: number, style?: React.CSSProperties }> = React.memo(({ direction, text, className, rotate = 0, style }) => {
+    return (
+        <div 
+            className="absolute left-[-20%] w-[140%] pointer-events-auto overflow-visible flex will-change-transform"
+            style={{ 
+                transform: `translateZ(-100px) rotate(${rotate}deg)`, 
+                zIndex: 0,
+                ...style,
+            }}
+        >
+            <motion.div
+                className={`flex whitespace-nowrap ${className}`}
+                initial={{ x: direction === 'left' ? '0%' : '-50%' }}
+                animate={{ x: direction === 'left' ? '-50%' : '0%' }}
+                transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
             >
-              <div className={`relative w-full max-w-[780px] ${isOdd ? 'pl-2 md:pl-4' : 'pr-2 md:pr-4'}`}>
-                <div className="absolute -top-3 left-6 z-10 rounded-full border border-white/12 bg-black/80 px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-white/65 shadow-lg">
-                  {String(index + 1).padStart(2, '0')}
+                {[...Array(6)].map((_, i) => (
+                    <span key={i} className="mx-4 transition-colors duration-300">
+                        {text} <span className="mx-4 opacity-30">•</span>
+                    </span>
+                ))}
+            </motion.div>
+        </div>
+    );
+});
+
+const HoverCard: React.FC<{
+    img: string;
+    style?: React.CSSProperties;
+    borderRadius?: string;
+    baseRotate?: number;
+    popOnHover?: boolean;
+}> = ({ img, style, borderRadius = '0px', baseRotate = 0, popOnHover = true }) => {
+    return (
+        <motion.div
+            style={style}
+            initial={{ rotate: baseRotate }}
+            whileHover={popOnHover ? { scale: 1.05, rotate: 0, zIndex: 100 } : undefined}
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+            className="origin-center"
+        >
+            <img 
+                src={img} 
+                alt="Decoration" 
+                style={{ 
+                    borderRadius: borderRadius, 
+                    width: '100%', 
+                    height: '100%', 
+                    objectFit: 'cover',
+                    boxShadow: '0 10px 30px rgba(0,0,0,0.1)'
+                }} 
+            />
+        </motion.div>
+    );
+};
+
+const ScrollImageSequence: React.FC<{ config: any, scrollContainerRef: React.RefObject<HTMLDivElement> }> = ({ config, scrollContainerRef }) => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const imagesRef = useRef<HTMLImageElement[]>([]);
+    const [loaded, setLoaded] = useState(false);
+
+    useEffect(() => {
+        const imgs: HTMLImageElement[] = [];
+        let count = 0;
+        for (let i = 0; i < config.frameCount; i++) {
+            const img = new Image();
+            const idx = config.startIndex + i;
+            const idxStr = String(idx).padStart(config.digits, '0');
+            img.src = `${config.baseUrl}${idxStr}${config.suffix}`;
+            img.onload = () => {
+                count++;
+                if (count === config.frameCount) setLoaded(true);
+            };
+            imgs.push(img);
+        }
+        imagesRef.current = imgs;
+    }, [config]);
+
+    useEffect(() => {
+        if (!loaded) return;
+        
+        const render = () => {
+             if (!containerRef.current || !canvasRef.current || !scrollContainerRef.current) return;
+             
+             const containerRect = containerRef.current.getBoundingClientRect();
+             const viewportHeight = window.innerHeight;
+             
+             let progress = (viewportHeight - containerRect.top) / (viewportHeight + containerRect.height);
+             
+             if (progress < 0) progress = 0;
+             if (progress > 1) progress = 1;
+             
+             const frameIndex = Math.min(
+                 config.frameCount - 1,
+                 Math.floor(progress * config.frameCount)
+             );
+             
+             const img = imagesRef.current[frameIndex];
+             const ctx = canvasRef.current.getContext('2d');
+             
+             if (ctx && img) {
+                 const canvas = canvasRef.current;
+                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+                 
+                 const imgRatio = img.width / img.height;
+                 const canvasRatio = canvas.width / canvas.height;
+                 
+                 let renderW, renderH, offsetX, offsetY;
+                 
+                 if (imgRatio > canvasRatio) {
+                     renderH = canvas.height;
+                     renderW = renderH * imgRatio;
+                     offsetX = (canvas.width - renderW) / 2;
+                     offsetY = 0;
+                 } else {
+                     renderW = canvas.width;
+                     renderH = renderW / imgRatio;
+                     offsetX = 0;
+                     offsetY = (canvas.height - renderH) / 2;
+                 }
+                 
+                 ctx.drawImage(img, offsetX, offsetY, renderW, renderH);
+             }
+             
+             requestAnimationFrame(render);
+        };
+        
+        const rafId = requestAnimationFrame(render);
+        return () => cancelAnimationFrame(rafId);
+    }, [loaded, scrollContainerRef, config]);
+
+    return (
+        <div ref={containerRef} style={{ height: '400vh', position: 'relative' }}>
+             <div className="sticky top-0 h-screen w-full flex items-center justify-center bg-black">
+                 <canvas ref={canvasRef} width={1920} height={1080} className="w-full h-full object-contain" />
+             </div>
+        </div>
+    );
+};
+
+// 🟢 NEW: Component for Project 2 Video Interaction (Flip to Play)
+// Updated to be an Absolute Overlay (Fixed relative to Modal)
+const Project2FlipVideo: React.FC<{ config: any }> = ({ config }) => {
+    const [isFlipped, setIsFlipped] = useState(false);
+    const [isHidden, setIsHidden] = useState(false); // 🟢 NEW: Hidden State
+    const [isLoading, setIsLoading] = useState(true); // 🟢 NEW: Loading State
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const justHiddenRef = useRef(false); // 🟢 NEW: Prevents instant restore on hover
+
+    const handleFlip = (e: React.MouseEvent) => {
+        // Prevent flip if we just clicked hidden (double safety)
+        if (justHiddenRef.current) return;
+
+        e.stopPropagation();
+        if (isHidden) return;
+        setIsFlipped(true);
+    };
+
+    const handleClose = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setIsFlipped(false);
+        if (videoRef.current) {
+            videoRef.current.pause();
+            videoRef.current.currentTime = 0;
+            // 🟢 Resume music when closed
+            window.dispatchEvent(new Event('resume-background-music'));
+        }
+    };
+
+    // 🟢 NEW: Handle Hide Click Robustly
+    const handleHide = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
+        
+        justHiddenRef.current = true;
+        setIsHidden(true);
+        
+        // Reset the block after 500ms so user can restore it intentionally by re-entering
+        setTimeout(() => {
+            justHiddenRef.current = false;
+        }, 500);
+    };
+
+    useEffect(() => {
+        if (isFlipped && videoRef.current) {
+             window.dispatchEvent(new Event('pause-background-music'));
+             videoRef.current.play().catch(err => console.log('Auto play video failed', err));
+        }
+    }, [isFlipped]);
+
+    return (
+        // 🟢 ABSOLUTE POSITIONING (Overlay Layer)
+        <div className="absolute top-0 left-0 w-full h-full flex justify-center pointer-events-none z-[60]">
+            <motion.div
+                className="relative pointer-events-auto group"
+                initial={{ y: 400 }} 
+                animate={{ 
+                    width: isFlipped ? 960 : (isHidden ? 50 : 120), // Shrink when hidden
+                    height: isFlipped ? 540 : (isHidden ? 50 : 120),
+                    rotateY: isFlipped ? 180 : 0,
+                    // 🟢 POSITION LOGIC:
+                    // Flipped: y=140
+                    // Hidden: y=80, x=-440 (Top Left)
+                    // Normal: y=400, x=0
+                    y: isFlipped ? 140 : (isHidden ? 80 : 400),
+                    x: isFlipped ? 0 : (isHidden ? -440 : 0),
+                    opacity: isHidden ? 0.6 : 1
+                }}
+                transition={{ type: "spring", stiffness: 60, damping: 14 }}
+                style={{ transformStyle: "preserve-3d" }}
+                // 🟢 RESTORE ON HOVER
+                onMouseEnter={() => {
+                    // Only restore if hidden AND not just hidden
+                    if (isHidden && !justHiddenRef.current) setIsHidden(false);
+                }}
+            >
+                {/* 1. FRONT FACE (Play Button) */}
+                <div 
+                    className="absolute inset-0 backface-hidden"
+                    style={{ backfaceVisibility: 'hidden' }}
+                >
+                    {/* CLICKABLE PLAY AREA */}
+                    <div 
+                        className="absolute inset-0 flex items-center justify-center cursor-pointer"
+                        onClick={handleFlip}
+                    >
+                        <motion.div 
+                            whileHover={{ scale: 1.1 }}
+                            className="w-full h-full rounded-full bg-white/20 backdrop-blur-xl border border-white/50 flex items-center justify-center shadow-[0_20px_40px_rgba(0,0,0,0.2)]"
+                        >
+                            {/* 🟢 BUTTON COLOR: #D40411 */}
+                            <div className={`rounded-full bg-white text-[#D40411] flex items-center justify-center shadow-inner transition-all duration-300 ${isHidden ? 'w-8 h-8' : 'w-16 h-16 group-hover:scale-110'}`}>
+                                <svg width={isHidden ? "14" : "14"} height={isHidden ? "14" : "24"} viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                </svg>
+                            </div>
+                            
+                            {/* Pulse Ring (Hidden when minimized) */}
+                            {!isHidden && (
+                                <div className="absolute inset-0 rounded-full border border-white/40 animate-ping opacity-20" />
+                            )}
+                        </motion.div>
+                    </div>
+
+                    {/* INDEPENDENT CLOSE BUTTON AREA */}
+                    {!isFlipped && !isHidden && (
+                        <div 
+                            className="absolute -top-3 -right-3 w-10 h-10 z-[100] flex items-center justify-center cursor-pointer pointer-events-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                            onClick={handleHide}
+                            onMouseDown={(e) => e.stopPropagation()}
+                        >
+                            <motion.div
+                                className="w-8 h-8 bg-white text-gray-500 hover:bg-gray-200 border border-gray-200 rounded-full flex items-center justify-center shadow-md"
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                            >
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </motion.div>
+                        </div>
+                    )}
                 </div>
 
-                <div className={`overflow-hidden rounded-[24px] border border-white/10 bg-[#111317] shadow-[0_22px_90px_rgba(0,0,0,0.45)] ${isOdd ? 'rotate-[-1deg]' : 'rotate-[1deg]'}`}>
-                  <img
-                    src={source}
-                    alt={`${title} ${index + 1}`}
-                    loading={index < 2 ? 'eager' : 'lazy'}
-                    className="h-auto w-full object-cover"
-                  />
+                {/* 2. BACK FACE (Video Player) */}
+                <div 
+                    className="absolute inset-0 backface-hidden rounded-2xl overflow-hidden bg-black shadow-2xl border border-white/20"
+                    style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+                >
+                    {/* 🟢 LOADING SPINNER */}
+                    {isLoading && (
+                        <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+                            <div className="w-8 h-8 border-4 border-white/20 border-t-white rounded-full animate-spin" />
+                        </div>
+                    )}
+
+                    <video 
+                        ref={videoRef}
+                        src={config.videoUrl}
+                        className="w-full h-full object-cover"
+                        controls
+                        preload="metadata" // 🟢 OPTIMIZATION: metadata only first
+                        onWaiting={() => setIsLoading(true)}
+                        onCanPlay={() => setIsLoading(false)}
+                        // 🟢 Resume music on video end
+                        onEnded={() => {
+                            window.dispatchEvent(new Event('resume-background-music'));
+                        }}
+                    />
+                    
+                    {/* Close Video Button */}
+                    <button 
+                        onClick={handleClose}
+                        className="absolute top-4 right-4 w-10 h-10 bg-black/50 hover:bg-[#D40411] text-white rounded-full flex items-center justify-center backdrop-blur-md transition-colors border border-white/10 z-20 shadow-lg"
+                    >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+            </motion.div>
+        </div>
+    );
+};
+
+// 🟢 NEW: Clickable Video Player for absolute positioning
+const AbsoluteClickableVideo: React.FC<{ url: string, scale?: number, style?: React.CSSProperties }> = ({ url, scale = 1, style }) => {
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const togglePlay = () => {
+        if (!videoRef.current) return;
+        
+        if (isPlaying) {
+            videoRef.current.pause();
+            setIsPlaying(false);
+            window.dispatchEvent(new Event('resume-background-music'));
+        } else {
+            // Pause background music before playing video
+            window.dispatchEvent(new Event('pause-background-music'));
+            videoRef.current.play();
+            setIsPlaying(true);
+        }
+    };
+
+    return (
+        <div 
+            className="absolute left-0 right-0 mx-auto cursor-pointer group"
+            style={{ 
+                width: '800px', // Default width
+                ...style, // Allow override
+                transformOrigin: 'top center',
+                transform: `scale(${scale})`
+            }}
+            onClick={togglePlay}
+        >
+            <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl border-4 border-white/20 bg-black min-h-[400px]">
+                {/* 🟢 LOADING SPINNER */}
+                {isLoading && (
+                    <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+                        <div className="w-10 h-10 border-4 border-white/20 border-t-white rounded-full animate-spin" />
+                    </div>
+                )}
+                
+                <video 
+                    ref={videoRef}
+                    src={url}
+                    className="w-full h-auto block"
+                    loop
+                    playsInline
+                    preload="metadata"
+                    onWaiting={() => setIsLoading(true)}
+                    onCanPlay={() => setIsLoading(false)}
+                    onEnded={() => {
+                        setIsPlaying(false);
+                        window.dispatchEvent(new Event('resume-background-music'));
+                    }}
+                />
+                
+                {/* Play Overlay */}
+                {!isPlaying && !isLoading && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-sm group-hover:bg-black/20 transition-all duration-300">
+                        <div className="w-20 h-20 rounded-full bg-white/20 border border-white/50 backdrop-blur-md flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                             <svg width="32" height="32" viewBox="0 0 24 24" fill="white" stroke="none">
+                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                            </svg>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+// 🟢 NEW: Flip Card Component for Project 6 (Updated with Dynamic Size & Spotlight Border)
+const FlipVideoCard: React.FC<{ 
+    item: any; 
+    index: number; 
+    color: string;
+    activeVideoIndex: number | null; 
+    setActiveVideoIndex: (idx: number) => void; 
+}> = ({ item, index, color, activeVideoIndex, setActiveVideoIndex }) => {
+    const [isFlipped, setIsFlipped] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const cardRef = useRef<HTMLDivElement>(null);
+    
+    // Mouse tracking for spotlight border
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (!cardRef.current) return;
+        const rect = cardRef.current.getBoundingClientRect();
+        mouseX.set(e.clientX - rect.left);
+        mouseY.set(e.clientY - rect.top);
+    };
+
+    const handleFlip = () => {
+        const nextState = !isFlipped;
+        setIsFlipped(nextState);
+        
+        // 🟢 Resume music explicitly when closing
+        if (nextState === false) {
+            window.dispatchEvent(new Event('resume-background-music'));
+        }
+    };
+
+    // Auto-play video when flipped
+    useEffect(() => {
+        if (isFlipped && videoRef.current) {
+            // 🟢 1. Trigger Global Music Pause
+            window.dispatchEvent(new Event('pause-background-music'));
+
+            // 🟢 2. Set THIS card as the active audio source
+            setActiveVideoIndex(index);
+
+            videoRef.current.currentTime = 0;
+            videoRef.current.play().catch(e => console.log("Video play failed", e));
+        } else if (!isFlipped && videoRef.current) {
+            videoRef.current.pause();
+        }
+    }, [isFlipped]);
+
+    // 🟢 3. Audio Exclusion Logic: Only the active index gets sound, others are muted
+    useEffect(() => {
+        if (videoRef.current) {
+            // If I am the active index, unmute. Else, mute.
+            videoRef.current.muted = activeVideoIndex !== index;
+        }
+    }, [activeVideoIndex, index]);
+
+    // 🟢 DYNAMIC SIZING LOGIC
+    // Use flippedWidth/Height if available and flipped, otherwise fallback to default dimensions
+    const currentWidth = isFlipped ? (item.flippedWidth || item.width || 320) : (item.width || 320);
+    const currentHeight = isFlipped ? (item.flippedHeight || item.height || 569) : (item.height || 569);
+
+    // Jitter animation variants
+    const jitterVariants = {
+        hover: {
+            x: [0, -1, 1, -1, 0],
+            y: [0, 1, -1, 1, 0],
+            transition: {
+                duration: 0.2,
+                repeat: Infinity,
+                ease: "linear"
+            }
+        }
+    };
+
+    return (
+        <motion.div 
+            ref={cardRef}
+            className="relative shrink-0 perspective-1000 cursor-pointer group"
+            style={{ 
+                marginTop: item.y ? `${item.y}px` : '0px',
+                marginLeft: item.x ? `${item.x}px` : '0px', 
+                transform: `scale(${item.scale || 1})`
+            }}
+            animate={{ width: currentWidth, height: currentHeight }}
+            whileHover="hover"
+            variants={jitterVariants}
+            transition={{ type: "spring", stiffness: 60, damping: 12 }}
+            onMouseMove={handleMouseMove}
+            onClick={handleFlip}
+        >
+             {/* 🟢 NEW: INTRO TEXT */}
+             {item.introConfig && (
+                <div 
+                    className="absolute pointer-events-none z-0 hidden md:block" 
+                    style={{
+                        left: `${item.introConfig.x}px`,
+                        top: `${item.introConfig.y}px`,
+                        width: item.introConfig.width || '200px',
+                        transform: `rotate(${item.introConfig.rotate || 0}deg)`,
+                        textAlign: (item.introConfig.align as any) || 'right'
+                    }}
+                >
+                    <p 
+                        className="font-albert-light text-white/70 whitespace-pre-line leading-relaxed"
+                        style={{ fontSize: item.introConfig.fontSize || '14px' }}
+                    >
+                        {item.introConfig.text}
+                    </p>
+                </div>
+            )}
+
+            <motion.div
+                className="w-full h-full relative"
+                initial={false}
+                animate={{ rotateY: isFlipped ? 180 : 0 }}
+                transition={{ duration: 0.8, type: "spring", stiffness: 60, damping: 12 }}
+                style={{ transformStyle: "preserve-3d" }}
+            >
+                {/* Front Side (Image) */}
+                <div 
+                    className="absolute inset-0 backface-hidden rounded-[2rem] overflow-hidden border border-white/10 bg-deep-space shadow-2xl"
+                    style={{ backfaceVisibility: 'hidden' }}
+                >
+                    <img src={item.img} alt={item.title} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-deep-space/80 via-transparent to-transparent" />
+                    
+                    {/* Pulse Label */}
+                    <div className="absolute bottom-6 left-6 flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-pulse-orange animate-pulse" />
+                        <span className="text-[10px] font-bold text-white tracking-[0.2em] uppercase">Pulse Preview</span>
+                    </div>
                 </div>
 
-                <div className="mt-3 flex items-center justify-between px-2 text-[10px] uppercase tracking-[0.24em] text-white/40">
-                  <span>Page {String(index + 1).padStart(2, '0')}</span>
-                  <span>{index % 2 === 0 ? 'Full-bleed view' : 'Poster spread'}</span>
+                {/* Back Side (Video) */}
+                <div 
+                    className="absolute inset-0 backface-hidden rounded-[2rem] overflow-hidden border border-pulse-orange/30 bg-black shadow-[0_0_40px_rgba(255,95,31,0.2)]"
+                    style={{ 
+                        backfaceVisibility: 'hidden', 
+                        transform: 'rotateY(180deg)' 
+                    }}
+                >
+                    {isFlipped && (
+                        <div className="w-full h-full relative">
+                            {isLoading && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
+                                    <div className="w-8 h-8 border-2 border-pulse-orange border-t-transparent rounded-full animate-spin" />
+                                </div>
+                            )}
+                            <video
+                                ref={videoRef}
+                                src={item.video}
+                                className="w-full h-full object-cover"
+                                loop={false}
+                                playsInline
+                                onLoadedData={() => setIsLoading(false)}
+                                onEnded={() => {
+                                    window.dispatchEvent(new Event('resume-background-music'));
+                                    setIsFlipped(false);
+                                }}
+                            />
+                            
+                            {/* Video Overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                            
+                            {/* Sound Indicator */}
+                            {activeVideoIndex === item.id && (
+                                <div className="absolute top-6 right-6 flex items-center gap-1">
+                                    {[1, 2, 3].map(i => (
+                                        <motion.div 
+                                            key={i}
+                                            className="w-1 bg-pulse-orange rounded-full"
+                                            animate={{ height: [4, 12, 4] }}
+                                            transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.1 }}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
-              </div>
-            </section>
-          );
-        })}
-      </div>
-    </div>
-  );
+            </motion.div>
+        </motion.div>
+    );
+};
+
+const HorizontalScrollGallery: React.FC<{ items: any[]; color: string }> = ({ items, color }) => {
+    // 🟢 Needs to manage active video index
+    const [activeVideoIndex, setActiveVideoIndex] = useState<number | null>(null);
+    const scrollRef = useRef<HTMLDivElement>(null);
+
+    // 🟢 Enable Horizontal Scroll via Mouse Wheel with INCREASED SPEED
+    useEffect(() => {
+        const el = scrollRef.current;
+        if (!el) return;
+
+        const onWheel = (e: WheelEvent) => {
+            if (e.deltaY === 0) return;
+            // If scrolling vertically, translate to horizontal scroll
+            e.preventDefault();
+            
+            // 🟢 INCREASED SCROLL SPEED MULTIPLIER
+            const SCROLL_SPEED_MULTIPLIER = 1.5; 
+            el.scrollLeft += e.deltaY * SCROLL_SPEED_MULTIPLIER;
+        };
+
+        el.addEventListener('wheel', onWheel, { passive: false });
+        return () => el.removeEventListener('wheel', onWheel);
+    }, []);
+
+    return (
+        <div className="relative w-full h-full bg-deep-space overflow-hidden flex flex-col justify-center">
+            
+            {/* 🟢 SCROLLABLE AREA - EVERYTHING IS NOW IN FLOW */}
+            <div 
+                ref={scrollRef}
+                className="w-full h-full overflow-x-auto overflow-y-hidden whitespace-nowrap flex items-center floating-scrollbar"
+                style={{ scrollBehavior: 'auto' }} // Changed to 'auto' for direct wheel control
+            >
+                {/* 1. Large Left Spacer (Padding) */}
+                {/* 🟢 Ensures big black space on the left */}
+                <div className="w-[15vw] shrink-0 inline-block h-full" /> 
+
+                {/* 2. Title Section (Now flows with scroll) */}
+                {/* 🟢 INCREASED MARGIN RIGHT TO PUSH CARDS FURTHER AWAY */}
+                <div className="inline-block align-middle mr-[25vw] shrink-0">
+                     <div className="flex flex-col justify-center px-4">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-8 h-[1px] bg-pulse-orange" />
+                            <span className="text-xs font-bold tracking-[0.4em] text-pulse-orange uppercase">Pulse Motion</span>
+                        </div>
+                        <h2 className="text-5xl md:text-7xl font-albert-black text-white leading-none mb-6 tracking-tighter">
+                            GALLERY<br/>
+                            <span className="text-pulse-orange">PULSE</span>
+                        </h2>
+                        <p className="text-white/40 text-sm font-space-grotesk leading-relaxed max-w-xs whitespace-normal">
+                            Interactive motion showcase. Click any card to initiate visual pulse and reveal deeper motion layers.
+                        </p>
+                     </div>
+                </div>
+
+                {/* 3. Cards */}
+                {items.map((item, index) => (
+                    <div 
+                        key={item.id} 
+                        // 🟢 INCREASED MARGIN: mr-48 -> mr-80 (Significant increase)
+                        className="inline-block align-middle mr-80 last:mr-40 pt-20 pb-20"
+                    >
+                        <FlipVideoCard 
+                            item={item} 
+                            index={index} 
+                            color={color}
+                            activeVideoIndex={activeVideoIndex}
+                            setActiveVideoIndex={setActiveVideoIndex}
+                        />
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+// 🟢 UPDATED PREVIEW CARD: Handles both LEFT and RIGHT positioning
+const ProjectPreviewCard: React.FC<{
+    project: any;
+    side: 'left' | 'right';
+    handleProjectEnter: () => void;
+    handleProjectLeave: () => void;
+    setSelectedProject: (p: any) => void;
+}> = ({ project, side, handleProjectEnter, handleProjectLeave, setSelectedProject }) => {
+    // Determine custom styles if present
+    // 🟢 CHECK FOR LEFT SIDE CONFIG OVERRIDE
+    const leftSideOverride = LEFT_SIDE_CONFIG[project.id];
+    const customConfig = project.previewConfig || {};
+    
+    // Check side
+    const isLeft = side === 'left';
+
+    // 🟢 COLOR CONFIGURATION
+    const textColors = project.previewTextColor || {
+        year: '#000000',
+        yearBg: 'rgba(0,0,0,0.05)',
+        yearBorder: 'rgba(0,0,0,0.1)',
+        label: '#999999',
+        title: '#000000',
+        description: '#444444',
+        tools: '#000000',
+        toolBg: 'rgba(0,0,0,0.05)',
+        toolBorder: 'rgba(0,0,0,0.1)',
+        arrow: '#000000',
+        arrowBorder: 'rgba(0,0,0,0.2)',
+        cardBorder: 'rgba(0,0,0,0.1)' // Default border for light mode
+    };
+
+    // Jitter animation variants
+    const jitterVariants = {
+        hover: {
+            x: [0, -1, 1, -1, 0],
+            y: [0, 1, -1, 1, 0],
+            transition: {
+                duration: 0.2,
+                repeat: Infinity,
+                ease: "linear"
+            }
+        }
+    };
+
+    return (
+        <motion.div
+            className="absolute z-[100] pointer-events-none"
+            style={{
+                left: isLeft ? '10%' : 'auto',
+                right: !isLeft ? '10%' : 'auto',
+                top: '15%',
+                width: '45%',
+                height: '65%',
+                transformStyle: "preserve-3d"
+            }}
+            initial={{ opacity: 0, x: isLeft ? -100 : 100, scale: 0.8, rotateY: isLeft ? 20 : -20 }}
+            animate={{ opacity: 1, x: 0, scale: 1, rotateY: 0 }}
+            exit={{ opacity: 0, x: isLeft ? -50 : 50, scale: 0.9 }}
+            transition={{ type: "spring", stiffness: 150, damping: 20 }}
+            onMouseEnter={handleProjectEnter}
+            onMouseLeave={handleProjectLeave}
+            onClick={() => setSelectedProject(project)}
+        >
+             {/* 🟢 Main Card Container */}
+             <div 
+                className="absolute inset-0 rounded-[3rem] shadow-2xl overflow-hidden transform-gpu border border-white/10 bg-black/40 backdrop-blur-2xl pointer-events-auto"
+             >
+                {/* Background Image with Overlay */}
+                <div className="absolute inset-0 z-0">
+                    <img 
+                        src={project.previewBgImg || project.img} 
+                        alt="" 
+                        className="w-full h-full object-cover opacity-30 scale-105" 
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-br from-black via-transparent to-black/60" />
+                </div>
+
+                {/* Content */}
+                <div className="relative z-10 h-full p-16 flex flex-col justify-center">
+                    <div className="flex items-center gap-4 mb-6">
+                        <span 
+                            className="text-sm font-bold tracking-[0.3em] uppercase opacity-60 text-white"
+                        >
+                            {project.year}
+                        </span>
+                        <div className="w-12 h-[1px] bg-white/20" />
+                        <span 
+                            className="text-sm font-bold tracking-[0.3em] uppercase text-white/80"
+                        >
+                            {project.label}
+                        </span>
+                    </div>
+                    <h2 
+                        className="text-6xl font-albert-black mb-6 leading-tight text-white tracking-tighter"
+                    >
+                        {project.title}
+                    </h2>
+                    <p 
+                        className="text-xl line-clamp-3 w-3/4 text-white/70 font-space-grotesk leading-relaxed"
+                    >
+                        {project.desc}
+                    </p>
+                </div>
+                
+                {/* Click Hint */}
+                <div className="absolute bottom-12 right-12 flex items-center gap-4 group cursor-pointer">
+                    <span 
+                        className="text-xs font-bold tracking-[0.4em] text-white/60 group-hover:text-white transition-colors duration-300"
+                    >
+                        EXPLORE PROJECT
+                    </span>
+                    <div 
+                        className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:border-white group-hover:bg-white group-hover:text-black transition-all duration-300"
+                    >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </div>
+                </div>
+             </div>
+
+             {/* 
+                🟢 NEW LOCATION: SCATTERED ICONS (UNCLIPPED)
+                Moved here to be outside the overflow-hidden container but inside the motion card wrapper.
+                Now supports negative positioning to break boundaries.
+             */}
+             {project.tools && project.tools.length > 0 && (
+                <div className="absolute inset-0 pointer-events-none z-[60]" style={{ overflow: 'visible' }}>
+                    {/* 🟢 LIMIT TO 5 ITEMS (slice 0,5) */}
+                    {project.tools.slice(0, 5).map((toolName: string, idx: number) => {
+                            // Lookup icon URL from the global map
+                            const url = TOOL_ICONS[toolName];
+                            if (!url) return null; // Skip if no matching icon
+
+                            const layout = PREVIEW_ICONS_LAYOUT[idx % PREVIEW_ICONS_LAYOUT.length];
+                            
+                            // 🟢 Deterministic Randomness for "Throw" Effect
+                            // We use idx to generate "random" looking but consistent start positions
+                            const randomSeed = (idx + 1) * 111;
+                            const startX = (randomSeed % 200) - 100; // -100 to 100
+                            const startY = 150 + (randomSeed % 100); // 150 to 250 (Below)
+                            const startRotate = layout.rotate + 60 + (randomSeed % 60); // Add 60-120deg extra rotation
+                            const exitRotate = layout.rotate - 60 - (randomSeed % 60);  // Subtract 60-120deg on exit
+
+                            return (
+                                <motion.div
+                                    key={`${project.id}-${toolName}-${idx}`} // Unique key to trigger animation on project change
+                                    className="absolute flex items-center justify-center pointer-events-auto"
+                                    style={{
+                                        left: layout.left,
+                                        top: layout.top,
+                                        width: `${layout.width}px`, 
+                                        height: `${layout.width}px`, // Square Aspect Ratio
+                                        // We animate rotation via motion props, so removed static rotate here
+                                    }}
+                                    // 🟢 THROW IN ANIMATION
+                                    initial={{ 
+                                        opacity: 0, 
+                                        scale: 0.2, 
+                                        x: startX, 
+                                        y: startY, 
+                                        rotate: startRotate 
+                                    }}
+                                    animate={{ 
+                                        opacity: 1, 
+                                        scale: 1, 
+                                        x: 0, 
+                                        y: 0, 
+                                        rotate: layout.rotate 
+                                    }}
+                                    // 🟢 THROW OUT / SPIN AWAY ANIMATION
+                                    exit={{ 
+                                        opacity: 0, 
+                                        scale: 0.2, 
+                                        x: startX * 0.5, // Move slightly back towards start direction
+                                        y: startY * 0.5, // Fall down
+                                        rotate: exitRotate,
+                                        transition: { duration: 0.4, ease: "backIn" }
+                                    }}
+                                    transition={{ 
+                                        delay: 0.3 + idx * 0.08, // Staggered entry
+                                        type: 'spring', 
+                                        stiffness: 180, // Snappy throw
+                                        damping: 16 
+                                    }}
+                                >
+                                {/* 🟢 OPTIMIZED: GLASS SQUIRCLE CARD STYLE (Clear Acrylic - No Blur) */}
+                                {/* Removed backdrop-blur-xl, replaced bg-white/40 with gradient opacity */}
+                                <div className="w-full h-full rounded-[1.2rem] bg-deep-space/40 border border-white/10 shadow-[0_15px_35px_-5px_rgba(0,0,0,0.2)] flex items-center justify-center p-3 relative overflow-hidden group hover:scale-110 transition-transform duration-300">
+                                    
+                                    {/* Subtle Shine */}
+                                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
+                                    
+                                    {/* Icon Image */}
+                                    <img 
+                                        src={url} 
+                                        alt={toolName} 
+                                        className="w-full h-full object-contain drop-shadow-sm relative z-10" 
+                                    />
+                                </div>
+                                </motion.div>
+                            );
+                    })}
+                </div>
+            )}
+
+        </motion.div>
+    );
+};
+
+const PulseDisc: React.FC<{
+    project: any;
+    style: any;
+    onClick: () => void;
+    onHoverStart: () => void;
+    onHoverEnd: () => void;
+    isHovered: boolean;
+    isAnyHovered: boolean;
+}> = ({ project, style, onClick, onHoverStart, onHoverEnd, isHovered, isAnyHovered }) => {
+    const opacity = isHovered ? 1 : (isAnyHovered ? 0.2 : 1);
+    
+    return (
+        <motion.div
+            className="absolute cursor-pointer will-change-transform"
+            style={{
+                left: style.left,
+                top: style.top,
+                width: CARD_WIDTH,
+                height: CARD_HEIGHT,
+                zIndex: isHovered ? 100 : style.zIndex,
+                transformStyle: "preserve-3d",
+                filter: isHovered ? 'drop-shadow(0 0 30px rgba(255,255,255,0.5)) drop-shadow(0 20px 60px rgba(0,0,0,0.8))' : 'drop-shadow(0 10px 30px rgba(0,0,0,0.4))'
+            }}
+            animate={{
+                scale: isHovered ? 1.5 : style.scale,
+                rotate: isHovered ? 0 : style.rotate,
+                opacity: opacity,
+                y: isHovered ? -100 : 0
+            }}
+            transition={{ type: "spring", stiffness: 150, damping: 18 }}
+            onClick={onClick}
+            onMouseEnter={onHoverStart}
+            onMouseLeave={onHoverEnd}
+        >
+            <div className="relative w-full h-full group">
+                {/* Main Card Body (Square with Rounded Corners) */}
+                <div className="absolute inset-0 rounded-[2rem] bg-deep-space border-2 transition-all duration-200 overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.6)] group-hover:border-white/60 group-hover:shadow-[0_0_50px_rgba(255,255,255,0.3),_0_20px_60px_rgba(0,0,0,0.8)]">
+                    {/* Project Image */}
+                    <div className="absolute inset-0 overflow-hidden opacity-80 group-hover:opacity-100 transition-all duration-300">
+                        <img src={project.img} alt={project.title} className="w-full h-full object-cover brightness-95 group-hover:brightness-110 transition-all duration-300" />
+                    </div>
+
+                    {/* Gradient Overlay - Darker on hover to create contrast */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-white/10 group-hover:from-black/20 group-hover:to-white/20 pointer-events-none transition-all duration-300" />
+                    
+                    {/* Glow Effect on Hover */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-white/20 via-transparent to-transparent pointer-events-none" />
+                </div>
+
+                {/* ID Overlay (Top Left) */}
+                <div className="absolute top-4 left-4 z-20">
+                    <motion.div 
+                        className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border-2 border-white/30 flex items-center justify-center text-white font-albert-black text-sm shadow-xl group-hover:border-white/80 group-hover:bg-white/20 transition-all duration-200"
+                        animate={isHovered ? { scale: 1.2 } : { scale: 1 }}
+                    >
+                        {project.id}
+                    </motion.div>
+                </div>
+            </div>
+        </motion.div>
+    );
+};
+
+// SignalMonitor removed per user request (UI: orange signal box)
+
+const Project5HorizontalGallery: React.FC<{ images: string[] }> = ({ images }) => {
+    const scrollRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const el = scrollRef.current;
+        if (!el) return;
+
+        const onWheel = (event: WheelEvent) => {
+            if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+            event.preventDefault();
+            el.scrollLeft += event.deltaY * 1.25;
+        };
+
+        el.addEventListener('wheel', onWheel, { passive: false });
+        return () => el.removeEventListener('wheel', onWheel);
+    }, []);
+
+    return (
+        <div className="relative w-full h-full bg-deep-space overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 z-20 px-6 md:px-10 pt-6 md:pt-8 pointer-events-none">
+                <div className="flex items-center gap-3 text-pulse-orange/80 text-[10px] md:text-xs font-bold tracking-[0.45em] uppercase">
+                    <span className="w-8 md:w-12 h-px bg-pulse-orange/60" />
+                    Project 5 Horizontal Gallery
+                </div>
+                <p className="mt-3 max-w-xl text-white/50 text-xs md:text-sm leading-relaxed">
+                    横向滑动浏览全部内容，支持鼠标滚轮横移与图片 hover 放大。
+                </p>
+            </div>
+
+            <div
+                ref={scrollRef}
+                className="relative z-10 w-full h-full overflow-x-auto overflow-y-hidden flex items-center gap-8 md:gap-10 px-6 md:px-12 py-24 md:py-28 floating-scrollbar snap-x snap-mandatory"
+                style={{ scrollBehavior: 'auto' }}
+            >
+                {images.map((src, index) => (
+                    <motion.div
+                        key={src}
+                        className="shrink-0 snap-center"
+                        style={{ width: 'min(82vw, 880px)', height: 'min(76vh, 760px)' }}
+                        whileHover={{ scale: 1.03, y: -10 }}
+                        transition={{ type: 'spring', stiffness: 240, damping: 20 }}
+                    >
+                        <div className="group relative w-full h-full rounded-[2rem] overflow-hidden border border-white/10 bg-black/70 shadow-[0_30px_80px_rgba(0,0,0,0.55)] transition-all duration-300 hover:border-white/35 hover:shadow-[0_0_40px_rgba(255,255,255,0.16),_0_30px_80px_rgba(0,0,0,0.7)]">
+                            <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-black/55 pointer-events-none transition-opacity duration-300 group-hover:opacity-70" />
+                            <img
+                                src={src}
+                                alt={`Project 5 Detail ${index + 1}`}
+                                className="w-full h-full object-contain bg-black/85 p-4 md:p-6 transition-transform duration-300 group-hover:scale-[1.015]"
+                                loading="lazy"
+                                decoding="async"
+                            />
+                            <div className="absolute inset-x-0 bottom-0 p-4 md:p-6 flex items-end justify-between gap-4">
+                                <div className="rounded-full border border-white/15 bg-black/50 backdrop-blur-md px-4 py-2 text-[10px] md:text-xs font-bold tracking-[0.35em] uppercase text-white/80 transition-all duration-300 group-hover:border-white/40 group-hover:text-white">
+                                    P5-{index + 1}
+                                </div>
+                                <div className="text-[10px] md:text-xs font-mono tracking-[0.3em] text-white/40 transition-colors duration-300 group-hover:text-white/70">
+                                    HOVER TO ZOOM
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+// --- UPDATED COMPONENT: Gallery Modal View ---
+const GalleryModalView: React.FC<{ images: string[], projectId?: number, project?: any }> = ({ images, projectId, project }) => {
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const [scrollVal, setScrollVal] = useState(0);
+    const [mouseVal, setMouseVal] = useState(0);
+
+    const handleScroll = () => {
+        if (scrollContainerRef.current) {
+            setScrollVal(Math.round(scrollContainerRef.current.scrollTop));
+        }
+    };
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        setMouseVal(Math.round(e.clientX));
+    };
+
+    // 🟢 Special Render for PDF Project (Project 8)
+    if (project?.layout === 'pdf' && project.pdfUrl) {
+        return (
+            <div className="w-full h-full bg-black overflow-hidden relative">
+                <iframe 
+                    src={`${project.pdfUrl}#toolbar=0&navpanes=0&scrollbar=1`} 
+                    className="w-full h-full border-none"
+                    title="PDF Viewer"
+                />
+            </div>
+        );
+    }
+
+    // 🟢 Special Render for Horizontal Scroll Project (Project 6)
+    if (project?.layout === 'horizontal-scroll' && project.horizontalData) {
+        return (
+            // 🟢 UPDATED: Pass Project Color, let HorizontalScrollGallery handle the container
+            <HorizontalScrollGallery items={project.horizontalData} color={project.color} />
+        );
+    }
+
+    if (projectId === 5) {
+        return <Project5HorizontalGallery images={images || []} />;
+    }
+
+    return (
+        // 🟢 MODAL CONTENT WRAPPER
+        <div className="relative w-full h-full bg-deep-space">
+            
+            {/* 🟢 SCROLLABLE AREA */}
+            <div
+                ref={scrollContainerRef}
+                onScroll={handleScroll}
+                onMouseMove={handleMouseMove}
+                className="w-full h-full overflow-y-auto overflow-x-hidden floating-scrollbar relative z-10 p-0"
+            >
+                {/* Real-time Indicator removed per request */}
+
+                <div 
+                    className="flex flex-col w-full relative"
+                    style={{ 
+                        // Project 1: auto height (only detailImages, no extra content)
+                        // Project 2: Changed to 'auto' to adapt to content height (fixed black space issue)
+                        // Project 4: Needs specific height for absolute elements at ~16400px
+                        minHeight: projectId === 1 ? 'auto' : (projectId === 4 ? '18000px' : 'auto')
+                    }}
+                >
+                    
+                    {projectId === 1 ? (
+                        <>
+                            {/* 将所有 detailImages 按顺序垂直排列 */}
+                            {images && images.length > 0 && images.map((src, i) => (
+                                <div className="w-full bg-black" key={i}>
+                                    <img src={src} className="w-full h-auto block" loading="lazy" decoding="async" alt={`P1 Part ${i+1}`} />
+                                </div>
+                            ))}
+                        </>
+                    ) : projectId === 2 ? (
+                        <>
+                            {/* Project 2: 垂直排列 detailImages (Project2-1 至 Project2-5 长图) */}
+                            {images && images.length > 0 && images.map((src, i) => (
+                                <div className="w-full bg-black" key={i}>
+                                    <img src={src} className="w-full h-auto block" loading="lazy" decoding="async" alt={`P2 Part ${i+1}`} />
+                                </div>
+                            ))}
+                        </>
+                    ) : (
+                        // Default rendering for other projects
+                        <>
+                            {images.map((imgUrl, index) => (
+                                <div key={index} className="w-full bg-black">
+                                    <img 
+                                        src={imgUrl} 
+                                        className="w-full h-auto block" 
+                                        loading="lazy" 
+                                        decoding="async" 
+                                        alt={`Project Detail ${index + 1}`} 
+                                    />
+                                </div>
+                            ))}
+
+                            {/* 🟢 NEW: Generic Extra Content Render (Absolute Positioning) */}
+                            {project?.extraContent?.map((item: any, idx: number) => (
+                                <div 
+                                    key={`extra-${idx}`}
+                                    className="absolute w-full flex justify-center pointer-events-auto"
+                                    style={{ 
+                                        top: `${item.y}px`, 
+                                        zIndex: item.zIndex || 30 
+                                    }}
+                                >
+                                    {item.type === 'image' && (
+                                        <motion.img 
+                                            src={item.url}
+                                            className="block h-auto"
+                                            style={{ 
+                                                width: item.width ? `${item.width}px` : '100%',
+                                                maxWidth: '100%'
+                                            }}
+                                            initial={{ opacity: 0, y: 50, x: item.x || 0, rotate: item.rotate || 0 }}
+                                            whileInView={{ opacity: 1, y: 0, x: item.x || 0, rotate: item.rotate || 0 }}
+                                            transition={{ duration: 0.8 }}
+                                        />
+                                    )}
+
+                                    {item.type === 'video' && (
+                                        <AbsoluteClickableVideo 
+                                            url={item.url} 
+                                            scale={item.scale || 1}
+                                            style={{
+                                                width: item.width ? `${item.width}px` : undefined,
+                                                marginLeft: item.x ? `${item.x}px` : undefined
+                                            }}
+                                        />
+                                    )}
+                                </div>
+                            ))}
+                        </>
+                    )}
+
+                    {/* Project 1: Only Project1-1 to Project1-14 images, no extra overlays */}
+                </div>
+            </div>
+        </div>
+    );
 };
 
 const VinylProjects: React.FC = () => {
-  const projects = useMemo(() => CURATED_PROJECTS, []);
-  const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
+    // ... rest of VinylProjects component (unchanged) ...
+    const [selectedProject, setSelectedProject] = useState<any>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [hoveredProject, setHoveredProject] = useState<any>(null);
+    const leaveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const activeProject = useMemo(
-    () => projects.find((item) => item.id === activeProjectId) ?? null,
-    [activeProjectId, projects]
-  );
+    // 🟢 NEW: Global Music Control Logic based on Modal State
+    useEffect(() => {
+        // Project ID 6 is the video project
+        if (selectedProject?.id === 6) {
+            // Pause background music when entering Project 6 modal
+            window.dispatchEvent(new Event('pause-background-music'));
+        } else {
+            // Resume background music when closing modal (if it was playing before)
+            window.dispatchEvent(new Event('resume-background-music'));
+        }
+    }, [selectedProject]);
 
-  return (
-    <section className="relative min-h-screen overflow-hidden bg-[#0b0c11] py-24 text-white md:py-28">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-[-8%] top-[-6%] h-[30rem] w-[30rem] rounded-full bg-[#f3c623]/12 blur-3xl" />
-        <div className="absolute right-[-10%] top-[18%] h-[26rem] w-[26rem] rounded-full bg-[#7bc5ff]/10 blur-3xl" />
-        <div className="absolute bottom-[-10%] left-1/2 h-[20rem] w-[40rem] -translate-x-1/2 rounded-full bg-[#ff6b6b]/10 blur-3xl" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04),transparent_48%)]" />
-      </div>
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ["start start", "end end"]
+    });
 
-      <div className="relative mx-auto w-[min(1320px,94vw)]">
-        <div className="mb-10 flex flex-col gap-4 md:mb-12">
-          <p className="font-mono text-xs uppercase tracking-[0.38em] text-white/50">Selected Works</p>
-          <h2 className="font-albert-black text-4xl leading-none tracking-tight text-white md:text-6xl">
-            Project Vault
-          </h2>
-          <p className="max-w-2xl text-sm leading-relaxed text-white/68 md:text-base">
-            现在主卡片保持更松散的重力感陈列，详情页只保留左侧阐述、右侧长图的连续浏览，不再做多媒体切换或下载。
-          </p>
-        </div>
+    // 🟢 CHANGED: Map Vertical Scroll to Horizontal Movement (floorX)
+    // Scroll [0, 1] maps to [0%, -300%] (Move Left)
+    const floorX = useTransform(scrollYProgress, [0, 1], ["5%", "-300%"]);
+    
+    // Performance: springs
+    const x = useMotionValue(0);
+    const y = useMotionValue(0);
+    const mouseXSpring = useSpring(x, { stiffness: 30, damping: 25 });
+    const mouseYSpring = useSpring(y, { stiffness: 30, damping: 25 });
 
-        <div className="relative min-h-[760px] md:min-h-[860px]">
-          {projects.map((project, index) => (
-            <motion.button
-              key={project.id}
-              type="button"
-              onClick={() => setActiveProjectId(project.id)}
-              initial={{ opacity: 0, y: 36, rotate: project.gravity.rotate * 1.3 }}
-              whileInView={{ opacity: 1, y: 0, rotate: project.gravity.rotate }}
-              whileHover={{ y: -10, rotate: project.gravity.rotate + (index % 2 === 0 ? -2 : 2), scale: project.gravity.scale + 0.03 }}
-              transition={{ duration: 0.55, delay: index * 0.07, type: 'spring', stiffness: 90, damping: 16 }}
-              viewport={{ once: true, margin: '-120px' }}
-              className="group absolute overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.04] text-left shadow-[0_40px_120px_rgba(0,0,0,0.35)] backdrop-blur-md"
-              style={{
-                left: project.gravity.left,
-                top: project.gravity.top,
-                width: project.gravity.width,
-                zIndex: project.gravity.zIndex,
-                transformOrigin: 'center center',
-              }}
-            >
-              <div className="relative aspect-[3/4] overflow-hidden">
-                <img
-                  src={project.cover}
-                  alt={project.title}
-                  className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.06]"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
-                <div className="absolute left-4 top-4 rounded-full border border-white/18 bg-black/28 px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-white/80 backdrop-blur-md">
-                  {project.subtitle}
-                </div>
-                <div className="absolute right-4 top-4 rounded-full border border-white/18 bg-black/28 px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-white/70 backdrop-blur-md">
-                  {project.year}
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 p-5">
-                  <h3 className="text-2xl font-black leading-none tracking-tight text-white md:text-3xl">
-                    {project.title}
-                  </h3>
-                  <p className="mt-3 max-w-[88%] text-sm leading-relaxed text-white/78">
-                    {project.summary}
-                  </p>
-                </div>
-              </div>
+    const handleMouseMove = (e: React.MouseEvent) => {
+        const { clientX, clientY } = e;
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        x.set(clientX / w - 0.5);
+        y.set(clientY / h - 0.5);
+    };
 
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[2px]" style={{ background: `linear-gradient(90deg, transparent, ${project.color}, transparent)` }} />
-            </motion.button>
-          ))}
-        </div>
-      </div>
+    const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["55deg", "25deg"]);
+    const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-15deg", "15deg"]);
+    const translateX = useTransform(mouseXSpring, [-0.5, 0.5], ["-10%", "10%"]);
 
-      <AnimatePresence>
-        {activeProject && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[130] overflow-y-auto bg-black/88 backdrop-blur-md"
-          >
-            <div className="mx-auto flex min-h-full w-[min(1380px,96vw)] flex-col gap-5 py-5 md:py-8">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-white/45">{activeProject.subtitle}</p>
-                  <h3 className="mt-1 font-albert-black text-3xl tracking-tight text-white md:text-5xl">{activeProject.title}</h3>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setActiveProjectId(null)}
-                  className="shrink-0 rounded-full border border-white/20 bg-white/5 px-4 py-2 text-sm uppercase tracking-[0.2em] text-white/85 transition hover:bg-white hover:text-black"
-                >
-                  Close
-                </button>
-              </div>
+    const handleProjectEnter = (proj: any) => {
+        if (leaveTimeoutRef.current) {
+            clearTimeout(leaveTimeoutRef.current);
+            leaveTimeoutRef.current = null;
+        }
+        setHoveredProject(proj);
+    };
 
-              <div className="grid min-h-0 flex-1 gap-5 lg:grid-cols-[340px,1fr]">
-                <aside className="flex min-h-0 flex-col rounded-[28px] border border-white/10 bg-white/[0.04] p-5">
-                  <div className="flex-1 overflow-y-auto pr-1">
-                    <div className="mb-4 inline-flex rounded-full border border-white/12 bg-black/20 px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-white/55">
-                      {activeProject.output}
-                    </div>
-                    <p className="text-sm leading-7 text-white/76 md:text-base md:leading-8">
-                      {activeProject.details}
-                    </p>
-                    <p className="mt-5 text-sm leading-7 text-white/58">
-                      这里可以继续补充品牌定位、视觉关键词、设计思路、落地输出和结果总结。左侧保持克制，右侧用完整长图承载主要内容。
-                    </p>
+    const handleProjectLeave = () => {
+        if (leaveTimeoutRef.current) clearTimeout(leaveTimeoutRef.current);
+        // REMOVED 3s DELAY: Immediate exit on mouse leave
+        setHoveredProject(null);
+    };
 
-                    <div className="mt-6 rounded-[24px] border border-white/10 bg-black/18 p-4">
-                      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-white/45">Project Info</p>
-                      <div className="mt-4 space-y-3 text-sm leading-6 text-white/70">
-                        <p><span className="text-white/45">Role</span> · {activeProject.role}</p>
-                        <p><span className="text-white/45">Focus</span> · {activeProject.focus}</p>
-                        <p><span className="text-white/45">Pages</span> · {activeProject.previewSources.length}</p>
-                      </div>
-                    </div>
-                  </div>
+    const cardPositions = useMemo(() => CARD_POSITIONS, []);
 
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    {[activeProject.subtitle, activeProject.year, 'Long-scroll'].map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full border border-white/15 bg-white/[0.05] px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-white/72"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </aside>
+    // Helper map for cleaner rendering
+    const HOVER_CONFIGS: Record<number, any[]> = {
+        1: PROJECT_1_HOVER_CONFIG,
+        2: PROJECT_2_HOVER_CONFIG,
+        3: PROJECT_3_HOVER_CONFIG,
+        4: PROJECT_4_HOVER_CONFIG,
+        5: PROJECT_5_HOVER_CONFIG,
+        6: PROJECT_6_HOVER_CONFIG,
+        7: PROJECT_7_HOVER_CONFIG,
+        8: PROJECT_8_HOVER_CONFIG,
+    };
 
-                <div className="min-h-0 overflow-hidden rounded-[28px] border border-white/10 bg-[#050608]">
-                  <div className="flex h-full min-h-[calc(100vh-190px)] items-start justify-center overflow-y-auto p-3 md:p-4 scroll-smooth">
-                    {activeProject.id === 'poster-design' ? (
-                      <PosterSequencePreview sources={activeProject.previewSources} title={activeProject.title} />
-                    ) : (
-                      <LongImagePreview sources={activeProject.previewSources} alt={activeProject.title} />
+    return (
+        <section 
+            ref={containerRef}
+            className="w-full relative bg-black" 
+            onMouseMove={handleMouseMove}
+            style={{ height: '550vh' }}
+        >
+             <div id="projects-deck" className="absolute top-0" />
+
+             <style>{`
+                .floating-scrollbar::-webkit-scrollbar {
+                    width: 6px;
+                    height: 6px; /* Added height for horizontal scrollbar */
+                }
+                .floating-scrollbar::-webkit-scrollbar-track {
+                    background: transparent; 
+                }
+                .floating-scrollbar::-webkit-scrollbar-thumb {
+                    background-color: rgba(255, 255, 255, 0.3); /* Slightly more visible */
+                    border-radius: 99px;
+                }
+                .floating-scrollbar::-webkit-scrollbar-thumb:hover {
+                    background-color: rgba(255, 255, 255, 0.5);
+                }
+                /* For Firefox */
+                .floating-scrollbar {
+                    scrollbar-width: thin;
+                    scrollbar-color: rgba(255,255,255,0.3) transparent;
+                }
+             `}</style>
+             
+             {/* 🟢 IMPROVED: SVG Filters for Recolor (Luminance Preserving to avoid banding) */}
+             <svg style={{ width: 0, height: 0, position: 'absolute' }}>
+                <filter id="noiseFilter">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+                    <feComposite operator="in" in2="SourceGraphic" />
+                </filter>
+                {Object.values(PROJECT_TINTS).map(filter => (
+                    <filter key={filter.id} id={filter.id} colorInterpolationFilters="sRGB">
+                       {/* 
+                           🟢 PRO FIX: Luminance-preserving color matrix.
+                           Instead of hard-replacing colors, we multiply the original luminance by the target color.
+                           This prevents "flat" colors and reduces banding significantly.
+                       */}
+                       <feColorMatrix 
+                            type="matrix" 
+                            values={`
+                                ${filter.r * 0.2126} ${filter.r * 0.7152} ${filter.r * 0.0722} 0 0
+                                ${filter.g * 0.2126} ${filter.g * 0.7152} ${filter.g * 0.0722} 0 0
+                                ${filter.b * 0.2126} ${filter.b * 0.7152} ${filter.b * 0.0722} 0 0
+                                0 0 0 1 0
+                            `} 
+                       />
+                    </filter>
+                ))}
+             </svg>
+
+             {/* 🟢 NOISE OVERLAY: Unifies style and masks banding */}
+             <div className="absolute inset-0 z-[100] pointer-events-none opacity-[0.03] mix-blend-overlay" style={{ filter: 'url(#noiseFilter)' }} />
+
+             <motion.div 
+                className="sticky top-0 w-full h-screen overflow-hidden flex items-center justify-center bg-black will-change-transform"
+             >
+                 <div className="absolute inset-0 flex items-center justify-center perspective-2000">
+                    <motion.div
+                        className="relative w-full max-w-[1600px] will-change-transform transform-gpu"
+                        style={{
+                            scale: PROJECTS_SCALE, // 🟢 APPLIED GLOBAL SCALE
+                            rotateX,
+                            rotateY,
+                            x: translateX,
+                            aspectRatio: '16/9',
+                            transformStyle: "preserve-3d",
+                        }}
+                    >
+                         {/* --- RIGHT SIDE: RECTANGULAR INFO CARD (NOW CONDITIONAL LEFT/RIGHT) --- */}
+                        <AnimatePresence mode="wait">
+                            {hoveredProject && (
+                                <ProjectPreviewCard 
+                                    project={hoveredProject}
+                                    side="right" 
+                                    handleProjectEnter={() => handleProjectEnter(hoveredProject)}
+                                    handleProjectLeave={handleProjectLeave}
+                                    setSelectedProject={setSelectedProject}
+                                />
+                            )}
+                        </AnimatePresence>
+
+                        {/* 🟢 NEW: PROJECT 1 SPECIAL HOVER IMAGES (Unique entrance from Right) */}
+                        <AnimatePresence>
+                             {hoveredProject?.id === 1 && PROJECT_1_HOVER_CONFIG.map((img) => (
+                                 <motion.img
+                                    key={img.id}
+                                    src={img.url}
+                                    className="absolute pointer-events-none drop-shadow-2xl"
+                                    style={{
+                                        zIndex: img.zIndex, // 🟢 Updated Z-Index
+                                        transformStyle: "preserve-3d",
+                                        maxWidth: '500px', // Limit max width
+                                        // 🟢 Apply static transform for initial render to prevent flash
+                                        transform: `translateZ(${img.z}px)` 
+                                    }}
+                                    initial={{ 
+                                        x: 1200, // 从屏幕右侧外进入
+                                        y: img.y, 
+                                        z: img.z, // 🟢 Apply Z Depth
+                                        scale: img.scale, 
+                                        rotate: img.rotate + 15, // 初始旋转稍微不同
+                                        opacity: 0 
+                                    }}
+                                    animate={{ 
+                                        x: img.x, 
+                                        y: img.y, 
+                                        z: img.z, // 🟢 Maintain Z Depth
+                                        scale: img.scale, 
+                                        rotate: img.rotate, 
+                                        opacity: 1 
+                                    }}
+                                    exit={{ 
+                                        x: 1200, // 离开时回到右侧
+                                        z: img.z, // 🟢 Maintain Z Depth on exit
+                                        opacity: 0, 
+                                        rotate: img.rotate + 15,
+                                        transition: { duration: 0.4, ease: "easeIn" }
+                                    }}
+                                    transition={{ 
+                                        type: "spring", 
+                                        stiffness: 60, 
+                                        damping: 15, 
+                                        delay: img.delay 
+                                    }}
+                                />
+                             ))}
+                        </AnimatePresence>
+
+                        {/* 🟢 NEW: PROJECT 2-8 SPECIAL HOVER IMAGES (Explode from Center) */}
+                        <AnimatePresence>
+                             {hoveredProject && hoveredProject.id !== 1 && HOVER_CONFIGS[hoveredProject.id] && HOVER_CONFIGS[hoveredProject.id].map((img) => {
+                                 // Determine the correct filter ID based on the project ID
+                                 // 🟢 CHECK 'noTint' PROPERTY HERE
+                                 const tintFilter = (hoveredProject && PROJECT_TINTS[hoveredProject.id] && !img.noTint) 
+                                    ? `url(#${PROJECT_TINTS[hoveredProject.id].id})` 
+                                    : 'none';
+
+                                 return (
+                                     <motion.img
+                                        key={img.id}
+                                        src={img.url}
+                                        className="absolute pointer-events-none drop-shadow-2xl"
+                                        style={{
+                                            zIndex: img.zIndex, 
+                                            transformStyle: "preserve-3d",
+                                            transform: `translateZ(${img.z}px)`,
+                                            // 🟢 APPLY DYNAMIC TINT FILTER
+                                            filter: tintFilter
+                                        }}
+                                        initial={{ 
+                                            x: 0, 
+                                            y: 0,
+                                            z: img.z,
+                                            scale: 0.1, 
+                                            opacity: 0,
+                                            rotate: Math.random() * 20 - 10
+                                        }}
+                                        animate={{ 
+                                            x: img.x, 
+                                            y: img.y, 
+                                            z: img.z,
+                                            scale: img.scale, 
+                                            opacity: 1,
+                                            rotate: img.rotate
+                                        }}
+                                        exit={{ 
+                                            scale: 0.1,
+                                            opacity: 0,
+                                            transition: { duration: 0.3 }
+                                        }}
+                                        transition={{ 
+                                            type: "spring", 
+                                            stiffness: 60, 
+                                            damping: 15, 
+                                            delay: img.delay 
+                                        }}
+                                    />
+                                 );
+                             })}
+                        </AnimatePresence>
+
+                        {/* FLOOR LAYER (Moves Horizontally) */}
+                        <motion.div 
+                            className="absolute inset-0 w-full h-full will-change-transform"
+                            style={{ 
+                                x: floorX, // 🟢 Using X for Horizontal Movement
+                                transformStyle: "preserve-3d" 
+                            }} 
+                        >
+                            {/* 🟢 EXTENDED BACKGROUND: Make it very wide to cover horizontal scroll */}
+                            <div 
+                                className="absolute top-[-50%] bottom-[-50%] bg-deep-space transform-preserve-3d" 
+                                style={{ 
+                                    left: '-50%',
+                                    width: '500%', // 🟢 Wide enough to cover 300% scroll
+                                    transform: `translateZ(${DEPTHS.FLOOR}px)` 
+                                }} 
+                            />
+                            
+                            <FloorMarquee 
+                                direction="left" 
+                                text="DESIGN PROJECTS 创意设计" 
+                                rotate={-10} 
+                                className="text-[140px] font-albert-black text-white/5 leading-none" 
+                                style={{ top: '5%', left: '0%' }}
+                            />
+
+                            {/* 🟢 UPDATED: Raised zIndex to 60 to be above RightPreviewCard */}
+                            <div className="absolute w-full h-full pointer-events-none" style={{ zIndex: 60, transformStyle: "preserve-3d", transform: `translateZ(${DEPTHS.PROJECTS}px)` }}>
+                                {PROJECTS_DATA.map((proj, idx) => (
+                                    <div key={proj.id} className="pointer-events-auto">
+                                        <PulseDisc 
+                                            project={proj}
+                                            style={cardPositions[idx] as any}
+                                            onClick={() => setSelectedProject(proj)}
+                                            onHoverStart={() => handleProjectEnter(proj)}
+                                            onHoverEnd={handleProjectLeave}
+                                            isHovered={hoveredProject?.id === proj.id}
+                                            isAnyHovered={!!hoveredProject}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </motion.div>
+
+                    </motion.div>
+                 </div>
+             </motion.div>
+
+             {/* MODAL WINDOW (Scaled to 60%) */}
+             {createPortal(
+                <AnimatePresence>
+                    {selectedProject && (
+                        <div className="fixed inset-0 z-[100] flex items-center justify-center perspective-2000">
+                            {/* Backdrop - Lights Off Effect (Darker opacity) */}
+                            <motion.div 
+                                initial={{ opacity: 0 }} 
+                                animate={{ opacity: 1 }} 
+                                exit={{ opacity: 0 }} 
+                                className="absolute inset-0 backdrop-blur-md bg-black/90"
+                                onClick={() => setSelectedProject(null)}
+                            />
+                            <motion.div
+                               initial={{ y: 50, opacity: 0, scale: 0.9 }} 
+                               animate={{ y: 0, opacity: 1, scale: 1 }} 
+                               exit={{ y: 50, opacity: 0, scale: 0.9 }} 
+                               transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                               // 🟢 MODAL SIZE: Fixed 1000px on Desktop
+                               className="relative w-[95vw] md:w-[1000px] h-[90vh] md:h-[95vh] rounded-[2rem] overflow-hidden flex flex-col pointer-events-auto shadow-2xl bg-deep-space border border-pulse-orange/20"
+                               style={{
+                                   boxShadow: '0 0 0 1px rgba(255,95,31,0.1) inset, 0 0 40px rgba(255,95,31,0.05) inset, 0 50px 100px -20px rgba(0,0,0,0.9)'
+                               }}
+                               onClick={(e) => e.stopPropagation()}
+                            >
+                               <div className="absolute inset-0 rounded-[2rem] pointer-events-none z-50 border border-white/5" />
+                               <button 
+                                   onClick={() => setSelectedProject(null)} 
+                                   className="absolute top-6 right-6 z-[60] w-12 h-12 flex items-center justify-center rounded-full transition-all border border-pulse-orange/30 bg-deep-space/80 text-white hover:bg-pulse-orange hover:text-deep-space hover:border-pulse-orange shadow-2xl group"
+                               >
+                                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="group-hover:rotate-90 transition-transform duration-300"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                               </button>
+
+                               {selectedProject.layout === 'gallery' || selectedProject.layout === 'horizontal-scroll' ? (
+                                   <GalleryModalView 
+                                       images={selectedProject.detailImages || []} 
+                                       projectId={selectedProject.id} 
+                                       project={selectedProject} 
+                                   />
+                               ) : (
+                                   <div className="w-full h-full overflow-y-auto floating-scrollbar relative z-10 bg-deep-space">
+                                       {/* Reduced Header Height */}
+                                       <div className="relative w-full h-[35vh] md:h-[40vh] bg-black flex items-center justify-center overflow-hidden">
+                                           {selectedProject.img ? (
+                                               <img src={selectedProject.img} className="w-full h-full object-cover opacity-60" decoding="async" alt="Project Hero" />
+                                           ) : (
+                                               <div className="text-gray-600 font-bold tracking-widest text-xs">[ IMAGE CONTAINER ]</div>
+                                           )}
+                                           <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-deep-space via-deep-space/40 to-transparent" />
+                                       </div>
+                                       {/* Reduced Padding and Margin */}
+                                       <div className="relative z-10 -mt-20 px-6 md:px-10 pb-8">
+                                           <div className="mx-auto max-w-5xl bg-deep-space/90 backdrop-blur-xl border border-pulse-orange/20 shadow-[0_20px_60px_rgba(0,0,0,0.5)] rounded-[2rem] p-6 md:p-10 overflow-hidden relative">
+                                               <div className="mb-8 relative z-10">
+                                                   {/* Scaled Down Fonts */}
+                                                   <h1 className="text-3xl md:text-5xl font-albert-black text-white tracking-tight mb-3">{selectedProject.title}</h1>
+                                                   <div className="flex items-center gap-3 text-xs font-bold tracking-widest text-pulse-orange uppercase">
+                                                       <span className="px-3 py-1 bg-pulse-orange text-deep-space rounded-full">{selectedProject.year}</span>
+                                                       <span className="opacity-60 text-white">{selectedProject.client || 'Client'}</span>
+                                                       <span className="w-1 h-1 bg-pulse-orange/40 rounded-full" />
+                                                       <span>{selectedProject.label}</span>
+                                                   </div>
+                                               </div>
+                                               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                                   <div className="md:col-span-2">
+                                                       <h3 className="text-lg font-bold mb-3 text-white">Project Overview</h3>
+                                                       <p className="text-lg text-white/70 font-albert-regular leading-relaxed">{selectedProject.desc}</p>
+                                                   </div>
+                                                   <div className="md:col-span-1 space-y-6">
+                                                       <div>
+                                                           <h4 className="text-[10px] font-bold text-pulse-orange/60 uppercase tracking-widest mb-2">Tools</h4>
+                                                           <div className="flex gap-2 flex-wrap">
+                                                               {selectedProject.tools?.map((tool: string) => (
+                                                                   <span key={tool} className="px-3 py-1 bg-pulse-orange/10 border border-pulse-orange/20 rounded-md text-[10px] font-bold text-pulse-orange">{tool}</span>
+                                                               ))}
+                                                           </div>
+                                                       </div>
+                                                   </div>
+                                               </div>
+                                           </div>
+                                       </div>
+                                       <div className="h-12" />
+                                   </div>
+                               )}
+                            </motion.div>
+                        </div>
                     )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </section>
-  );
+                </AnimatePresence>,
+                document.body
+             )}
+        </section>
+    );
 };
 
 export default VinylProjects;
