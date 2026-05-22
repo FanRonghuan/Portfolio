@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from './components/Navbar';
@@ -44,7 +43,7 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="bg-black min-h-screen text-white selection:bg-white selection:text-black relative">
+    <div className="bg-space-black min-h-screen text-text-primary selection:bg-neon-cyan selection:text-space-black relative">
       <AnimatePresence mode="wait">
         {isLoading && (
           <LoadingScreen onComplete={() => {
@@ -95,7 +94,7 @@ const App: React.FC = () => {
             whileInView={{ opacity: 1 }}
             transition={{ duration: 1.5, ease: "easeOut" }}
             viewport={{ once: true, margin: "-50px" }}
-            className="relative z-[60] py-32 bg-black border-t border-white/5 flex flex-col items-center justify-center overflow-hidden"
+            className="relative z-[60] py-32 bg-space-black border-t border-glass-border flex flex-col items-center justify-center overflow-hidden"
           >
              {/* 
                 🟢 CREATIVE DARK FOOTER 

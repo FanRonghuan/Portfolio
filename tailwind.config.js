@@ -17,10 +17,29 @@ export default {
         'jetbrains-mono': ['"JetBrains Mono"', 'monospace'],
       },
       colors: {
+        // 保留你现有的
         'pulse-orange': '#FF5F1F',
         'spectrum-purple': '#8A2BE2',
         'deep-space': '#05070A',
         'signal-gray': '#4A4A4A',
+        
+        // 新增深空主题色
+        'space-black': '#0A0A0F',
+        'space-dark': '#0D1117',
+        
+        // 玻璃卡片系统
+        'glass-bg': 'rgba(255,255,255,0.03)',
+        'glass-border': 'rgba(255,255,255,0.08)',
+        'glass-hover': 'rgba(255,255,255,0.06)',
+        
+        // 霓虹强调色
+        'neon-cyan': '#00F0FF',
+        'neon-pink': '#FF3366',
+        'neon-purple': '#B829DD',
+        
+        // 文字系统
+        'text-primary': '#E8E8E8',
+        'text-dim': '#666666',
       },
     },
   },
