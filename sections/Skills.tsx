@@ -33,9 +33,9 @@ const skills = [
         percentText: "92%", 
         color: "#F59E0B", 
         tags: "运营设计, 平面设计, 品牌设计",
-        previewImg: "https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260108181225_278_2.jpg",
+        previewImg: "/skills-1.jpg",
         previewRotate: -6,
-        previewText: "HELLO?"
+        previewText: "社媒运营设计"
     },
     { 
         id: 's2',
@@ -44,9 +44,9 @@ const skills = [
         percentText: "87%", 
         color: "#3B82F6", 
         tags: "LIBLIB, Comfy UI, Web UI",
-        previewImg: "https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/capa-grass.png",
+        previewImg: "/assets/skills-2.jpg",
         previewRotate: 8,
-        previewText: "GRASS"
+        previewText: "海报设计"
     },
     { 
         id: 's3',
@@ -55,20 +55,20 @@ const skills = [
         percentText: "82%", 
         color: "#EA580C", 
         tags: "C4D, Blender, Rendering",
-        previewImg: "https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/capa-%E7%99%BD%E7%BE%8A.png",
+        previewImg: "/assets/skills-3.jpg",
         previewRotate: -12,
-        previewText: "Myself"
+        previewText: "包装设计"
     },
     { 
         id: 's4',
-        title: "Animation Design", 
+        title: "Illustration Design", 
         percent: 80, 
         percentText: "80%", 
         color: "#8B5CF6", 
         tags: "After Effects, Premiere Pro",
-        videoUrl: "https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/1%E6%9C%889%E6%97%A5.mp4",
+        previewImg: "/assets/skills-4.jpg",
         previewRotate: 5,
-        previewText: "Tokyo Run"
+        previewText: "插画"
     },
 ];
 
@@ -218,18 +218,21 @@ const GlassSkillCard: React.FC<{
         <motion.div
             ref={ref}
             onMouseMove={handleMouseMove}
-            onMouseEnter={handleEnter}
-            onMouseLeave={handleLeave}
+            onPointerEnter={handleEnter}
+            onPointerLeave={handleLeave}
             initial={{ opacity: 0, x: -500, rotateZ: Math.random() * 20 - 10 }}
             whileInView={{ opacity: 1, x: 0, rotateZ: style.rotate as number || 0 }}
             transition={{ delay: index * 0.1, duration: 0.8, type: "spring", stiffness: 50 }}
             whileHover={{ 
-                scale: 1.05, 
-                rotateZ: 0, 
+                scale: 1.08,
+                rotateZ: 0,
                 zIndex: 100,
-                x: [20, 21, 19, 20.5, 19.5, 20], // Jitter effect
+                y: -18,
+                x: index % 2 === 0 ? -24 : 24,
                 transition: {
-                    x: { duration: 0.1, repeat: Infinity }
+                    x: { duration: 0.16, ease: "easeOut" },
+                    y: { duration: 0.16, ease: "easeOut" },
+                    scale: { duration: 0.16, ease: "easeOut" }
                 }
             }}
             className="absolute rounded-[2rem] group cursor-pointer perspective-1000 transform-gpu will-change-transform"
@@ -511,7 +514,7 @@ const Skills: React.FC = () => {
                     {/* A. Skill Preview */}
                     {hoveredSkill && (
                         <motion.div
-                            className="absolute w-[500px] h-[600px] pointer-events-none"
+                            className="absolute w-[clamp(320px,28vw,420px)] aspect-[3/4] pointer-events-none"
                             style={{
                                 top: '5%', 
                                 right: '10%',

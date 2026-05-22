@@ -72,9 +72,9 @@ const CONTACT_CARDS = [
         qrCode: "/assets/wechat-qr.jpg", // Added QR Code Link
     },
     {
-        id: 'xhs',
-        title: 'WECHAT ID',
-        value: 'Ahua_Hi',
+        id: 'GitHub',
+        title: 'GITHUB USERNAME',
+        value: 'FanRonghuan',
         color: '#FF2442', // Xiaohongshu Red
         icon: ICONS.Xiaohongshu,
         position: { x: '100%', y: '14%' }, 

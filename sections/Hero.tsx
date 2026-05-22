@@ -50,55 +50,55 @@ const heroCards = [
       color: '#FF7F27', 
       rotate: -2,      
       scale: 1.4,       
-      img: '/assets/hero-p1.jpg'
+      img: '/assets/poster8.png'
   }, 
   { 
       id: 2, 
       color: '#00A2E8', 
       rotate: 8,        
       scale: 1.2,      
-      img: 'https://picsum.photos/seed/hero2/400/400'
+      img: '/assets/poster1.jpg'
   }, 
   { 
       id: 3, 
       color: '#55FFFF', 
       rotate: 24,       
       scale: 1.15,       
-      img: 'https://picsum.photos/seed/hero3/400/400'
+      img: '/assets/poster2.jpg'
   }, 
   {   id: 4, 
       color: '#E0221E', 
       rotate: 12,       
       scale: 1.1,      
-      img: 'https://picsum.photos/seed/hero4/400/400'
+      img: '/assets/poster3.jpg'
   }, 
   { 
       id: 5, 
       color: '#E0221E', 
       rotate: 2,      
       scale: 1.0,      
-      img: 'https://picsum.photos/seed/hero5/400/400' 
+      img: '/assets/poster4.jpg' 
   }, 
   { 
       id: 6, 
       color: '#0044BA', 
       rotate: 15,       
       scale: 0.9,       
-      img: 'https://picsum.photos/seed/hero6/400/400'
+      img: '/assets/poster5.png'
   },
   { 
       id: 7, 
       color: '#AA88EE', 
       rotate: -15,       
       scale: 0.95,      
-      img: 'https://picsum.photos/seed/hero7/400/400'
+      img: '/assets/poster6.png'
   },
   { 
       id: 8, 
       color: '#4ECDC4', 
       rotate: -15,      
       scale: 0.01,       
-      img: 'https://picsum.photos/seed/hero8/400/400'
+      img: '/assets/poster7.jpg'
   }
 ];
 
@@ -121,14 +121,14 @@ const ImageRevealHeroTitle: React.FC = () => {
             onMouseLeave={() => setIsHovered(false)}
         >
             <motion.h1 
-                className="font-space-grotesk font-bold text-[8vw] md:text-[10vw] leading-none tracking-tighter whitespace-nowrap transform -skew-x-6 origin-right z-20 relative drop-shadow-[0_0_20px_rgba(255,95,31,0.3)]"
+                className="font-space-grotesk font-bold text-[5.2vw] md:text-[6.2vw] leading-none tracking-[-0.03em] whitespace-nowrap transform -skew-x-6 origin-right z-20 relative drop-shadow-[0_0_20px_rgba(255,95,31,0.3)]"
                 animate={{ 
                     x: isHovered ? '-15%' : '0%',
                     color: isHovered ? '#FF5F1F' : '#FFFFFF',
                 }}
                 transition={{ type: "spring", stiffness: 150, damping: 16 }}
             >
-                Fan
+                Welcome To 
             </motion.h1>
 
             <motion.div
@@ -162,14 +162,14 @@ const ImageRevealHeroTitle: React.FC = () => {
             </motion.div>
 
             <motion.h1 
-                className="font-space-grotesk font-bold text-[8vw] md:text-[10vw] leading-none tracking-tighter whitespace-nowrap transform -skew-x-6 origin-left z-20 relative ml-[2vw] drop-shadow-[0_0_20px_rgba(255,95,31,0.3)]"
+                className="font-space-grotesk font-bold text-[5.2vw] md:text-[6.2vw] leading-none tracking-[-0.03em] whitespace-nowrap transform -skew-x-6 origin-left z-20 relative ml-[1vw] drop-shadow-[0_0_20px_rgba(255,95,31,0.3)]"
                 animate={{ 
                     x: isHovered ? '15%' : '0%',
                     color: isHovered ? '#FF5F1F' : '#FFFFFF',
                 }}
                 transition={{ type: "spring", stiffness: 150, damping: 16 }}
             >
-                Ronghuan
+               My Portfolio
             </motion.h1>
         </div>
     );
