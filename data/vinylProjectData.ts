@@ -122,17 +122,17 @@ export const TOOL_ICONS: Record<string, string> = {
 
 // Project Data (only projects 1-5 retained per user request)
 export const PROJECTS_DATA = [
-  { 
-      id: 1, 
-      title: 'Default Project Title 1', 
-      label: 'IP IMAGE DESIGN', 
-      year: '2025.04', 
-      client: 'CLIENT', 
-      color: '#FF7F27', 
-      intensity: 5,
-    img: 'assets/Project1-1.jpg', 
-    previewBgImg: 'assets/Project1-1.jpg', 
-      desc: 'This is a default description for the first project. It showcases the layout and interaction.',
+    { 
+            id: 1, 
+            title: 'P1 品牌设计', 
+            label: 'BRAND DESIGN', 
+            year: '2024.04', 
+            client: 'CLIENT', 
+            color: '#FF7F27', 
+            intensity: 5,
+        img: 'assets/Project1-1.jpg', 
+        previewBgImg: 'assets/Project1-1.jpg', 
+            desc: '为品牌提供完整视觉识别、海报与活动物料设计，强化品牌记忆点。',
       tools: ['Jimeng', 'PS', 'Figma', 'Blender', 'LibLib'],
       previewTextColor: {
         year: '#E6E6E6',
