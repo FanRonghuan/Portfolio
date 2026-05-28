@@ -3,7 +3,9 @@ name: Deploy
 on:
   push:
     branches:
+      - main
       - master
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -22,9 +24,8 @@ jobs:
 
       - name: Install and Build
         run: |
-          rm -rf node_modules package-lock.json # 删掉旧的干扰项
-          npm install # 重新安装
-          npm run build # 运行刚才改过的 npx 指令
+          npm ci
+          npm run build
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4

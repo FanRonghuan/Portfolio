@@ -3,6 +3,8 @@ import React, { useRef, useState, useMemo } from 'react';
 import { motion, useTransform, useMotionValue, useSpring, useScroll, useMotionTemplate, AnimatePresence } from 'framer-motion';
 import Magnetic from '../components/Magnetic';
 
+const ASSET_BASE = `${import.meta.env.BASE_URL}assets/`;
+
 // ==========================================
 // 🟢 CONFIGURATION: GLOBAL ZOOM & LAYOUT
 // ==========================================
@@ -33,7 +35,7 @@ const skills = [
         percentText: "92%", 
         color: "#F59E0B", 
         tags: "运营设计, 平面设计, 品牌设计",
-        previewImg: "/skills-1.jpg",
+        previewImg: `${ASSET_BASE}skills-1.jpg`,
         previewRotate: -6,
         previewText: "社媒运营设计"
     },
@@ -44,7 +46,7 @@ const skills = [
         percentText: "87%", 
         color: "#3B82F6", 
         tags: "LIBLIB, Comfy UI, Web UI",
-        previewImg: "/assets/skills-2.jpg",
+        previewImg: `${ASSET_BASE}skills-2.jpg`,
         previewRotate: 8,
         previewText: "海报设计"
     },
@@ -55,7 +57,7 @@ const skills = [
         percentText: "82%", 
         color: "#EA580C", 
         tags: "C4D, Blender, Rendering",
-        previewImg: "/assets/skills-3.jpg",
+        previewImg: `${ASSET_BASE}skills-3.jpg`,
         previewRotate: -12,
         previewText: "包装设计"
     },
@@ -66,7 +68,7 @@ const skills = [
         percentText: "80%", 
         color: "#8B5CF6", 
         tags: "After Effects, Premiere Pro",
-        previewImg: "/assets/skills-4.jpg",
+        previewImg: `${ASSET_BASE}skills-4.jpg`,
         previewRotate: 5,
         previewText: "插画"
     },

@@ -10,6 +10,8 @@ const CARD_POSITIONS = [
 ]; // 🔒 LOCKED DATA: USER CONFIGURATION
 // Please do not overwrite this file with placeholder data in future updates.
 
+const ASSET_BASE = `${import.meta.env.BASE_URL}assets/`;
+
 // 自定义长图链接 (Updated to generic placeholders)
 export const MY_CUSTOM_LONG_IMAGE = 'https://picsum.photos/seed/long/1920/1080';
 
@@ -105,17 +107,17 @@ export const CUSTOM_NEW_IMAGES = [
 
 // 🇨🇳 CHINA OPTIMIZATION: Replaced standard CDNs with jsDelivr mirror for speed
 export const TOOL_ICONS: Record<string, string> = {
-    'Figma': '/assets/figma-icon.jpg',
-    'PS': '/assets/ps-icon.jpg',
-    'AI': '/assets/ai-icon.jpg',
-    'AE': '/assets/ae-icon.jpg',
-    'Blender': '/assets/blender-icon.jpg',
-    'C4D': '/assets/c4d-icon.jpg',
-    'React': '/assets/React-icon.jpg',
-    'ThreeJS': '/assets/Three.js-icon.jpg', 
-    'Jimeng': '/assets/jimeng-icon.jpg',
-    'Pinterest': '/assets/pinterest-icon.jpg',
-    'LibLib': '/assets/liblib-icon.jpg'
+    'Figma': `${ASSET_BASE}figma-icon.jpg`,
+    'PS': `${ASSET_BASE}ps-icon.jpg`,
+    'AI': `${ASSET_BASE}ai-icon.jpg`,
+    'AE': `${ASSET_BASE}ae-icon.jpg`,
+    'Blender': `${ASSET_BASE}blender-icon.jpg`,
+    'C4D': `${ASSET_BASE}c4d-icon.jpg`,
+    'React': `${ASSET_BASE}React-icon.jpg`,
+    'ThreeJS': `${ASSET_BASE}Three.js-icon.jpg`, 
+    'Jimeng': `${ASSET_BASE}jimeng-icon.jpg`,
+    'Pinterest': `${ASSET_BASE}pinterest-icon.jpg`,
+    'LibLib': `${ASSET_BASE}liblib-icon.jpg`
 };
 
 // Project Data (only projects 1-5 retained per user request)

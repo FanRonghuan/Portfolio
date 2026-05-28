@@ -5,6 +5,8 @@ import { createPortal } from 'react-dom';
 import ExperienceModal from '../components/ExperienceModal';
 import Magnetic from '../components/Magnetic';
 
+const ASSET_BASE = `${import.meta.env.BASE_URL}assets/`;
+
 // ==========================================
 // 🟢 CONFIGURATION: GLOBAL ZOOM & LAYOUT
 // ==========================================
@@ -472,7 +474,7 @@ const StablePhoto: React.FC = () => {
             >
                 <div className="w-full h-full relative overflow-hidden rounded-[1.5rem] bg-white/5 transform-style-3d">
                     <img 
-                        src="/assets/profile-p1.jpg" 
+                        src={`${ASSET_BASE}profile-p1.jpg`} 
                         alt="Profile" 
                         className="w-full h-full object-cover transition-transform duration-700 ease-out will-change-transform group-hover:scale-105"
                         decoding="async"

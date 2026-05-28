@@ -5,6 +5,8 @@ import Spotlight3D from '../components/Spotlight3D';
 import PatternPlaceholder from '../components/PatternPlaceholder';
 import Magnetic from '../components/Magnetic';
 
+const ASSET_BASE = `${import.meta.env.BASE_URL}assets/`;
+
 // ==========================================
 // 🟢 CONFIGURATION: GLOBAL ZOOM & LAYOUT
 // ==========================================
@@ -50,55 +52,55 @@ const heroCards = [
       color: '#FF7F27', 
       rotate: -2,      
       scale: 1.4,       
-      img: '/assets/poster8.png'
+    img: `${ASSET_BASE}poster8.png`
   }, 
   { 
       id: 2, 
       color: '#00A2E8', 
       rotate: 8,        
       scale: 1.2,      
-      img: '/assets/poster1.jpg'
+    img: `${ASSET_BASE}poster1.jpg`
   }, 
   { 
       id: 3, 
       color: '#55FFFF', 
       rotate: 24,       
       scale: 1.15,       
-      img: '/assets/poster2.jpg'
+    img: `${ASSET_BASE}poster2.jpg`
   }, 
   {   id: 4, 
       color: '#E0221E', 
       rotate: 12,       
       scale: 1.1,      
-      img: '/assets/poster3.jpg'
+    img: `${ASSET_BASE}poster3.jpg`
   }, 
   { 
       id: 5, 
       color: '#E0221E', 
       rotate: 2,      
       scale: 1.0,      
-      img: '/assets/poster4.jpg' 
+    img: `${ASSET_BASE}poster4.jpg` 
   }, 
   { 
       id: 6, 
       color: '#0044BA', 
       rotate: 15,       
       scale: 0.9,       
-      img: '/assets/poster5.png'
+    img: `${ASSET_BASE}poster5.png`
   },
   { 
       id: 7, 
       color: '#AA88EE', 
       rotate: -15,       
       scale: 0.95,      
-      img: '/assets/poster6.png'
+    img: `${ASSET_BASE}poster6.png`
   },
   { 
       id: 8, 
       color: '#4ECDC4', 
       rotate: -15,      
       scale: 0.01,       
-      img: '/assets/poster7.jpg'
+    img: `${ASSET_BASE}poster7.png`
   }
 ];
 
@@ -112,7 +114,7 @@ const DEPTHS = {
 
 const ImageRevealHeroTitle: React.FC = () => {
     const [isHovered, setIsHovered] = useState(false);
-    const REVEAL_IMAGE = "/assets/hero-p1.jpg";
+    const REVEAL_IMAGE = `${ASSET_BASE}hero-p1.jpg`;
 
     return (
         <div 

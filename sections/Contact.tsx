@@ -2,9 +2,10 @@ import React, { useState, useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring, useMotionValue, useMotionTemplate, AnimatePresence } from 'framer-motion';
 
 // --- CONFIGURATION ---
+const ASSET_BASE = `${import.meta.env.BASE_URL}assets/`;
 // 🟢 👇 PASTE YOUR WECHAT QR CODE IMAGE LINK HERE
 // 您可以在这里替换您的微信二维码图片链接
-const WECHAT_QR_CODE_URL = "/assets/wechat-qr.jpg";
+const WECHAT_QR_CODE_URL = `${ASSET_BASE}wechat-qr.jpg`;
 
 // --- ICONS ---
 const ICONS = {
@@ -69,7 +70,7 @@ const CONTACT_CARDS = [
         rotation: -11,
         // 🟢 👇 修改这里：调整 Hover 时的旋转角度
         hoverRotation: -14,
-        qrCode: "/assets/wechat-qr.jpg", // Added QR Code Link
+        qrCode: WECHAT_QR_CODE_URL, // Added QR Code Link
     },
     {
         id: 'GitHub',
