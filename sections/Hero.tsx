@@ -59,7 +59,7 @@ const heroCards = [
       color: '#00A2E8', 
       rotate: 8,        
       scale: 1.2,      
-    img: `${ASSET_BASE}poster1.jpg`
+    img: `${ASSET_BASE}poster1.png`
   }, 
   { 
       id: 3, 
@@ -72,14 +72,14 @@ const heroCards = [
       color: '#E0221E', 
       rotate: 12,       
       scale: 1.1,      
-    img: `${ASSET_BASE}poster3.jpg`
+    img: `${ASSET_BASE}poster3.png`
   }, 
   { 
       id: 5, 
       color: '#E0221E', 
       rotate: 2,      
       scale: 1.0,      
-    img: `${ASSET_BASE}poster4.jpg` 
+    img: `${ASSET_BASE}poster4.png` 
   }, 
   { 
       id: 6, 

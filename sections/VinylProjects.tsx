@@ -1,12 +1,14 @@
 ﻿
-import React, { useState, useRef, useMemo, useEffect } from 'react';
+import React, { useState, useRef, useMemo, useEffect, useLayoutEffect } from 'react';
 import { motion, AnimatePresence, useTransform, useMotionValue, useSpring, useScroll, useMotionTemplate, Variants } from 'framer-motion';
 import { createPortal } from 'react-dom'; 
+import gsap from 'gsap';
 import Spotlight3D from '../components/Spotlight3D';
 
 // 🔒 DATA IMPORTED FROM SEPARATE FILE TO PREVENT OVERWRITING
 import {
     ASSETS,
+    ASSET_BASE,
     MY_CUSTOM_LONG_IMAGE,
     CUSTOM_FOX_RABBIT_CONFIG,
     WAVE_IMAGES_CONFIG,
@@ -52,7 +54,7 @@ const  PROJECT_1_HOVER_CONFIG = [
     {
         id: 'p1-slide-1',
         // 🇨🇳 CHINA OPTIMIZATION: Replaced raw.githubusercontent with jsd.cdn.zzko.cn
-        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/%E9%95%BF%E5%9B%BE/%E7%8B%90%E7%8B%B8%E5%92%8C%E5%85%94%E5%AD%90.png',
+        url: '',
         x: 50,      
         y: 20,     
         scale: 1.25,  
@@ -63,7 +65,7 @@ const  PROJECT_1_HOVER_CONFIG = [
     },
     {
         id: 'p1-slide-2',
-        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8A%E4%BE%A7.png',
+        url: `${ASSET_BASE}Project1-15.jpg`,
         x: 950,      
         y: 80,       
         scale: 5,
@@ -74,7 +76,7 @@ const  PROJECT_1_HOVER_CONFIG = [
     },
     {
         id: 'p1-slide-3',
-        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8B%E4%BE%A7.png',
+        url: '',
         x: 400,      
         y: 80,       
         scale: 3.5,
@@ -85,7 +87,7 @@ const  PROJECT_1_HOVER_CONFIG = [
     },
     {
         id: 'p1-slide-4',
-        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%B7%A6%E4%BE%A7.png',
+        url: '',
         x: 860,      
         y: 80,       
         scale: 3.5,
@@ -96,7 +98,7 @@ const  PROJECT_1_HOVER_CONFIG = [
     },
     {
         id: 'p1-slide-5',
-        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%B7%A6%E4%BE%A7.png',
+        url: '',
         x: 800,      
         y: 80,       
         scale: 3.5,
@@ -110,10 +112,10 @@ const  PROJECT_1_HOVER_CONFIG = [
 const PROJECT_2_HOVER_CONFIG = [
     {
         id: 'p2-top',
-        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8A%E4%BE%A7.png',
-        x: 1300,      
+        url: `${ASSET_BASE}Project2-7.jpg`,
+        x: 600,      
         y: -350,   // Top
-        scale: 3,
+        scale: 1.5,
         rotate: 0,
         zIndex: 4, 
         z: -75,    
@@ -121,7 +123,7 @@ const PROJECT_2_HOVER_CONFIG = [
     },
     {
         id: 'p2-bottom',
-        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8B%E4%BE%A7.png',
+        url: '',
         x: 100,      
         y: 350,    // Bottom
         scale: 3,
@@ -132,10 +134,10 @@ const PROJECT_2_HOVER_CONFIG = [
     },
     {
         id: 'p2-left',
-        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%B7%A6%E4%BE%A7.png',
+        url: '',
         x: -600,      
         y: 0,      // Left
-        scale: 3,
+        scale: 1,
         rotate: 0,
         zIndex: 4, 
         z: -75,
@@ -143,7 +145,7 @@ const PROJECT_2_HOVER_CONFIG = [
     },
     {
         id: 'p2-right',
-        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%8F%B3%E4%BE%A7.png',
+        url: `${ASSET_BASE}Project2-7.png`,
         x: 400,      
         y: 0,      // Right
         scale: 3,
@@ -155,7 +157,7 @@ const PROJECT_2_HOVER_CONFIG = [
     {
         id: 'p2-char',
         // 🇨🇳 CHINA OPTIMIZATION
-        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/%E8%9B%8B%E4%BB%94%E6%B4%BE%E5%AF%B9/%E8%9B%8B%E4%BB%94%E4%BA%BA%E7%89%A91.png',
+        url: `${ASSET_BASE}Project2-9.png`,
         x: -61,
         y: -300,      // Center
         scale: 0.8, // Large central figure
@@ -168,14 +170,14 @@ const PROJECT_2_HOVER_CONFIG = [
 ];
 
 const PROJECT_3_HOVER_CONFIG = [
-    { id: 'p3-1', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8A%E4%BE%A7.png', x: -450, y: -450, scale: 3.2, rotate: -20, zIndex: 4, z: -75, delay: 0.1 },  // Top Left High
-    { id: 'p3-2', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8B%E4%BE%A7.png', x: 1250, y: 450, scale: 3.2, rotate: 20, zIndex: 4, z: -75, delay: 0.15 }, // Bottom Right Low
-    { id: 'p3-3', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%B7%A6%E4%BE%A7.png', x: -50, y: 50, scale: 2.8, rotate: -10, zIndex: 4, z: -75, delay: 0.2 },   // Extreme Left
-    { id: 'p3-4', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%8F%B3%E4%BE%A7.png', x: 950, y: -50, scale: 2.8, rotate: 10, zIndex: 4, z: -75, delay: 0.25 },   // Extreme Right
+    { id: 'p3-1', url: `${ASSET_BASE}Project3-14.png`, x: -450, y: -450, scale: 1.7, rotate: -20, zIndex: 4, z: -75, delay: 0.1 },  // Top Left High
+    { id: 'p3-2', url: '', x: 400, y: 450, scale: 1, rotate: 20, zIndex: 4, z: -75, delay: 0.15 }, // Bottom Right Low
+    { id: 'p3-3', url: '', x: -10, y: 100, scale: 0, rotate: -10, zIndex: 4, z: -75, delay: 0.2 },   // Extreme Left
+    { id: 'p3-4', url: '', x: 500, y: 50, scale: 0.3, rotate: 25, zIndex: 4, z: -75, delay: 0.25 },   // Extreme Right
     { 
         id: 'p3-5', 
         // 🇨🇳 CHINA OPTIMIZATION
-        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/%E7%8C%BF%E7%BC%96%E7%A8%8B/%E7%8C%B4%E5%AD%90.png', 
+        url: `${ASSET_BASE}Project3-16.png`, 
         x: -364, 
         y: -50, 
         scale: 0.7, 
@@ -188,14 +190,14 @@ const PROJECT_3_HOVER_CONFIG = [
 ];
 
 const PROJECT_4_HOVER_CONFIG = [
-    { id: 'p4-1', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8A%E4%BE%A7.png', x: 0, y: -500, scale: 3.5, rotate: 0, zIndex: 4, z: -75, delay: 0.1 },    // Top Center
-    { id: 'p4-2', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8B%E4%BE%A7.png', x: 0, y: 500, scale: 3.5, rotate: 0, zIndex: 4, z: -75, delay: 0.1 },     // Bottom Center
-    { id: 'p4-3', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%B7%A6%E4%BE%A7.png', x: -850, y: 100, scale: 4.0, rotate: -90, zIndex: 4, z: -75, delay: 0.2 },  // Extreme Left
-    { id: 'p4-4', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%8F%B3%E4%BE%A7.png', x: 850, y: 100, scale: 4.0, rotate: 90, zIndex: 4, z: -75, delay: 0.2 },   // Extreme Right
+    { id: 'p4-1', url: '', x: 0, y: -500, scale: 3.5, rotate: 0, zIndex: 4, z: -75, delay: 0.1 },    // Top Center
+    { id: 'p4-2', url: `${ASSET_BASE}Project4-12.png`, x: 0, y: 200, scale: 2.5, rotate: 0, zIndex: 4, z: -75, delay: 0.1 },     // Bottom Center
+    { id: 'p4-3', url: '', x: -850, y: 100, scale: 1.0, rotate: -90, zIndex: 4, z: -75, delay: 0.2 },  // Extreme Left
+    { id: 'p4-4', url: '', x: 850, y: 100, scale: 2.0, rotate: 90, zIndex: 4, z: -75, delay: 0.2 },   // Extreme Right
     { 
         id: 'p4-5', 
         // 🇨🇳 CHINA OPTIMIZATION
-        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/%E5%8D%AB%E5%B2%97/%E5%A4%A7%E5%8D%AB1.png', 
+        url: '', 
         x: 50, 
         y: -200, 
         scale: 1.0, 
@@ -208,14 +210,14 @@ const PROJECT_4_HOVER_CONFIG = [
 ];
 
 const PROJECT_5_HOVER_CONFIG = [
-    { id: 'p5-1', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8A%E4%BE%A7.png', x: 950, y: 80, scale: 5, rotate: 2, zIndex: 2, z: -75, delay: 0.1 },
-    { id: 'p5-2', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E4%B8%8B%E4%BE%A7.png', x: 1800, y: 80, scale: 3.5, rotate: 2, zIndex: 4, z: -75, delay: 0.15 },
-    { id: 'p5-3', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%B7%A6%E4%BE%A7.png', x: 860, y: 80, scale: 3.5, rotate: 2, zIndex: 4, z: -75, delay: 0.2 },
-    { id: 'p5-4', url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/remain/%E5%B7%A6%E4%BE%A7.png', x: 800, y: 80, scale: 3.5, rotate: 2, zIndex: 4, z: -75, delay: 0.25 },
+    { id: 'p5-1', url: '', x: 950, y: 80, scale: 5, rotate: 2, zIndex: 2, z: -75, delay: 0.1 },
+    { id: 'p5-2', url: '', x: 1800, y: 80, scale: 3.5, rotate: 2, zIndex: 4, z: -75, delay: 0.15 },
+    { id: 'p5-3', url: '', x: 860, y: 80, scale: 3.5, rotate: 2, zIndex: 4, z: -75, delay: 0.2 },
+    { id: 'p5-4', url: '', x: 800, y: 80, scale: 3.5, rotate: 2, zIndex: 4, z: -75, delay: 0.25 },
     { 
         id: 'p5-5', 
         // 🇨🇳 CHINA OPTIMIZATION
-        url: 'https://jsd.cdn.zzko.cn/gh/jayneysil520-dev/jayneysil@main/nezha/%E5%93%AA%E5%90%92.png', 
+        url: '', 
         x: 0, 
         y: -450, 
         scale: 0.7, 
@@ -1035,7 +1037,7 @@ const ProjectPreviewCard: React.FC<{
                         {project.title}
                     </h2>
                     <p 
-                        className="text-xl line-clamp-3 w-3/4 text-white/70 font-space-grotesk leading-relaxed"
+                        className="text-xl text-white/90 font-space-grotesk leading-relaxed max-w-[70%]"
                     >
                         {project.desc}
                     </p>
@@ -1210,68 +1212,283 @@ const PulseDisc: React.FC<{
 
 // SignalMonitor removed per user request (UI: orange signal box)
 
-const Project5HorizontalGallery: React.FC<{ images: string[] }> = ({ images }) => {
-    const scrollRef = useRef<HTMLDivElement>(null);
+const Project5VelocityGallery: React.FC<{ images: string[] }> = ({ images }) => {
+    const viewportRef = useRef<HTMLDivElement>(null);
+    const trackRef = useRef<HTMLDivElement>(null);
+    const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const positionRef = useRef(0);
+    const velocityRef = useRef(0);
+    const hoverVelocityRef = useRef(0);
+    const hoverActiveRef = useRef(false);
+    const frameRef = useRef<number | null>(null);
+    const settleRef = useRef<number | null>(null);
+    const initializedRef = useRef(false);
+    const dragRef = useRef({ active: false, pointerId: -1, lastX: 0, lastTime: 0 });
+    const metricsRef = useRef({ sequenceWidth: 0, viewportWidth: 0, padding: 0 });
+    const [trackPadding, setTrackPadding] = useState(0);
+    const [activeCardIndex, setActiveCardIndex] = useState<number | null>(null);
+
+    const repeatedImages = useMemo(() => Array.from({ length: 5 }, () => images).flat(), [images]);
+    const isCoarsePointer = typeof window !== 'undefined' ? window.matchMedia('(pointer: coarse)').matches : false;
+
+    const clampVelocity = (value: number) => Math.max(-28, Math.min(28, value));
+
+    const wrapPosition = () => {
+        const { sequenceWidth } = metricsRef.current;
+        if (!sequenceWidth) return;
+
+        const min = -sequenceWidth * 3;
+        const max = -sequenceWidth;
+
+        if (positionRef.current < min) {
+            positionRef.current += sequenceWidth * 2;
+        } else if (positionRef.current > max) {
+            positionRef.current -= sequenceWidth * 2;
+        }
+    };
+
+    const updateCardFocus = () => {
+        const viewport = viewportRef.current;
+        if (!viewport) return;
+
+        const viewportRect = viewport.getBoundingClientRect();
+        const viewportCenter = viewportRect.left + viewportRect.width / 2;
+
+        cardRefs.current.forEach((card) => {
+            if (!card) return;
+
+            const rect = card.getBoundingClientRect();
+            const cardCenter = rect.left + rect.width / 2;
+            const distance = Math.abs(cardCenter - viewportCenter);
+            const normalized = Math.min(distance / Math.max(viewportRect.width * 0.48, 1), 1);
+            const focus = 1 - normalized;
+            const direction = cardCenter < viewportCenter ? -1 : 1;
+
+            gsap.set(card, {
+                scale: 0.84 + focus * 0.28,
+                y: (1 - focus) * 20,
+                rotateZ: direction * (1 - focus) * 3.5,
+                opacity: 0.52 + focus * 0.48,
+                zIndex: Math.round(focus * 100),
+                filter: `brightness(${0.88 + focus * 0.18}) saturate(${0.92 + focus * 0.18})`
+            });
+        });
+    };
 
     useEffect(() => {
-        const el = scrollRef.current;
-        if (!el) return;
+        const viewport = viewportRef.current;
+        if (!viewport) return;
 
         const onWheel = (event: WheelEvent) => {
             if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
             event.preventDefault();
-            el.scrollLeft += event.deltaY * 1.25;
+            velocityRef.current = clampVelocity(velocityRef.current + event.deltaY * 0.02);
         };
 
-        el.addEventListener('wheel', onWheel, { passive: false });
-        return () => el.removeEventListener('wheel', onWheel);
+        const onPointerDown = (event: PointerEvent) => {
+            dragRef.current.active = true;
+            dragRef.current.pointerId = event.pointerId;
+            dragRef.current.lastX = event.clientX;
+            dragRef.current.lastTime = performance.now();
+            viewport.setPointerCapture(event.pointerId);
+            viewport.classList.add('cursor-grabbing');
+            velocityRef.current *= 0.25;
+        };
+
+        const onPointerMove = (event: PointerEvent) => {
+            if (!dragRef.current.active || dragRef.current.pointerId !== event.pointerId) return;
+
+            const now = performance.now();
+            const deltaX = event.clientX - dragRef.current.lastX;
+            const deltaTime = Math.max(now - dragRef.current.lastTime, 16);
+
+            dragRef.current.lastX = event.clientX;
+            dragRef.current.lastTime = now;
+
+            positionRef.current += deltaX;
+            velocityRef.current = clampVelocity((deltaX / deltaTime) * 18);
+            wrapPosition();
+
+            if (trackRef.current) {
+                gsap.set(trackRef.current, { x: positionRef.current });
+            }
+
+            updateCardFocus();
+        };
+
+        const endDrag = (pointerId: number) => {
+            if (dragRef.current.pointerId !== pointerId) return;
+            dragRef.current.active = false;
+            dragRef.current.pointerId = -1;
+            viewport.classList.remove('cursor-grabbing');
+        };
+
+        const onPointerUp = (event: PointerEvent) => endDrag(event.pointerId);
+        const onPointerCancel = (event: PointerEvent) => endDrag(event.pointerId);
+
+        const onPointerLeave = () => {
+            hoverActiveRef.current = false;
+            hoverVelocityRef.current = 0;
+            setActiveCardIndex(null);
+        };
+
+        viewport.addEventListener('wheel', onWheel, { passive: false });
+        viewport.addEventListener('pointerdown', onPointerDown);
+        viewport.addEventListener('pointermove', onPointerMove);
+        viewport.addEventListener('pointerup', onPointerUp);
+        viewport.addEventListener('pointercancel', onPointerCancel);
+        viewport.addEventListener('pointerleave', onPointerLeave);
+
+        return () => {
+            viewport.removeEventListener('wheel', onWheel);
+            viewport.removeEventListener('pointerdown', onPointerDown);
+            viewport.removeEventListener('pointermove', onPointerMove);
+            viewport.removeEventListener('pointerup', onPointerUp);
+            viewport.removeEventListener('pointercancel', onPointerCancel);
+            viewport.removeEventListener('pointerleave', onPointerLeave);
+        };
     }, []);
 
-    return (
-        <div className="relative w-full h-full bg-deep-space overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 z-20 px-6 md:px-10 pt-6 md:pt-8 pointer-events-none">
-                <div className="flex items-center gap-3 text-pulse-orange/80 text-[10px] md:text-xs font-bold tracking-[0.45em] uppercase">
-                    <span className="w-8 md:w-12 h-px bg-pulse-orange/60" />
-                    Project 5 Horizontal Gallery
-                </div>
-                <p className="mt-3 max-w-xl text-white/50 text-xs md:text-sm leading-relaxed">
-                    横向滑动浏览全部内容，支持鼠标滚轮横移与图片 hover 放大。
-                </p>
-            </div>
+    useLayoutEffect(() => {
+        const viewport = viewportRef.current;
+        const track = trackRef.current;
+        const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
 
-            <div
-                ref={scrollRef}
-                className="relative z-10 w-full h-full overflow-x-auto overflow-y-hidden flex items-center gap-8 md:gap-10 px-6 md:px-12 py-24 md:py-28 floating-scrollbar snap-x snap-mandatory"
-                style={{ scrollBehavior: 'auto' }}
-            >
-                {images.map((src, index) => (
-                    <motion.div
-                        key={src}
-                        className="shrink-0 snap-center"
-                        style={{ width: 'min(82vw, 880px)', height: 'min(76vh, 760px)' }}
-                        whileHover={{ scale: 1.03, y: -10 }}
-                        transition={{ type: 'spring', stiffness: 240, damping: 20 }}
-                    >
-                        <div className="group relative w-full h-full rounded-[2rem] overflow-hidden border border-white/10 bg-black/70 shadow-[0_30px_80px_rgba(0,0,0,0.55)] transition-all duration-300 hover:border-white/35 hover:shadow-[0_0_40px_rgba(255,255,255,0.16),_0_30px_80px_rgba(0,0,0,0.7)]">
-                            <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-black/55 pointer-events-none transition-opacity duration-300 group-hover:opacity-70" />
-                            <img
-                                src={src}
-                                alt={`Project 5 Detail ${index + 1}`}
-                                className="w-full h-full object-contain bg-black/85 p-4 md:p-6 transition-transform duration-300 group-hover:scale-[1.015]"
-                                loading="lazy"
-                                decoding="async"
-                            />
-                            <div className="absolute inset-x-0 bottom-0 p-4 md:p-6 flex items-end justify-between gap-4">
-                                <div className="rounded-full border border-white/15 bg-black/50 backdrop-blur-md px-4 py-2 text-[10px] md:text-xs font-bold tracking-[0.35em] uppercase text-white/80 transition-all duration-300 group-hover:border-white/40 group-hover:text-white">
-                                    P5-{index + 1}
-                                </div>
-                                <div className="text-[10px] md:text-xs font-mono tracking-[0.3em] text-white/40 transition-colors duration-300 group-hover:text-white/70">
-                                    HOVER TO ZOOM
-                                </div>
+        if (!viewport || !track || cards.length === 0) return;
+
+        const first = cards[0];
+        const second = cards[1] ?? cards[0];
+        const cardWidth = first.getBoundingClientRect().width;
+        const gap = Math.max(0, second.offsetLeft - first.offsetLeft - first.offsetWidth);
+        const sequenceWidth = images.length * cardWidth + Math.max(0, images.length - 1) * gap;
+        const viewportWidth = viewport.getBoundingClientRect().width;
+
+        metricsRef.current = {
+            sequenceWidth,
+            viewportWidth,
+            padding: Math.max(0, viewportWidth / 2 - cardWidth / 2)
+        };
+        setTrackPadding(metricsRef.current.padding);
+
+        if (!initializedRef.current) {
+            positionRef.current = -sequenceWidth * 2;
+            initializedRef.current = true;
+        }
+
+        gsap.set(track, { x: positionRef.current, force3D: true });
+        updateCardFocus();
+
+        const tick = () => {
+            const baseSpeed = hoverActiveRef.current ? 0 : (isCoarsePointer ? -8.0 : -5.6);
+            const hoverBias = hoverActiveRef.current ? hoverVelocityRef.current : 0;
+
+            if (!dragRef.current.active) {
+                velocityRef.current += ((baseSpeed + hoverBias) - velocityRef.current) * (isCoarsePointer ? 0.075 : 0.055);
+            }
+
+            positionRef.current += velocityRef.current;
+            wrapPosition();
+
+            gsap.set(track, { x: positionRef.current, force3D: true });
+            updateCardFocus();
+
+            if (settleRef.current) {
+                window.clearTimeout(settleRef.current);
+            }
+
+            settleRef.current = window.setTimeout(() => {
+                velocityRef.current *= 0.985;
+            }, 60);
+
+            frameRef.current = window.requestAnimationFrame(tick);
+        };
+
+        frameRef.current = window.requestAnimationFrame(tick);
+
+        const onResize = () => {
+            const nextViewportWidth = viewport.getBoundingClientRect().width;
+            const nextCardWidth = cards[0].getBoundingClientRect().width;
+            metricsRef.current.viewportWidth = nextViewportWidth;
+            metricsRef.current.padding = Math.max(0, nextViewportWidth / 2 - nextCardWidth / 2);
+            setTrackPadding(metricsRef.current.padding);
+            updateCardFocus();
+        };
+
+        window.addEventListener('resize', onResize);
+
+        return () => {
+            window.removeEventListener('resize', onResize);
+            if (frameRef.current !== null) {
+                window.cancelAnimationFrame(frameRef.current);
+            }
+            if (settleRef.current) {
+                window.clearTimeout(settleRef.current);
+            }
+        };
+    }, [images.length, repeatedImages.length]);
+
+    return (
+        <div
+            ref={viewportRef}
+            className="relative h-full w-full overflow-hidden bg-[#050505] select-none touch-none cursor-grab"
+            style={{ touchAction: 'none' }}
+        >
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,95,31,0.22),transparent_24%),radial-gradient(circle_at_top,rgba(255,255,255,0.07),transparent_20%),linear-gradient(180deg,rgba(255,255,255,0.01),transparent_18%)]" />
+            <div className="pointer-events-none absolute inset-0 opacity-[0.045] [background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:92px_92px] [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]" />
+
+            <div className="absolute inset-0 overflow-hidden">
+                <div
+                    ref={trackRef}
+                    className="absolute left-0 top-1/2 flex w-max -translate-y-1/2 items-center gap-0"
+                    style={{ paddingLeft: trackPadding, paddingRight: trackPadding, willChange: 'transform' }}
+                >
+                    {repeatedImages.map((src, index) => {
+                        const copyIndex = index % images.length;
+                        return (
+                            <div
+                                key={`${src}-${index}`}
+                                ref={(node) => {
+                                    cardRefs.current[index] = node;
+                                }}
+                                        className="relative shrink-0"
+                                        style={{ width: 'clamp(190px, 56vw, 700px)', height: 'min(74vh, 820px)' }}
+                                        onPointerEnter={(event) => {
+                                            const rect = event.currentTarget.getBoundingClientRect();
+                                            const centerX = rect.left + rect.width / 2;
+                                            const direction = event.clientX < centerX ? -1 : 1;
+                                            hoverActiveRef.current = true;
+                                            hoverVelocityRef.current = direction * (isCoarsePointer ? 0.8 : 0.45);
+                                            setActiveCardIndex(index);
+                                        }}
+                                        onPointerMove={(event) => {
+                                            const rect = event.currentTarget.getBoundingClientRect();
+                                            const centerX = rect.left + rect.width / 2;
+                                            const normalized = (event.clientX - centerX) / Math.max(rect.width / 2, 1);
+                                            hoverActiveRef.current = true;
+                                            hoverVelocityRef.current = Math.max(-1.1, Math.min(1.1, normalized * (isCoarsePointer ? 1.2 : 0.8)));
+                                            setActiveCardIndex(index);
+                                        }}
+                                        onPointerLeave={() => {
+                                            hoverActiveRef.current = false;
+                                            hoverVelocityRef.current = 0;
+                                            setActiveCardIndex(null);
+                                        }}
+                            >
+                                <img
+                                    src={src}
+                                    alt={`Project 5 Detail ${copyIndex + 1}`}
+                                            className="h-full w-full object-contain drop-shadow-[0_22px_72px_rgba(0,0,0,0.45)] transition-transform duration-300"
+                                    loading="lazy"
+                                    decoding="async"
+                                    draggable={false}
+                                            style={{
+                                                transform: activeCardIndex === index ? 'scale(1.015)' : 'scale(1)'
+                                            }}
+                                />
                             </div>
-                        </div>
-                    </motion.div>
-                ))}
+                        );
+                    })}
+                </div>
             </div>
         </div>
     );
@@ -1279,20 +1496,6 @@ const Project5HorizontalGallery: React.FC<{ images: string[] }> = ({ images }) =
 
 // --- UPDATED COMPONENT: Gallery Modal View ---
 const GalleryModalView: React.FC<{ images: string[], projectId?: number, project?: any }> = ({ images, projectId, project }) => {
-    const scrollContainerRef = useRef<HTMLDivElement>(null);
-    const [scrollVal, setScrollVal] = useState(0);
-    const [mouseVal, setMouseVal] = useState(0);
-
-    const handleScroll = () => {
-        if (scrollContainerRef.current) {
-            setScrollVal(Math.round(scrollContainerRef.current.scrollTop));
-        }
-    };
-
-    const handleMouseMove = (e: React.MouseEvent) => {
-        setMouseVal(Math.round(e.clientX));
-    };
-
     // 🟢 Special Render for PDF Project (Project 8)
     if (project?.layout === 'pdf' && project.pdfUrl) {
         return (
@@ -1315,7 +1518,7 @@ const GalleryModalView: React.FC<{ images: string[], projectId?: number, project
     }
 
     if (projectId === 5) {
-        return <Project5HorizontalGallery images={images || []} />;
+        return <Project5VelocityGallery images={images || []} />;
     }
 
     return (
@@ -1323,12 +1526,7 @@ const GalleryModalView: React.FC<{ images: string[], projectId?: number, project
         <div className="relative w-full h-full bg-deep-space">
             
             {/* 🟢 SCROLLABLE AREA */}
-            <div
-                ref={scrollContainerRef}
-                onScroll={handleScroll}
-                onMouseMove={handleMouseMove}
-                className="w-full h-full overflow-y-auto overflow-x-hidden floating-scrollbar relative z-10 p-0"
-            >
+            <div className="w-full h-full overflow-y-auto overflow-x-hidden floating-scrollbar relative z-10 p-0">
                 {/* Real-time Indicator removed per request */}
 
                 <div 
@@ -1632,11 +1830,9 @@ const VinylProjects: React.FC = () => {
                         {/* 🟢 NEW: PROJECT 2-8 SPECIAL HOVER IMAGES (Explode from Center) */}
                         <AnimatePresence>
                              {hoveredProject && hoveredProject.id !== 1 && HOVER_CONFIGS[hoveredProject.id] && HOVER_CONFIGS[hoveredProject.id].map((img) => {
-                                 // Determine the correct filter ID based on the project ID
-                                 // 🟢 CHECK 'noTint' PROPERTY HERE
-                                 const tintFilter = (hoveredProject && PROJECT_TINTS[hoveredProject.id] && !img.noTint) 
-                                    ? `url(#${PROJECT_TINTS[hoveredProject.id].id})` 
-                                    : 'none';
+                                            // Tint disabled: force no filter so hover images keep original colors
+                                            // Previously we used PROJECT_TINTS + svg filters here.
+                                            const tintFilter = 'none';
 
                                  return (
                                      <motion.img
