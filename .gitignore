@@ -1,1 +1,8 @@
 node_modules
+
+# Build output
+/dist
+
+# Large media files - don't commit local videos
+/public/assets/*.mp4
+/dist/assets/*.mp4

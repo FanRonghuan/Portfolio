@@ -94,7 +94,7 @@ const App: React.FC = () => {
             whileInView={{ opacity: 1 }}
             transition={{ duration: 1.5, ease: "easeOut" }}
             viewport={{ once: true, margin: "-50px" }}
-            className="relative z-[60] py-32 bg-space-black border-t border-glass-border flex flex-col items-center justify-center overflow-hidden"
+            className="relative z-[60] py-32 bg-space-black flex flex-col items-center justify-center overflow-hidden"
           >
              {/* 
                 🟢 CREATIVE DARK FOOTER 
@@ -115,7 +115,7 @@ const App: React.FC = () => {
                         LET'S TALK
                     </h2>
                     <div className="mt-[-4vw] flex flex-col items-center gap-4">
-                        <p className="text-white/40 font-albert-light tracking-[0.5em] uppercase text-sm md:text-base">Available for new projects</p>
+                        <p className="text-white/40 font-albert-light tracking-[0.5em] uppercase text-sm md:text-base">LOOK FORWARD TO YOUR CALL</p>
                         <a 
                             href="mailto:1973886674@qq.com" 
                             className="text-white hover:text-white/70 transition-colors font-albert-black text-2xl md:text-4xl tracking-tight border-b border-white/20 pb-2"
@@ -172,7 +172,7 @@ const App: React.FC = () => {
                 </div>
                 
                 <p className="text-white/20 font-mono text-[10px] mt-12 uppercase tracking-tighter">
-                    © 2026 GLEI PORTFOLIO • ALL RIGHTS RESERVED
+                  © 2026 AURELIA PORTFOLIO • ALL RIGHTS RESERVED
                 </p>
              </div>
           </motion.footer>

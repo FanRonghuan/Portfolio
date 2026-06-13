@@ -4,6 +4,7 @@ import { motion, AnimatePresence, useTransform, useMotionValue, useSpring, useSc
 import { createPortal } from 'react-dom'; 
 import gsap from 'gsap';
 import Spotlight3D from '../components/Spotlight3D';
+import VideoAIDetail from '../components/VideoAIDetail';
 
 // 🔒 DATA IMPORTED FROM SEPARATE FILE TO PREVENT OVERWRITING
 import {
@@ -806,7 +807,7 @@ const FlipVideoCard: React.FC<{
                     {/* Pulse Label */}
                     <div className="absolute bottom-6 left-6 flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-pulse-orange animate-pulse" />
-                        <span className="text-[10px] font-bold text-white tracking-[0.2em] uppercase">Pulse Preview</span>
+                        <span className="text-[10px] font-bold text-white tracking-[0.2em] uppercase">动效预览</span>
                     </div>
                 </div>
 
@@ -905,14 +906,14 @@ const HorizontalScrollGallery: React.FC<{ items: any[]; color: string }> = ({ it
                      <div className="flex flex-col justify-center px-4">
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-8 h-[1px] bg-pulse-orange" />
-                            <span className="text-xs font-bold tracking-[0.4em] text-pulse-orange uppercase">Pulse Motion</span>
+                            <span className="text-xs font-bold tracking-[0.4em] text-pulse-orange uppercase">动效脉冲</span>
                         </div>
                         <h2 className="text-5xl md:text-7xl font-albert-black text-white leading-none mb-6 tracking-tighter">
-                            GALLERY<br/>
-                            <span className="text-pulse-orange">PULSE</span>
+                            画廊<br/>
+                            <span className="text-pulse-orange">脉冲</span>
                         </h2>
                         <p className="text-white/40 text-sm font-space-grotesk leading-relaxed max-w-xs whitespace-normal">
-                            Interactive motion showcase. Click any card to initiate visual pulse and reveal deeper motion layers.
+                            点击任意卡片即可播放视频并进入动效层级。
                         </p>
                      </div>
                 </div>
@@ -1496,6 +1497,10 @@ const Project5VelocityGallery: React.FC<{ images: string[] }> = ({ images }) => 
 
 // --- UPDATED COMPONENT: Gallery Modal View ---
 const GalleryModalView: React.FC<{ images: string[], projectId?: number, project?: any }> = ({ images, projectId, project }) => {
+    if (project?.layout === 'video-ai') {
+        return <VideoAIProjectView project={project} />;
+    }
+
     // 🟢 Special Render for PDF Project (Project 8)
     if (project?.layout === 'pdf' && project.pdfUrl) {
         return (
@@ -1613,6 +1618,17 @@ const GalleryModalView: React.FC<{ images: string[], projectId?: number, project
 
                     {/* Project 1: Only Project1-1 to Project1-14 images, no extra overlays */}
                 </div>
+            </div>
+        </div>
+    );
+};
+
+const VideoAIProjectView: React.FC<{ project: any }> = ({ project }) => {
+    // Simplified: always show the '讲解' (detail) view — removed the separate '播放' page per request
+    return (
+        <div className="w-full h-full bg-deep-space">
+            <div className="w-full h-full">
+                <VideoAIDetail items={project.videoAiItems || []} />
             </div>
         </div>
     );
@@ -1959,7 +1975,7 @@ const VinylProjects: React.FC = () => {
                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="group-hover:rotate-90 transition-transform duration-300"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                                </button>
 
-                               {selectedProject.layout === 'gallery' || selectedProject.layout === 'horizontal-scroll' ? (
+                               {selectedProject.layout === 'gallery' || selectedProject.layout === 'horizontal-scroll' || selectedProject.layout === 'video-ai' ? (
                                    <GalleryModalView 
                                        images={selectedProject.detailImages || []} 
                                        projectId={selectedProject.id} 

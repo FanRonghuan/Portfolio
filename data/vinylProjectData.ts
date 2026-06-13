@@ -28,6 +28,53 @@ export const ASSETS = {
     PROJECT_2_VIDEO: "https://www.w3schools.com/html/mov_bbb.mp4" 
 };
 
+export const VIDEO_AI_ITEMS = [
+    // Reordered and mapped to specified files per user request
+    {
+        id: 'video-ai-2',
+        title: '剧情片《我的春节，是一场天气预报》',
+        subtitle: 'Narrative short',
+        description: `作品介绍：本作品是 90 秒温情治愈系 AI 影像短片，以 8 岁北方留守男孩的儿童视角展开，用“天气预报”作为亲情线索，讲述除夕大雪中等待父亲归家的暖心故事。整体采用乡村怀旧风格，前冷后暖的色调形成强烈情感反差，从等待的清冷压抑，到团圆的温暖治愈，完整呈现“爱超越距离与风雪”的核心内核。
+脚本包含分镜设计、运镜衔接、AI 绘画提示词、童声旁白与 BGM 规划，细节贴合生活化场景，情绪层层递进。通过老式电视、气象云图、除夕暴雪、车灯归程、父子相拥等画面，用极简叙事传递浓厚亲情，兼顾短片节奏感与影视化质感，适合短内容传播与情感向视觉作品展示。`,
+        tags: ['叙事', '氛围', '剪辑'],
+        videoUrl: `${ASSET_BASE}spring_festival.mp4`,
+        posterUrl: `${ASSET_BASE}project6-4.jpg`,
+        grid: { colSpan: 3, rowSpan: 1 }
+    },
+    {
+        id: 'video-ai-1',
+        title: 'K-pop MV《ChronoShift》',
+        subtitle: 'K-pop MV',
+        description: `作品介绍：本作品为以“时空穿梭”为核心概念，塑造一位穿梭于多元时空的未来女战士形象。整体视觉以银色、橘红为主色调，融合赛博朋克霓虹、荒漠、宇宙三大场景，通过强烈的色彩对比与未来感场景，营造自信、神秘、高能的视觉基调。
+策划完整覆盖 Intro、Verse、Chorus、Bridge、Dance Break 全段落，精准匹配歌词节奏设计分镜、运镜与剪辑特效，包含 360° 环绕拍摄、子弹时间、Glitch 故障转场、能量粒子、时空残影等专业镜头语言，强化舞蹈张力与时空穿梭的视觉冲击。整套方案兼顾叙事逻辑、舞台表现力与影视化质感，完整呈现一支韩式流行 MV 的创意执行思路。`,
+        tags: ['MV', '动线', '舞美'],
+        videoUrl: `${ASSET_BASE}kpop_mv.mp4`,
+        posterUrl: `${ASSET_BASE}project6-3.jpg`,
+        grid: { colSpan: 2, rowSpan: 2 }
+    },
+    {
+        id: 'video-ai-3',
+        title: '动漫片《高校异世界》',
+        subtitle: 'Anime short',
+        description: '作品介绍：本作品是一部“青春奇幻风 AI 动漫短片”，以“普通人闯入异能世界”为核心设定，讲述转学生林泽来到充满超能力的异世界高中，在重力操控、光影幻术等奇幻能力的包围下，以普通人的果敢与善良，在一场意外事故中赢得同伴认可，开启热血青春旅程的故事。',
+        tags: ['分镜', '镜头', '节奏'],
+        videoUrl: `${ASSET_BASE}dongman1.mp4`,
+        posterUrl: `${ASSET_BASE}project6-1.jpg`,
+        grid: { colSpan: 3, rowSpan: 2 }
+    },
+    {
+        id: 'video-ai-4',
+        title: '动漫片《遗忘税》',
+        subtitle: 'Concept short',
+        description: `作品介绍：本作品是一部“近未来赛博风 AI 短漫短片”，以记忆交易为核心设定，构建了一个可将遗憾记忆明码标价的神秘空间「回响交易室」。故事围绕中年男子梁修展开，他为偿还巨债，被迫变卖关于亡妻的珍贵记忆，在执事零的引导下，重新体验封存的痛苦与甜蜜，最终换取财富却彻底遗忘挚爱，留下永恒遗憾。
+脚本设计融合现代巴洛克美学与赛博朋克视觉，通过全息记忆球、机械眼镜、记忆晶体等意象，探讨记忆、爱与代价的深刻主题。方案包含角色设定、分镜运镜、台词设计与视觉风格规划，兼具叙事张力与影视化质感，完整呈现 AI 影像的创意执行思路。`,
+        tags: ['概念', '叙事', '情绪'],
+        videoUrl: `${ASSET_BASE}dongman2.mp4`,
+        posterUrl: `${ASSET_BASE}project6-2.jpg`,
+        grid: { colSpan: 2, rowSpan: 1 }
+    }
+];
+
 export interface WaveItemConfig {
     url: string;
     x: number;
@@ -125,7 +172,7 @@ export const TOOL_ICONS: Record<string, string> = {
     'LibLib': `${ASSET_BASE}liblib-icon.jpg`   
 };
 
-// Project Data (only projects 1-5 retained per user request)
+// Project Data
 export const PROJECTS_DATA = [
     { 
             id: 1, 
@@ -362,5 +409,29 @@ export const PROJECTS_DATA = [
           `${ASSET_BASE}Project5-10.jpg`,
           `${ASSET_BASE}Project5-11.jpg`
       ]
+  },
+  {
+      id: 6,
+      title: '2025-2026 AI VIDEO 视频',
+      label: 'AI VIDEO',
+      year: '2025-2026',
+      color: '#AA88EE',
+      intensity: 4,
+      img: `${ASSET_BASE}project6-1.jpg`,
+      previewBgImg: `${ASSET_BASE}project6-1.jpg`,
+      desc: 'AI 视频方向探索：节奏、叙事与视觉风格统一。',
+      tools: ['Jimeng', 'Jianying', 'Gemini','Chartgpt'],
+      layout: 'video-ai',
+      videoAiItems: VIDEO_AI_ITEMS,
+      horizontalData: VIDEO_AI_ITEMS.map((item) => ({
+          id: item.id,
+          title: item.title,
+          img: item.posterUrl,
+          video: item.videoUrl,
+          width: 320,
+          height: 560,
+          flippedWidth: 960,
+          flippedHeight: 540
+      }))
   }
 ];
