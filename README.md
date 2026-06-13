@@ -1,20 +1,35 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# FanRonghuan Portfolio
 
-# Run and deploy your AI Studio app
+一个用于展示个人项目、设计审美与前端实现能力的作品集网站。
 
-This contains everything you need to run your app locally.
+## Live Website
 
-View your app in AI Studio: https://ai.studio/apps/409a27d8-332a-41a1-b7b3-a04600e736d6
+[Click here to visit my portfolio](https://fanronghuan.github.io/Portfolio/)
+
+## About This Project
+
+This portfolio is built to present:
+
+- Selected projects and case studies
+- Personal design style and visual exploration
+- Front-end development skills with responsive interaction
+
+## Tech Stack
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- Framer Motion
+- GSAP
 
 ## Run Locally
 
-**Prerequisites:**  Node.js
-
+**Prerequisites:** Node.js
 
 1. Install dependencies:
    `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
+2. Start the development server:
    `npm run dev`
+3. Build for production:
+   `npm run build`
