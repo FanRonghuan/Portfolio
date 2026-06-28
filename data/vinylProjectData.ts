@@ -180,7 +180,7 @@ export const PROJECTS_DATA = [
             label: 'BRAND DESIGN', 
             year: '2024.04', 
             client: 'CLIENT', 
-            color: '#FF7F27', 
+            color: '#7BD7FF', 
             intensity: 5,
         img: 'assets/Project1-1.jpg', 
         previewBgImg: 'assets/Project1-1.jpg', 
@@ -364,16 +364,7 @@ export const PROJECTS_DATA = [
           `${ASSET_BASE}Project4-10.jpg`,
           `${ASSET_BASE}Project4-11.jpg`
       ],
-      extraContent: [
-          {
-              type: 'video',
-              url: 'https://www.w3schools.com/html/mov_bbb.mp4',
-              y: 16600, 
-              width: 800, 
-              scale: 1,
-              x: 0 
-          }
-      ]
+      extraContent: []
   },
   { 
       id: 5, 

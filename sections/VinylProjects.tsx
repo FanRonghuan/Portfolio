@@ -276,17 +276,17 @@ const PREVIEW_CARD_WIDTH = '750px';
 const PREVIEW_CARD_HEIGHT = '280px';
 
 // 🟢 4. CARD POSITIONS (LOCKED AS REQUESTED)
-// Increased spacing to 25% between cards, middle cards larger for better hover/click
+// Increased spacing slightly so each card gets a cleaner hover lane.
 const CARD_POSITIONS = [
-    { left: '30%',   top: '65%',  rotate: -12, zIndex: 1, scale: 0.82 },
-    { left: '55%',   top: '56%',  rotate: 6,   zIndex: 2, scale: 0.84 },
-    // Middle three - larger and higher zIndex for easier hover/click
-    { left: '80%',   top: '62%',  rotate: -4,  zIndex: 7, scale: 0.95 },
-    { left: '105%',  top: '59%',  rotate: 6,   zIndex: 8, scale: 0.98 },
-    { left: '130%',  top: '56%',  rotate: -2,  zIndex: 7, scale: 0.95 },
-    { left: '155%',  top: '63%',  rotate: 10,  zIndex: 5, scale: 0.83 },
-    { left: '180%',  top: '61%',  rotate: -8,  zIndex: 4, scale: 0.79 },
-    { left: '205%',  top: '58%',  rotate: 4,   zIndex: 3, scale: 0.80 },
+    { left: '24%',   top: '65%',  rotate: -12, zIndex: 1, scale: 0.82 },
+    { left: '50%',   top: '56%',  rotate: 6,   zIndex: 2, scale: 0.84 },
+    // Middle three stay visually central, but with slightly more breathing room.
+    { left: '78%',   top: '62%',  rotate: -4,  zIndex: 7, scale: 0.95 },
+    { left: '106%',  top: '59%',  rotate: 6,   zIndex: 8, scale: 0.98 },
+    { left: '134%',  top: '56%',  rotate: -2,  zIndex: 7, scale: 0.95 },
+    { left: '162%',  top: '63%',  rotate: 10,  zIndex: 5, scale: 0.83 },
+    { left: '188%',  top: '61%',  rotate: -8,  zIndex: 4, scale: 0.79 },
+    { left: '214%',  top: '58%',  rotate: 4,   zIndex: 3, scale: 0.80 },
 ];
 
 // --- DEPTH CONFIGURATION ---
@@ -1158,6 +1158,8 @@ const PulseDisc: React.FC<{
     isAnyHovered: boolean;
 }> = ({ project, style, onClick, onHoverStart, onHoverEnd, isHovered, isAnyHovered }) => {
     const opacity = isHovered ? 1 : (isAnyHovered ? 0.2 : 1);
+    const hoverScale = isHovered ? 1.22 : style.scale;
+    const hoverLift = isHovered ? -52 : 0;
     
     return (
         <motion.div
@@ -1172,17 +1174,19 @@ const PulseDisc: React.FC<{
                 filter: isHovered ? 'drop-shadow(0 0 30px rgba(255,255,255,0.5)) drop-shadow(0 20px 60px rgba(0,0,0,0.8))' : 'drop-shadow(0 10px 30px rgba(0,0,0,0.4))'
             }}
             animate={{
-                scale: isHovered ? 1.5 : style.scale,
+                scale: hoverScale,
                 rotate: isHovered ? 0 : style.rotate,
                 opacity: opacity,
-                y: isHovered ? -100 : 0
+                y: hoverLift
             }}
             transition={{ type: "spring", stiffness: 150, damping: 18 }}
             onClick={onClick}
             onMouseEnter={onHoverStart}
             onMouseLeave={onHoverEnd}
         >
-            <div className="relative w-full h-full group">
+            <div className="group relative h-full w-full">
+                <div className="absolute -inset-x-8 -inset-y-6" />
+
                 {/* Main Card Body (Square with Rounded Corners) */}
                 <div className="absolute inset-0 rounded-[2rem] bg-deep-space border-2 transition-all duration-200 overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.6)] group-hover:border-white/60 group-hover:shadow-[0_0_50px_rgba(255,255,255,0.3),_0_20px_60px_rgba(0,0,0,0.8)]">
                     {/* Project Image */}
@@ -1528,27 +1532,28 @@ const GalleryModalView: React.FC<{ images: string[], projectId?: number, project
 
     return (
         // 🟢 MODAL CONTENT WRAPPER
-        <div className="relative w-full h-full bg-deep-space">
+        <div className={`relative w-full ${projectId === 1 ? 'h-auto' : 'h-full'} bg-deep-space`}>
             
             {/* 🟢 SCROLLABLE AREA */}
-            <div className="w-full h-full overflow-y-auto overflow-x-hidden floating-scrollbar relative z-10 p-0">
+            <div
+                className={`w-full overflow-y-auto overflow-x-hidden floating-scrollbar relative z-10 p-0 ${
+                    projectId === 1 ? 'h-auto max-h-full' : 'h-full'
+                }`}
+            >
                 {/* Real-time Indicator removed per request */}
 
-                <div 
+                <div
                     className="flex flex-col w-full relative"
-                    style={{ 
-                        // Project 1: auto height (only detailImages, no extra content)
-                        // Project 2: Changed to 'auto' to adapt to content height (fixed black space issue)
-                        // Project 4: Needs specific height for absolute elements at ~16400px
-                        minHeight: projectId === 1 ? 'auto' : (projectId === 4 ? '18000px' : 'auto')
+                    style={{
+                        minHeight: 'auto',
                     }}
                 >
                     
                     {projectId === 1 ? (
                         <>
-                            {/* 将所有 detailImages 按顺序垂直排列 */}
+                            {/* Project 1: lock the modal body to image content only */}
                             {images && images.length > 0 && images.map((src, i) => (
-                                <div className="w-full bg-black" key={i}>
+                                <div className="w-full bg-black leading-none" key={i}>
                                     <img src={src} className="w-full h-auto block" loading="lazy" decoding="async" alt={`P1 Part ${i+1}`} />
                                 </div>
                             ))}
@@ -1961,7 +1966,11 @@ const VinylProjects: React.FC = () => {
                                exit={{ y: 50, opacity: 0, scale: 0.9 }} 
                                transition={{ type: "spring", damping: 25, stiffness: 300 }}
                                // 🟢 MODAL SIZE: Fixed 1000px on Desktop
-                               className="relative w-[95vw] md:w-[1000px] h-[90vh] md:h-[95vh] rounded-[2rem] overflow-hidden flex flex-col pointer-events-auto shadow-2xl bg-deep-space border border-pulse-orange/20"
+                               className={`relative w-[95vw] md:w-[1000px] rounded-[2rem] overflow-hidden flex flex-col pointer-events-auto shadow-2xl bg-deep-space border border-pulse-orange/20 ${
+                                   selectedProject.id === 1
+                                       ? 'h-auto max-h-[90vh] md:max-h-[95vh]'
+                                       : 'h-[90vh] md:h-[95vh]'
+                               }`}
                                style={{
                                    boxShadow: '0 0 0 1px rgba(255,95,31,0.1) inset, 0 0 40px rgba(255,95,31,0.05) inset, 0 50px 100px -20px rgba(0,0,0,0.9)'
                                }}

@@ -53,7 +53,7 @@ const CONTACT_CARDS = [
         id: 'email',
         title: 'EMAIL',
         value: '1973886674@qq.com',
-        color: '#F97316', // Orange
+        color: '#38BDF8', // Sky Blue
         icon: ICONS.Email,
         position: { x: '-80%', y: '15%' }, 
         rotation: 5,

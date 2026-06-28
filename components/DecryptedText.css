@@ -1,0 +1,12 @@
+.nav-decrypt {
+  color: inherit;
+  transition:
+    color 240ms ease,
+    opacity 240ms ease,
+    text-shadow 240ms ease;
+}
+
+.nav-decrypt-encrypted {
+  color: rgba(168, 220, 255, 0.82);
+  text-shadow: 0 0 10px rgba(112, 206, 255, 0.18);
+}

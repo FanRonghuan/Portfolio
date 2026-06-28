@@ -33,7 +33,7 @@ const skills = [
         title: "Visual Design", 
         percent: 92, 
         percentText: "92%", 
-        color: "#F59E0B", 
+        color: "#9ADFFF", 
         tags: "运营设计, 平面设计, 品牌设计",
         previewImg: `${ASSET_BASE}skills-1.jpg`,
         previewRotate: -6,
@@ -55,7 +55,7 @@ const skills = [
         title: "3D Design", 
         percent: 82, 
         percentText: "82%", 
-        color: "#EA580C", 
+        color: "#6EBEFF", 
         tags: "C4D, Blender, Rendering",
         previewImg: `${ASSET_BASE}skills-3.jpg`,
         previewRotate: -12,
@@ -145,18 +145,21 @@ const RadarScan: React.FC<{ color: string, className?: string }> = ({ color, cla
     return (
         <div className={`relative ${className}`}>
             <motion.div 
-                className="absolute inset-0 rounded-full border border-pulse-orange/20"
+                className="absolute inset-0 rounded-full border"
+                style={{ borderColor: 'rgba(148, 219, 255, 0.2)' }}
                 animate={{ scale: [1, 1.5], opacity: [0.5, 0] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
             />
             <motion.div 
-                className="absolute inset-0 rounded-full border border-pulse-orange/20"
+                className="absolute inset-0 rounded-full border"
+                style={{ borderColor: 'rgba(148, 219, 255, 0.2)' }}
                 animate={{ scale: [1, 2], opacity: [0.3, 0] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeOut", delay: 0.5 }}
             />
             <div className="absolute inset-0 rounded-full border border-white/10" />
             <motion.div 
-                className="absolute inset-0 rounded-full border-t-2 border-pulse-orange/40"
+                className="absolute inset-0 rounded-full border-t-2"
+                style={{ borderTopColor: 'rgba(148, 219, 255, 0.42)' }}
                 animate={{ rotate: 360 }}
                 transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
             />
@@ -273,7 +276,10 @@ const GlassSkillCard: React.FC<{
                 
                 {/* Glass Background */}
                 <div className="absolute inset-0 bg-deep-space/60 backdrop-blur-xl border border-white/10 rounded-[2rem] z-10 overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-pulse-orange/5 to-transparent opacity-40 pointer-events-none" />
+                    <div
+                        className="absolute inset-0 opacity-50 pointer-events-none"
+                        style={{ background: 'linear-gradient(135deg, rgba(148, 219, 255, 0.14) 0%, transparent 52%)' }}
+                    />
                     
                     {/* Content */}
                     <div className="relative z-20 p-6 flex items-center gap-6 h-full">
@@ -281,7 +287,7 @@ const GlassSkillCard: React.FC<{
                         <div className="relative w-24 h-24 flex-shrink-0">
                             <RadarScan color={skill.color} className="absolute inset-0" />
                             <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="font-space-grotesk font-bold text-2xl text-white/80 group-hover:text-pulse-orange transition-colors">
+                                <span className="font-space-grotesk font-bold text-2xl text-white/80 group-hover:text-[#94DBFF] transition-colors">
                                     {skill.title.charAt(0)}
                                 </span>
                             </div>
@@ -344,7 +350,7 @@ const SoftwareGlassButton: React.FC<{
                 >
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-300" style={{ backgroundColor: sw.color }} />
                     {/* Original Text Size */}
-                    <span className="font-space-grotesk font-bold text-xl text-white/80 group-hover:text-pulse-orange transition-colors z-10">
+                    <span className="font-space-grotesk font-bold text-xl text-white/80 group-hover:text-[#94DBFF] transition-colors z-10">
                         {sw.name}
                     </span>
                 </motion.div>

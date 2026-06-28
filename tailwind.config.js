@@ -18,7 +18,7 @@ export default {
       },
       colors: {
         // 保留你现有的
-        'pulse-orange': '#FF5F1F',
+        'pulse-orange': '#7BD7FF',
         'spectrum-purple': '#8A2BE2',
         'deep-space': '#05070A',
         'signal-gray': '#4A4A4A',
