@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { motion, useScroll, useMotionValueEvent, useMotionValue, useMotionTemplate } from 'framer-motion';
 import Magnetic from './Magnetic';
 import DecryptedText from './DecryptedText';
+import LiquidIconButton from './LiquidIconButton';
 import './DecryptedText.css';
 
 const SpotlightLink: React.FC<{
@@ -133,11 +134,14 @@ const Navbar: React.FC = () => {
             <motion.a
               href="#contact"
               onClick={(e) => handleScroll(e, '#contact')}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={`ml-4 block rounded-full border px-6 py-2 text-[10px] font-bold tracking-widest backdrop-blur-md transition-all ${isScrolled ? 'border-black/10 bg-white/30 text-gray-600 hover:bg-white/50 hover:text-black' : 'border-white/20 bg-white/10 text-white/70 hover:bg-white/20 hover:text-white'}`}
+              className="ml-4 block"
             >
-              <span>
+              <LiquidIconButton
+                className="px-6 py-2 text-[10px] font-bold tracking-widest text-black/70"
+                glowClassName="bg-white/30"
+                label="Contact"
+                tone="light"
+              >
                 <DecryptedText
                   text="CONTACT"
                   speed={36}
@@ -146,7 +150,7 @@ const Navbar: React.FC = () => {
                   className="nav-decrypt"
                   encryptedClassName="nav-decrypt-encrypted"
                 />
-              </span>
+              </LiquidIconButton>
             </motion.a>
           </Magnetic>
         </div>

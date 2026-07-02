@@ -9,6 +9,7 @@ import {
   useTransform,
 } from 'framer-motion';
 import { createPortal } from 'react-dom';
+import LiquidIconButton from '../components/LiquidIconButton';
 
 const ASSET_BASE = `${import.meta.env.BASE_URL}assets/`;
 const PROFILE_ACCENT = '#93DAFF';
@@ -380,15 +381,17 @@ const ExperienceModalCard: React.FC<{
       <div className="pointer-events-none absolute inset-0 z-20 rounded-[2.5rem] border border-white/50 mix-blend-overlay" />
       <div className="absolute inset-0 rounded-[2.5rem] bg-black/80 backdrop-blur-[60px] saturate-150 shadow-2xl" />
       <div className="relative z-20 p-10 md:p-14">
-        <button
+        <LiquidIconButton
           onClick={onClose}
-          className="absolute right-6 top-6 flex h-10 w-10 items-center justify-center rounded-full border border-white/5 bg-white/5 text-white/60 backdrop-blur-sm transition-colors hover:bg-white/10"
+          className="absolute right-6 top-6 h-10 w-10 text-white/80"
+          glowClassName="bg-cyan-100/10"
+          label="Close profile dialog"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <line x1="18" y1="6" x2="6" y2="18" />
             <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
-        </button>
+        </LiquidIconButton>
         <div className="mb-8 flex items-center gap-4">
           <div
             className="flex h-16 w-16 items-center justify-center rounded-2xl border border-white/20 text-xl font-bold text-white shadow-lg"

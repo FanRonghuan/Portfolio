@@ -1,10 +1,11 @@
 ﻿
 import React, { useState, useRef, useMemo, useEffect, useLayoutEffect } from 'react';
-import { motion, AnimatePresence, useTransform, useMotionValue, useSpring, useScroll, useMotionTemplate, Variants } from 'framer-motion';
+import { motion, AnimatePresence, useTransform, useMotionValue, useSpring, useScroll, Variants } from 'framer-motion';
 import { createPortal } from 'react-dom'; 
 import gsap from 'gsap';
 import Spotlight3D from '../components/Spotlight3D';
 import VideoAIDetail from '../components/VideoAIDetail';
+import LiquidIconButton from '../components/LiquidIconButton';
 
 // 🔒 DATA IMPORTED FROM SEPARATE FILE TO PREVENT OVERWRITING
 import {
@@ -272,17 +273,19 @@ const PROJECTS_SCALE = 0.7;
 // Increased from 600×338 to 650×365 for better click target
 const CARD_WIDTH = '650px';
 const CARD_HEIGHT = '365px';
+const CARD_WIDTH_PX = 650;
+const CARD_HEIGHT_PX = 365;
 const PREVIEW_CARD_WIDTH = '750px';
 const PREVIEW_CARD_HEIGHT = '280px';
 
 // 🟢 4. CARD POSITIONS (LOCKED AS REQUESTED)
 // Increased spacing slightly so each card gets a cleaner hover lane.
 const CARD_POSITIONS = [
-    { left: '24%',   top: '65%',  rotate: -12, zIndex: 1, scale: 0.82 },
-    { left: '50%',   top: '56%',  rotate: 6,   zIndex: 2, scale: 0.84 },
+    { left: '22%',   top: '65%',  rotate: -12, zIndex: 1, scale: 0.82 },
+    { left: '49%',   top: '56%',  rotate: 6,   zIndex: 5, scale: 0.86 },
     // Middle three stay visually central, but with slightly more breathing room.
-    { left: '78%',   top: '62%',  rotate: -4,  zIndex: 7, scale: 0.95 },
-    { left: '106%',  top: '59%',  rotate: 6,   zIndex: 8, scale: 0.98 },
+    { left: '82%',   top: '62%',  rotate: -4,  zIndex: 7, scale: 0.95 },
+    { left: '112%',  top: '59%',  rotate: 6,   zIndex: 8, scale: 0.98 },
     { left: '134%',  top: '56%',  rotate: -2,  zIndex: 7, scale: 0.95 },
     { left: '162%',  top: '63%',  rotate: 10,  zIndex: 5, scale: 0.83 },
     { left: '188%',  top: '61%',  rotate: -8,  zIndex: 4, scale: 0.79 },
@@ -525,22 +528,16 @@ const Project2FlipVideo: React.FC<{ config: any }> = ({ config }) => {
                         className="absolute inset-0 flex items-center justify-center cursor-pointer"
                         onClick={handleFlip}
                     >
-                        <motion.div 
-                            whileHover={{ scale: 1.1 }}
-                            className="w-full h-full rounded-full bg-white/20 backdrop-blur-xl border border-white/50 flex items-center justify-center shadow-[0_20px_40px_rgba(0,0,0,0.2)]"
+                        <LiquidIconButton
+                            className={`h-full w-full ${isHidden ? 'min-h-[50px] min-w-[50px]' : ''} text-[#E8F8FF]`}
+                            iconClassName={`text-[#D40411] transition-transform duration-300 ${isHidden ? '' : 'group-hover:scale-110'}`}
+                            glowClassName="bg-[#D40411]/10"
+                            label="Play project video"
                         >
-                            {/* 🟢 BUTTON COLOR: #D40411 */}
-                            <div className={`rounded-full bg-white text-[#D40411] flex items-center justify-center shadow-inner transition-all duration-300 ${isHidden ? 'w-8 h-8' : 'w-16 h-16 group-hover:scale-110'}`}>
-                                <svg width={isHidden ? "14" : "14"} height={isHidden ? "14" : "24"} viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                                </svg>
-                            </div>
-                            
-                            {/* Pulse Ring (Hidden when minimized) */}
-                            {!isHidden && (
-                                <div className="absolute inset-0 rounded-full border border-white/40 animate-ping opacity-20" />
-                            )}
-                        </motion.div>
+                            <svg width={isHidden ? "14" : "24"} height={isHidden ? "14" : "24"} viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                            </svg>
+                        </LiquidIconButton>
                     </div>
 
                     {/* INDEPENDENT CLOSE BUTTON AREA */}
@@ -550,16 +547,16 @@ const Project2FlipVideo: React.FC<{ config: any }> = ({ config }) => {
                             onClick={handleHide}
                             onMouseDown={(e) => e.stopPropagation()}
                         >
-                            <motion.div
-                                className="w-8 h-8 bg-white text-gray-500 hover:bg-gray-200 border border-gray-200 rounded-full flex items-center justify-center shadow-md"
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.9 }}
+                            <LiquidIconButton
+                                className="h-8 w-8 text-gray-500"
+                                glowClassName="bg-white/20"
+                                label="Hide video trigger"
                             >
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                     <line x1="18" y1="6" x2="6" y2="18"></line>
                                     <line x1="6" y1="6" x2="18" y2="18"></line>
                                 </svg>
-                            </motion.div>
+                            </LiquidIconButton>
                         </div>
                     )}
                 </div>
@@ -591,15 +588,17 @@ const Project2FlipVideo: React.FC<{ config: any }> = ({ config }) => {
                     />
                     
                     {/* Close Video Button */}
-                    <button 
+                    <LiquidIconButton
                         onClick={handleClose}
-                        className="absolute top-4 right-4 w-10 h-10 bg-black/50 hover:bg-[#D40411] text-white rounded-full flex items-center justify-center backdrop-blur-md transition-colors border border-white/10 z-20 shadow-lg"
+                        className="absolute right-4 top-4 z-20 h-10 w-10 text-white"
+                        glowClassName="bg-[#D40411]/16"
+                        label="Close video"
                     >
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
                             <line x1="6" y1="6" x2="18" y2="18"></line>
                         </svg>
-                    </button>
+                    </LiquidIconButton>
                 </div>
             </motion.div>
         </div>
@@ -688,6 +687,7 @@ const FlipVideoCard: React.FC<{
     const [isLoading, setIsLoading] = useState(true);
     const videoRef = useRef<HTMLVideoElement>(null);
     const cardRef = useRef<HTMLDivElement>(null);
+    const [isHovered, setIsHovered] = useState(false);
     
     // Mouse tracking for spotlight border
     const mouseX = useMotionValue(0);
@@ -766,6 +766,8 @@ const FlipVideoCard: React.FC<{
             variants={jitterVariants}
             transition={{ type: "spring", stiffness: 60, damping: 12 }}
             onMouseMove={handleMouseMove}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
             onClick={handleFlip}
         >
              {/* 🟢 NEW: INTRO TEXT */}
@@ -954,6 +956,10 @@ const ProjectPreviewCard: React.FC<{
     
     // Check side
     const isLeft = side === 'left';
+    const cardRef = useRef<HTMLDivElement>(null);
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
+    const [isHovered, setIsHovered] = useState(false);
 
     // 🟢 COLOR CONFIGURATION
     const textColors = project.previewTextColor || {
@@ -984,8 +990,16 @@ const ProjectPreviewCard: React.FC<{
         }
     };
 
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (!cardRef.current) return;
+        const rect = cardRef.current.getBoundingClientRect();
+        mouseX.set(e.clientX - rect.left);
+        mouseY.set(e.clientY - rect.top);
+    };
+
     return (
         <motion.div
+            ref={cardRef}
             className="absolute z-[100] pointer-events-none"
             style={{
                 left: isLeft ? '10%' : 'auto',
@@ -999,8 +1013,15 @@ const ProjectPreviewCard: React.FC<{
             animate={{ opacity: 1, x: 0, scale: 1, rotateY: 0 }}
             exit={{ opacity: 0, x: isLeft ? -50 : 50, scale: 0.9 }}
             transition={{ type: "spring", stiffness: 150, damping: 20 }}
-            onMouseEnter={handleProjectEnter}
-            onMouseLeave={handleProjectLeave}
+            onMouseEnter={() => {
+                setIsHovered(true);
+                handleProjectEnter();
+            }}
+            onMouseLeave={() => {
+                setIsHovered(false);
+                handleProjectLeave();
+            }}
+            onMouseMove={handleMouseMove}
             onClick={() => setSelectedProject(project)}
         >
              {/* 🟢 Main Card Container */}
@@ -1016,7 +1037,6 @@ const ProjectPreviewCard: React.FC<{
                     />
                     <div className="absolute inset-0 bg-gradient-to-br from-black via-transparent to-black/60" />
                 </div>
-
                 {/* Content */}
                 <div className="relative z-10 h-full p-16 flex flex-col justify-center">
                     <div className="flex items-center gap-4 mb-6">
@@ -1160,16 +1180,29 @@ const PulseDisc: React.FC<{
     const opacity = isHovered ? 1 : (isAnyHovered ? 0.2 : 1);
     const hoverScale = isHovered ? 1.22 : style.scale;
     const hoverLift = isHovered ? -52 : 0;
+    const hitPaddingX = project.id === 2 ? 44 : project.id === 5 ? 58 : 22;
+    const hitPaddingY = project.id === 2 ? 28 : project.id === 5 ? 34 : 16;
+    const cardRef = useRef<HTMLDivElement>(null);
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (!cardRef.current) return;
+        const rect = cardRef.current.getBoundingClientRect();
+        mouseX.set(e.clientX - rect.left - hitPaddingX);
+        mouseY.set(e.clientY - rect.top - hitPaddingY);
+    };
     
     return (
         <motion.div
+            ref={cardRef}
             className="absolute cursor-pointer will-change-transform"
             style={{
                 left: style.left,
                 top: style.top,
-                width: CARD_WIDTH,
-                height: CARD_HEIGHT,
-                zIndex: isHovered ? 100 : style.zIndex,
+                width: `${CARD_WIDTH_PX + hitPaddingX * 2}px`,
+                height: `${CARD_HEIGHT_PX + hitPaddingY * 2}px`,
+                zIndex: isHovered ? 100 : (project.id === 5 ? Math.max(style.zIndex, 9) : style.zIndex),
                 transformStyle: "preserve-3d",
                 filter: isHovered ? 'drop-shadow(0 0 30px rgba(255,255,255,0.5)) drop-shadow(0 20px 60px rgba(0,0,0,0.8))' : 'drop-shadow(0 10px 30px rgba(0,0,0,0.4))'
             }}
@@ -1183,12 +1216,20 @@ const PulseDisc: React.FC<{
             onClick={onClick}
             onMouseEnter={onHoverStart}
             onMouseLeave={onHoverEnd}
+            onMouseMove={handleMouseMove}
         >
             <div className="group relative h-full w-full">
-                <div className="absolute -inset-x-8 -inset-y-6" />
 
                 {/* Main Card Body (Square with Rounded Corners) */}
-                <div className="absolute inset-0 rounded-[2rem] bg-deep-space border-2 transition-all duration-200 overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.6)] group-hover:border-white/60 group-hover:shadow-[0_0_50px_rgba(255,255,255,0.3),_0_20px_60px_rgba(0,0,0,0.8)]">
+                <div
+                    className="absolute rounded-[2rem] bg-deep-space border-2 transition-all duration-200 overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.6)] group-hover:border-white/60 group-hover:shadow-[0_0_50px_rgba(255,255,255,0.3),_0_20px_60px_rgba(0,0,0,0.8)]"
+                    style={{
+                        left: `${hitPaddingX}px`,
+                        right: `${hitPaddingX}px`,
+                        top: `${hitPaddingY}px`,
+                        bottom: `${hitPaddingY}px`,
+                    }}
+                >
                     {/* Project Image */}
                     <div className="absolute inset-0 overflow-hidden opacity-80 group-hover:opacity-100 transition-all duration-300">
                         <img src={project.img} alt={project.title} className="w-full h-full object-cover brightness-95 group-hover:brightness-110 transition-all duration-300" />
@@ -1202,9 +1243,9 @@ const PulseDisc: React.FC<{
                 </div>
 
                 {/* ID Overlay (Top Left) */}
-                <div className="absolute top-4 left-4 z-20">
+                <div className="absolute z-20" style={{ top: `${hitPaddingY + 16}px`, left: `${hitPaddingX + 16}px` }}>
                     <motion.div 
-                        className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border-2 border-white/30 flex items-center justify-center text-white font-albert-black text-sm shadow-xl group-hover:border-white/80 group-hover:bg-white/20 transition-all duration-200"
+                        className="pointer-events-none w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border-2 border-white/30 flex items-center justify-center text-white font-albert-black text-sm shadow-xl group-hover:border-white/80 group-hover:bg-white/20 transition-all duration-200"
                         animate={isHovered ? { scale: 1.2 } : { scale: 1 }}
                     >
                         {project.id}
@@ -1217,290 +1258,181 @@ const PulseDisc: React.FC<{
 
 // SignalMonitor removed per user request (UI: orange signal box)
 
-const Project5VelocityGallery: React.FC<{ images: string[] }> = ({ images }) => {
-    const viewportRef = useRef<HTMLDivElement>(null);
-    const trackRef = useRef<HTMLDivElement>(null);
-    const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-    const positionRef = useRef(0);
-    const velocityRef = useRef(0);
-    const hoverVelocityRef = useRef(0);
-    const hoverActiveRef = useRef(false);
-    const frameRef = useRef<number | null>(null);
-    const settleRef = useRef<number | null>(null);
-    const initializedRef = useRef(false);
-    const dragRef = useRef({ active: false, pointerId: -1, lastX: 0, lastTime: 0 });
-    const metricsRef = useRef({ sequenceWidth: 0, viewportWidth: 0, padding: 0 });
-    const [trackPadding, setTrackPadding] = useState(0);
-    const [activeCardIndex, setActiveCardIndex] = useState<number | null>(null);
+const Project5VelocityGallery: React.FC<{ images: string[]; onClose: () => void }> = ({ images, onClose }) => {
+    const [rotation, setRotation] = useState(0);
+    const [isInteracting, setIsInteracting] = useState(false);
+    const galleryRef = useRef<HTMLDivElement>(null);
+    const dragRef = useRef({ active: false, startX: 0, startRotation: 0 });
+    const autoRotateRef = useRef<number | null>(null);
+    const interactionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    const repeatedImages = useMemo(() => Array.from({ length: 5 }, () => images).flat(), [images]);
-    const isCoarsePointer = typeof window !== 'undefined' ? window.matchMedia('(pointer: coarse)').matches : false;
-
-    const clampVelocity = (value: number) => Math.max(-28, Math.min(28, value));
-
-    const wrapPosition = () => {
-        const { sequenceWidth } = metricsRef.current;
-        if (!sequenceWidth) return;
-
-        const min = -sequenceWidth * 3;
-        const max = -sequenceWidth;
-
-        if (positionRef.current < min) {
-            positionRef.current += sequenceWidth * 2;
-        } else if (positionRef.current > max) {
-            positionRef.current -= sequenceWidth * 2;
-        }
-    };
-
-    const updateCardFocus = () => {
-        const viewport = viewportRef.current;
-        if (!viewport) return;
-
-        const viewportRect = viewport.getBoundingClientRect();
-        const viewportCenter = viewportRect.left + viewportRect.width / 2;
-
-        cardRefs.current.forEach((card) => {
-            if (!card) return;
-
-            const rect = card.getBoundingClientRect();
-            const cardCenter = rect.left + rect.width / 2;
-            const distance = Math.abs(cardCenter - viewportCenter);
-            const normalized = Math.min(distance / Math.max(viewportRect.width * 0.48, 1), 1);
-            const focus = 1 - normalized;
-            const direction = cardCenter < viewportCenter ? -1 : 1;
-
-            gsap.set(card, {
-                scale: 0.84 + focus * 0.28,
-                y: (1 - focus) * 20,
-                rotateZ: direction * (1 - focus) * 3.5,
-                opacity: 0.52 + focus * 0.48,
-                zIndex: Math.round(focus * 100),
-                filter: `brightness(${0.88 + focus * 0.18}) saturate(${0.92 + focus * 0.18})`
-            });
-        });
-    };
+    const posters = useMemo(() => {
+        return (images || []).map((src, index) => ({
+            id: `${src}-${index}`,
+            src,
+            title: `Poster ${String(index + 1).padStart(2, '0')}`,
+        }));
+    }, [images]);
 
     useEffect(() => {
-        const viewport = viewportRef.current;
-        if (!viewport) return;
+        const step = () => {
+            setRotation((prev) => (isInteracting ? prev : prev + 0.12));
+            autoRotateRef.current = requestAnimationFrame(step);
+        };
+
+        autoRotateRef.current = requestAnimationFrame(step);
+
+        return () => {
+            if (autoRotateRef.current !== null) {
+                cancelAnimationFrame(autoRotateRef.current);
+            }
+        };
+    }, [isInteracting]);
+
+    useEffect(() => {
+        const container = galleryRef.current;
+        if (!container) return;
+
+        const resumeAutoRotate = () => {
+            if (interactionTimeoutRef.current) {
+                clearTimeout(interactionTimeoutRef.current);
+            }
+            interactionTimeoutRef.current = setTimeout(() => {
+                setIsInteracting(false);
+            }, 220);
+        };
 
         const onWheel = (event: WheelEvent) => {
-            if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
             event.preventDefault();
-            velocityRef.current = clampVelocity(velocityRef.current + event.deltaY * 0.02);
+            setIsInteracting(true);
+            setRotation((prev) => prev + event.deltaY * 0.05);
+            resumeAutoRotate();
         };
 
         const onPointerDown = (event: PointerEvent) => {
             dragRef.current.active = true;
-            dragRef.current.pointerId = event.pointerId;
-            dragRef.current.lastX = event.clientX;
-            dragRef.current.lastTime = performance.now();
-            viewport.setPointerCapture(event.pointerId);
-            viewport.classList.add('cursor-grabbing');
-            velocityRef.current *= 0.25;
+            dragRef.current.startX = event.clientX;
+            dragRef.current.startRotation = rotation;
+            setIsInteracting(true);
+            container.setPointerCapture(event.pointerId);
         };
 
         const onPointerMove = (event: PointerEvent) => {
-            if (!dragRef.current.active || dragRef.current.pointerId !== event.pointerId) return;
-
-            const now = performance.now();
-            const deltaX = event.clientX - dragRef.current.lastX;
-            const deltaTime = Math.max(now - dragRef.current.lastTime, 16);
-
-            dragRef.current.lastX = event.clientX;
-            dragRef.current.lastTime = now;
-
-            positionRef.current += deltaX;
-            velocityRef.current = clampVelocity((deltaX / deltaTime) * 18);
-            wrapPosition();
-
-            if (trackRef.current) {
-                gsap.set(trackRef.current, { x: positionRef.current });
-            }
-
-            updateCardFocus();
+            if (!dragRef.current.active) return;
+            const deltaX = event.clientX - dragRef.current.startX;
+            setRotation(dragRef.current.startRotation + deltaX * 0.22);
         };
 
-        const endDrag = (pointerId: number) => {
-            if (dragRef.current.pointerId !== pointerId) return;
+        const endDrag = () => {
+            if (!dragRef.current.active) return;
             dragRef.current.active = false;
-            dragRef.current.pointerId = -1;
-            viewport.classList.remove('cursor-grabbing');
+            resumeAutoRotate();
         };
 
-        const onPointerUp = (event: PointerEvent) => endDrag(event.pointerId);
-        const onPointerCancel = (event: PointerEvent) => endDrag(event.pointerId);
-
-        const onPointerLeave = () => {
-            hoverActiveRef.current = false;
-            hoverVelocityRef.current = 0;
-            setActiveCardIndex(null);
-        };
-
-        viewport.addEventListener('wheel', onWheel, { passive: false });
-        viewport.addEventListener('pointerdown', onPointerDown);
-        viewport.addEventListener('pointermove', onPointerMove);
-        viewport.addEventListener('pointerup', onPointerUp);
-        viewport.addEventListener('pointercancel', onPointerCancel);
-        viewport.addEventListener('pointerleave', onPointerLeave);
+        container.addEventListener('wheel', onWheel, { passive: false });
+        container.addEventListener('pointerdown', onPointerDown);
+        container.addEventListener('pointermove', onPointerMove);
+        container.addEventListener('pointerup', endDrag);
+        container.addEventListener('pointercancel', endDrag);
+        container.addEventListener('pointerleave', endDrag);
 
         return () => {
-            viewport.removeEventListener('wheel', onWheel);
-            viewport.removeEventListener('pointerdown', onPointerDown);
-            viewport.removeEventListener('pointermove', onPointerMove);
-            viewport.removeEventListener('pointerup', onPointerUp);
-            viewport.removeEventListener('pointercancel', onPointerCancel);
-            viewport.removeEventListener('pointerleave', onPointerLeave);
-        };
-    }, []);
-
-    useLayoutEffect(() => {
-        const viewport = viewportRef.current;
-        const track = trackRef.current;
-        const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
-
-        if (!viewport || !track || cards.length === 0) return;
-
-        const first = cards[0];
-        const second = cards[1] ?? cards[0];
-        const cardWidth = first.getBoundingClientRect().width;
-        const gap = Math.max(0, second.offsetLeft - first.offsetLeft - first.offsetWidth);
-        const sequenceWidth = images.length * cardWidth + Math.max(0, images.length - 1) * gap;
-        const viewportWidth = viewport.getBoundingClientRect().width;
-
-        metricsRef.current = {
-            sequenceWidth,
-            viewportWidth,
-            padding: Math.max(0, viewportWidth / 2 - cardWidth / 2)
-        };
-        setTrackPadding(metricsRef.current.padding);
-
-        if (!initializedRef.current) {
-            positionRef.current = -sequenceWidth * 2;
-            initializedRef.current = true;
-        }
-
-        gsap.set(track, { x: positionRef.current, force3D: true });
-        updateCardFocus();
-
-        const tick = () => {
-            const baseSpeed = hoverActiveRef.current ? 0 : (isCoarsePointer ? -8.0 : -5.6);
-            const hoverBias = hoverActiveRef.current ? hoverVelocityRef.current : 0;
-
-            if (!dragRef.current.active) {
-                velocityRef.current += ((baseSpeed + hoverBias) - velocityRef.current) * (isCoarsePointer ? 0.075 : 0.055);
-            }
-
-            positionRef.current += velocityRef.current;
-            wrapPosition();
-
-            gsap.set(track, { x: positionRef.current, force3D: true });
-            updateCardFocus();
-
-            if (settleRef.current) {
-                window.clearTimeout(settleRef.current);
-            }
-
-            settleRef.current = window.setTimeout(() => {
-                velocityRef.current *= 0.985;
-            }, 60);
-
-            frameRef.current = window.requestAnimationFrame(tick);
-        };
-
-        frameRef.current = window.requestAnimationFrame(tick);
-
-        const onResize = () => {
-            const nextViewportWidth = viewport.getBoundingClientRect().width;
-            const nextCardWidth = cards[0].getBoundingClientRect().width;
-            metricsRef.current.viewportWidth = nextViewportWidth;
-            metricsRef.current.padding = Math.max(0, nextViewportWidth / 2 - nextCardWidth / 2);
-            setTrackPadding(metricsRef.current.padding);
-            updateCardFocus();
-        };
-
-        window.addEventListener('resize', onResize);
-
-        return () => {
-            window.removeEventListener('resize', onResize);
-            if (frameRef.current !== null) {
-                window.cancelAnimationFrame(frameRef.current);
-            }
-            if (settleRef.current) {
-                window.clearTimeout(settleRef.current);
+            container.removeEventListener('wheel', onWheel);
+            container.removeEventListener('pointerdown', onPointerDown);
+            container.removeEventListener('pointermove', onPointerMove);
+            container.removeEventListener('pointerup', endDrag);
+            container.removeEventListener('pointercancel', endDrag);
+            container.removeEventListener('pointerleave', endDrag);
+            if (interactionTimeoutRef.current) {
+                clearTimeout(interactionTimeoutRef.current);
             }
         };
-    }, [images.length, repeatedImages.length]);
+    }, [rotation]);
+
+    const anglePerItem = posters.length > 0 ? 360 / posters.length : 0;
+    const radius = posters.length > 8 ? 610 : 560;
 
     return (
         <div
-            ref={viewportRef}
-            className="relative h-full w-full overflow-hidden bg-[#050505] select-none touch-none cursor-grab"
-            style={{ touchAction: 'none' }}
+            ref={galleryRef}
+            className="relative h-full w-full overflow-hidden bg-[#040404] select-none touch-none"
+            style={{ touchAction: 'none', perspective: '2600px' }}
+            onClick={onClose}
         >
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,95,31,0.22),transparent_24%),radial-gradient(circle_at_top,rgba(255,255,255,0.07),transparent_20%),linear-gradient(180deg,rgba(255,255,255,0.01),transparent_18%)]" />
-            <div className="pointer-events-none absolute inset-0 opacity-[0.045] [background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:92px_92px] [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]" />
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_48%,rgba(255,255,255,0.06),transparent_18%),radial-gradient(circle_at_50%_70%,rgba(255,95,31,0.14),transparent_22%),linear-gradient(180deg,rgba(255,255,255,0.02),transparent_18%)]" />
+            <div className="pointer-events-none absolute inset-x-[18%] top-[7%] h-[18%] rounded-full bg-white/[0.025] blur-[100px]" />
+            <div className="pointer-events-none absolute inset-0 opacity-[0.04] [background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:88px_88px]" />
 
-            <div className="absolute inset-0 overflow-hidden">
-                <div
-                    ref={trackRef}
-                    className="absolute left-0 top-1/2 flex w-max -translate-y-1/2 items-center gap-0"
-                    style={{ paddingLeft: trackPadding, paddingRight: trackPadding, willChange: 'transform' }}
-                >
-                    {repeatedImages.map((src, index) => {
-                        const copyIndex = index % images.length;
-                        return (
+            <div className="pointer-events-none absolute inset-x-0 top-3 z-20 flex flex-col items-center gap-1 text-center md:top-4">
+                <h2 className="font-albert-black text-[2rem] tracking-tight text-white/55 md:text-[3.4rem]">Poster Gallery</h2>
+                <p className="font-albert-light text-[10px] uppercase tracking-[0.28em] text-white/18 md:text-xs">
+                    Scroll or drag to rotate the collection
+                </p>
+            </div>
+
+            <div
+                className="absolute inset-x-2 inset-y-2 md:inset-x-4 md:inset-y-4"
+                style={{
+                    transformStyle: 'preserve-3d',
+                    transform: `rotateY(${rotation}deg)`,
+                }}
+                onClick={(event) => event.stopPropagation()}
+            >
+                {posters.map((poster, index) => {
+                    const itemAngle = index * anglePerItem;
+                    const relative = ((itemAngle + rotation) % 360 + 360) % 360;
+                    const normalized = Math.abs(relative > 180 ? 360 - relative : relative);
+                    const focus = 1 - Math.min(normalized / 180, 1);
+                    const opacity = 0.24 + focus * 0.76;
+                    const scale = 0.72 + focus * 0.28;
+                    const blur = (1 - focus) * 1.5;
+                    const zDepth = Math.round(focus * 100);
+
+                    return (
+                        <div
+                            key={poster.id}
+                            className="absolute left-1/2 top-1/2"
+                            style={{
+                                width: 'min(21vw, 280px)',
+                                height: 'min(62vh, 620px)',
+                                marginLeft: 'min(-10.5vw, -140px)',
+                                marginTop: 'min(-26vh, -300px)',
+                                transformStyle: 'preserve-3d',
+                                transform: `rotateY(${itemAngle}deg) translateZ(${radius}px)`,
+                                opacity,
+                                zIndex: zDepth,
+                                transition: 'opacity 220ms linear, filter 220ms linear, transform 220ms linear',
+                                filter: `blur(${blur}px) brightness(${0.62 + focus * 0.42}) saturate(${0.7 + focus * 0.45})`,
+                            }}
+                        >
                             <div
-                                key={`${src}-${index}`}
-                                ref={(node) => {
-                                    cardRefs.current[index] = node;
+                                className="group relative h-full w-full overflow-hidden rounded-[1.75rem] border border-white/8 bg-white/[0.03] shadow-[0_24px_64px_rgba(0,0,0,0.34)]"
+                                style={{
+                                    transform: `scale(${scale}) rotateY(${(0.5 - focus) * 14}deg)`,
+                                    transformStyle: 'preserve-3d',
                                 }}
-                                        className="relative shrink-0"
-                                        style={{ width: 'clamp(190px, 56vw, 700px)', height: 'min(74vh, 820px)' }}
-                                        onPointerEnter={(event) => {
-                                            const rect = event.currentTarget.getBoundingClientRect();
-                                            const centerX = rect.left + rect.width / 2;
-                                            const direction = event.clientX < centerX ? -1 : 1;
-                                            hoverActiveRef.current = true;
-                                            hoverVelocityRef.current = direction * (isCoarsePointer ? 0.8 : 0.45);
-                                            setActiveCardIndex(index);
-                                        }}
-                                        onPointerMove={(event) => {
-                                            const rect = event.currentTarget.getBoundingClientRect();
-                                            const centerX = rect.left + rect.width / 2;
-                                            const normalized = (event.clientX - centerX) / Math.max(rect.width / 2, 1);
-                                            hoverActiveRef.current = true;
-                                            hoverVelocityRef.current = Math.max(-1.1, Math.min(1.1, normalized * (isCoarsePointer ? 1.2 : 0.8)));
-                                            setActiveCardIndex(index);
-                                        }}
-                                        onPointerLeave={() => {
-                                            hoverActiveRef.current = false;
-                                            hoverVelocityRef.current = 0;
-                                            setActiveCardIndex(null);
-                                        }}
                             >
+                                <div className="pointer-events-none absolute inset-0 rounded-[1.75rem] bg-gradient-to-b from-white/10 via-transparent to-black/18" />
+                                <div className="pointer-events-none absolute inset-[1px] rounded-[1.65rem] border border-white/12" />
                                 <img
-                                    src={src}
-                                    alt={`Project 5 Detail ${copyIndex + 1}`}
-                                            className="h-full w-full object-contain drop-shadow-[0_22px_72px_rgba(0,0,0,0.45)] transition-transform duration-300"
+                                    src={poster.src}
+                                    alt={poster.title}
+                                    className="h-full w-full object-cover"
                                     loading="lazy"
                                     decoding="async"
                                     draggable={false}
-                                            style={{
-                                                transform: activeCardIndex === index ? 'scale(1.015)' : 'scale(1)'
-                                            }}
                                 />
                             </div>
-                        );
-                    })}
-                </div>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );
 };
 
 // --- UPDATED COMPONENT: Gallery Modal View ---
-const GalleryModalView: React.FC<{ images: string[], projectId?: number, project?: any }> = ({ images, projectId, project }) => {
+const GalleryModalView: React.FC<{ images: string[], projectId?: number, project?: any; onClose?: () => void }> = ({ images, projectId, project, onClose }) => {
     if (project?.layout === 'video-ai') {
         return <VideoAIProjectView project={project} />;
     }
@@ -1527,18 +1459,16 @@ const GalleryModalView: React.FC<{ images: string[], projectId?: number, project
     }
 
     if (projectId === 5) {
-        return <Project5VelocityGallery images={images || []} />;
+        return <Project5VelocityGallery images={images || []} onClose={onClose || (() => {})} />;
     }
 
     return (
         // 🟢 MODAL CONTENT WRAPPER
-        <div className={`relative w-full ${projectId === 1 ? 'h-auto' : 'h-full'} bg-deep-space`}>
+        <div className="relative w-full h-full bg-deep-space">
             
             {/* 🟢 SCROLLABLE AREA */}
             <div
-                className={`w-full overflow-y-auto overflow-x-hidden floating-scrollbar relative z-10 p-0 ${
-                    projectId === 1 ? 'h-auto max-h-full' : 'h-full'
-                }`}
+                className="w-full h-full overflow-y-auto overflow-x-hidden floating-scrollbar relative z-10 p-0 overscroll-contain"
             >
                 {/* Real-time Indicator removed per request */}
 
@@ -1551,7 +1481,7 @@ const GalleryModalView: React.FC<{ images: string[], projectId?: number, project
                     
                     {projectId === 1 ? (
                         <>
-                            {/* Project 1: lock the modal body to image content only */}
+                            {/* Project 1: render the full sequence inside a dedicated scroll container */}
                             {images && images.length > 0 && images.map((src, i) => (
                                 <div className="w-full bg-black leading-none" key={i}>
                                     <img src={src} className="w-full h-auto block" loading="lazy" decoding="async" alt={`P1 Part ${i+1}`} />
@@ -1966,31 +1896,41 @@ const VinylProjects: React.FC = () => {
                                exit={{ y: 50, opacity: 0, scale: 0.9 }} 
                                transition={{ type: "spring", damping: 25, stiffness: 300 }}
                                // 🟢 MODAL SIZE: Fixed 1000px on Desktop
-                               className={`relative w-[95vw] md:w-[1000px] rounded-[2rem] overflow-hidden flex flex-col pointer-events-auto shadow-2xl bg-deep-space border border-pulse-orange/20 ${
-                                   selectedProject.id === 1
-                                       ? 'h-auto max-h-[90vh] md:max-h-[95vh]'
-                                       : 'h-[90vh] md:h-[95vh]'
-                               }`}
-                               style={{
-                                   boxShadow: '0 0 0 1px rgba(255,95,31,0.1) inset, 0 0 40px rgba(255,95,31,0.05) inset, 0 50px 100px -20px rgba(0,0,0,0.9)'
-                               }}
-                               onClick={(e) => e.stopPropagation()}
-                            >
-                               <div className="absolute inset-0 rounded-[2rem] pointer-events-none z-50 border border-white/5" />
-                               <button 
-                                   onClick={() => setSelectedProject(null)} 
-                                   className="absolute top-6 right-6 z-[60] w-12 h-12 flex items-center justify-center rounded-full transition-all border border-pulse-orange/30 bg-deep-space/80 text-white hover:bg-pulse-orange hover:text-deep-space hover:border-pulse-orange shadow-2xl group"
-                               >
-                                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="group-hover:rotate-90 transition-transform duration-300"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                               </button>
+                                className={`relative overflow-hidden flex flex-col pointer-events-auto shadow-2xl bg-deep-space ${
+                                    selectedProject.id === 5
+                                        ? 'w-[100vw] h-[100vh] rounded-none border-0'
+                                        : 'w-[95vw] md:w-[1000px] rounded-[2rem] border border-pulse-orange/20 h-[90vh] md:h-[95vh]'
+                                }`}
+                                style={{
+                                    boxShadow: selectedProject.id === 5
+                                        ? '0 40px 120px rgba(0,0,0,0.88)'
+                                        : '0 0 0 1px rgba(255,95,31,0.1) inset, 0 0 40px rgba(255,95,31,0.05) inset, 0 50px 100px -20px rgba(0,0,0,0.9)'
+                                }}
+                                onClick={(e) => e.stopPropagation()}
+                             >
+                                {selectedProject.id !== 5 && (
+                                    <div className="absolute inset-0 rounded-[2rem] pointer-events-none z-50 border border-white/5" />
+                                )}
+                                {selectedProject.id !== 5 && (
+                                    <LiquidIconButton
+                                        onClick={() => setSelectedProject(null)}
+                                        className="absolute top-6 right-6 z-[60] h-12 w-12 text-white"
+                                        iconClassName="transition-transform duration-300 group-hover:rotate-90"
+                                        glowClassName="bg-cyan-200/12"
+                                        label="Close project modal"
+                                    >
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                    </LiquidIconButton>
+                                )}
 
-                               {selectedProject.layout === 'gallery' || selectedProject.layout === 'horizontal-scroll' || selectedProject.layout === 'video-ai' ? (
-                                   <GalleryModalView 
-                                       images={selectedProject.detailImages || []} 
-                                       projectId={selectedProject.id} 
-                                       project={selectedProject} 
-                                   />
-                               ) : (
+                                {selectedProject.layout === 'gallery' || selectedProject.layout === 'horizontal-scroll' || selectedProject.layout === 'video-ai' ? (
+                                    <GalleryModalView 
+                                        images={selectedProject.detailImages || []} 
+                                        projectId={selectedProject.id} 
+                                        project={selectedProject} 
+                                        onClose={() => setSelectedProject(null)}
+                                    />
+                                ) : (
                                    <div className="w-full h-full overflow-y-auto floating-scrollbar relative z-10 bg-deep-space">
                                        {/* Reduced Header Height */}
                                        <div className="relative w-full h-[35vh] md:h-[40vh] bg-black flex items-center justify-center overflow-hidden">

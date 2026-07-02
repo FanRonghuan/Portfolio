@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { motion, useScroll, useTransform, useSpring, useMotionValue, useMotionTemplate, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 // --- CONFIGURATION ---
 const ASSET_BASE = `${import.meta.env.BASE_URL}assets/`;

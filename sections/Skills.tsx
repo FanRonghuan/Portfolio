@@ -273,7 +273,6 @@ const GlassSkillCard: React.FC<{
                         WebkitMaskImage: useMotionTemplate`radial-gradient(300px circle at ${mouseX}px ${mouseY}px, black, transparent)`,
                     }}
                 />
-                
                 {/* Glass Background */}
                 <div className="absolute inset-0 bg-deep-space/60 backdrop-blur-xl border border-white/10 rounded-[2rem] z-10 overflow-hidden">
                     <div
