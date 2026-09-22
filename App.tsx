@@ -18,7 +18,8 @@ const App: React.FC = () => {
     if (typeof window === 'undefined') return 'dark';
     const savedTheme = window.localStorage.getItem('portfolio-theme');
     if (savedTheme === 'light' || savedTheme === 'dark') return savedTheme;
-    return window.matchMedia?.('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    // The portfolio intentionally opens in its cinematic dark presentation.
+    return 'dark';
   });
 
   useEffect(() => {
