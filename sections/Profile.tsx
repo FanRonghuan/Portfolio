@@ -25,9 +25,10 @@ const EDU_POSITIONS = [
 ];
 
 const WORK_POSITIONS = [
-  { top: '10%', left: '62%', rotate: '-2deg', zIndex: 36 },
-  { top: '32%', left: '62%', rotate: '1deg', zIndex: 35 },
-  { top: '54%', left: '62%', rotate: '-1deg', zIndex: 34 },
+  { top: '5%', left: '62%', rotate: '-2deg', zIndex: 36 },
+  { top: '27%', left: '62%', rotate: '1deg', zIndex: 35 },
+  { top: '49%', left: '62%', rotate: '-1deg', zIndex: 34 },
+  { top: '71%', left: '62%', rotate: '2deg', zIndex: 33 },
 ];
 
 const experienceData = [
@@ -43,6 +44,16 @@ const experienceData = [
   },
   {
     id: '2',
+    year: '2026.06 - 2026.09',
+    role: '海外运营活动设计',
+    company: '迅雷网络技术有限公司',
+    color: '#73CBF7',
+    desc: '1. 负责海外千万级 DAU 语音社交产品（Wefun）在华语、韩语区、中东区的运营活动设计及核心视觉资产设计；\n2. 结合节日与主题活动，完成端午节、七夕节、跨地域文化节等活动主视觉与运营物料；\n3. 独立产出多款全屏活动页、落地页及社交平台内容，并使用 AI 结合 Lottie / PAG 规范，提升活动页面动效表现与交付效率。',
+    tags: ['海外运营', '活动视觉', 'AIGC 动效'],
+    type: 'work',
+  },
+  {
+    id: '3',
     year: '2025.05 - 2025.09',
     role: '电商设计实习生',
     company: '珀莱雅化妆品股份有限公司',
@@ -52,7 +63,7 @@ const experienceData = [
     type: 'work',
   },
   {
-    id: '3',
+    id: '4',
     year: '2024.05 - 2024.09',
     role: '视觉设计实习生',
     company: '美图公司',
@@ -62,7 +73,7 @@ const experienceData = [
     type: 'work',
   },
   {
-    id: '4',
+    id: '5',
     year: '2024.09 - 2027.06',
     role: '硕士研究生',
     company: '湖北大学',
@@ -72,7 +83,7 @@ const experienceData = [
     type: 'edu',
   },
   {
-    id: '5',
+    id: '6',
     year: '2019.09 - 2024.06',
     role: '本科生',
     company: '湖南涉外经济学院',
@@ -283,7 +294,7 @@ const ProfileTimelineCard: React.FC<{
             WebkitMaskImage: useMotionTemplate`radial-gradient(300px circle at ${mouseX}px ${mouseY}px, black, transparent)`,
           }}
         />
-        <div className="absolute inset-0 z-10 overflow-hidden rounded-[2rem] border border-white/10 bg-deep-space/80 backdrop-blur-xl">
+        <div className="profile-timeline-card absolute inset-0 z-10 overflow-hidden rounded-[2rem] border border-white/10 bg-deep-space/80 backdrop-blur-xl">
           <div
             className="pointer-events-none absolute inset-0 opacity-50"
             style={{ background: 'linear-gradient(135deg, rgba(147, 218, 255, 0.14) 0%, transparent 52%)' }}

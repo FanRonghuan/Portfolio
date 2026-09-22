@@ -9,10 +9,23 @@ import Contact from './sections/Contact';
 import LoadingScreen from './components/LoadingScreen';
 import ScrollToTop from './components/ScrollToTop';
 import DecryptedText from './components/DecryptedText';
+import DesignerCursor from './components/DesignerCursor';
 import './components/DecryptedText.css';
 
 const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    if (typeof window === 'undefined') return 'dark';
+    const savedTheme = window.localStorage.getItem('portfolio-theme');
+    if (savedTheme === 'light' || savedTheme === 'dark') return savedTheme;
+    return window.matchMedia?.('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  });
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    document.body.dataset.theme = theme;
+    window.localStorage.setItem('portfolio-theme', theme);
+  }, [theme]);
 
   useEffect(() => {
     const handleAnchorClick = (e: MouseEvent) => {
@@ -45,6 +58,7 @@ const App: React.FC = () => {
 
   return (
     <div className="bg-space-black min-h-screen text-text-primary selection:bg-neon-cyan selection:text-space-black relative">
+      <DesignerCursor />
       <AnimatePresence mode="wait">
         {isLoading && (
           <LoadingScreen
@@ -57,7 +71,7 @@ const App: React.FC = () => {
 
       {!isLoading && (
         <>
-          <Navbar />
+          <Navbar theme={theme} onToggleTheme={() => setTheme((current) => (current === 'dark' ? 'light' : 'dark'))} />
           <main className="relative w-full">
             <div id="hero" className="relative z-10">
               <Hero />

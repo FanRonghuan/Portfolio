@@ -6,6 +6,7 @@ type VideoAIItem = {
     subtitle: string;
     description: string;
     tags: string[];
+    tools?: string[];
     videoUrl: string;
     posterUrl: string;
     grid?: { colSpan?: number; rowSpan?: number };
@@ -51,35 +52,49 @@ const VideoAIDetail: React.FC<VideoAIDetailProps> = ({ items }) => {
         }
     };
 
+    const handleFullscreen = async (item: VideoAIItem) => {
+        const video = videoRefs.current[item.id];
+        if (!video) return;
+        try {
+            if (document.fullscreenElement) {
+                await document.exitFullscreen();
+            } else {
+                await video.requestFullscreen();
+            }
+        } catch {
+            // Fullscreen can be unavailable in embedded previews; playback still works.
+        }
+    };
+
     return (
         <div ref={scrollerRef} className="w-full h-full overflow-y-auto bg-[#06060a] text-white">
-            <div className="relative px-6 md:px-12 pt-10 pb-28">
+            <div className="relative px-5 md:px-8 lg:px-10 pt-8 md:pt-12 pb-28">
                 <div className="pointer-events-none absolute inset-0 opacity-70 [background:radial-gradient(circle_at_20%_10%,rgba(170,136,238,0.25),transparent_40%),radial-gradient(circle_at_80%_20%,rgba(255,122,0,0.2),transparent_45%),radial-gradient(circle_at_40%_80%,rgba(255,255,255,0.06),transparent_50%)]" />
                 <div className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:linear-gradient(rgba(255,255,255,0.16)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] [background-size:110px_110px]" />
 
-                <div className="relative max-w-6xl mx-auto mb-10">
-                    <div className="flex items-center gap-3 text-xs uppercase tracking-[0.4em] text-white/55">
-                        <span className="inline-block w-8 h-[1px] bg-white/50" />
+                <div className="relative w-full mr-auto ml-0 mb-8">
+                    <div className="flex items-center gap-3 text-sm md:text-base font-albert-semibold uppercase tracking-[0.32em] text-white/65">
+                        <span className="inline-block w-10 h-[1px] bg-white/55" />
                         视觉节奏实验室
                     </div>
                     <h2 className="mt-4 text-3xl md:text-5xl font-albert-black tracking-tight">
-                        VIDEO AI 二级页
+                        VIDEO AI 影像作品
                     </h2>
-                    <p className="mt-3 text-sm md:text-base text-white/70 max-w-2xl">
-                        滚动驱动布局变化，点击卡片即可播放对应视频与查看设计讲解。
+                    <p className="mt-3 text-sm md:text-base text-white/70 max-w-3xl">
+                        聚焦脚本策划、AI 视频创作与导演思维，把故事结构、镜头语言和视觉风格转化为可观看的动态作品。
                     </p>
                 </div>
 
-                <div className="relative max-w-6xl mx-auto space-y-10">
+                <div className="relative w-full mr-auto ml-0 space-y-5 md:space-y-7">
                     {items.map((item, index) => {
                         const isActive = activeId === item.id;
 
                         return (
                             <div
                                 key={item.id}
-                                className="rounded-[28px] border border-white/10 bg-[#0d0d14] shadow-[0_30px_70px_-45px_rgba(0,0,0,0.9)] overflow-hidden"
+                                className="relative grid grid-cols-1 lg:grid-cols-[minmax(220px,0.34fr)_minmax(0,1fr)] gap-5 lg:gap-8 items-center py-5 md:py-7"
                             >
-                                <div className="px-6 md:px-10 py-6 md:py-8">
+                                <div className="px-2 md:px-4 lg:px-0">
                                     <div className="text-[11px] uppercase tracking-[0.3em] text-white/60">
                                         {item.subtitle}
                                     </div>
@@ -99,10 +114,23 @@ const VideoAIDetail: React.FC<VideoAIDetailProps> = ({ items }) => {
                                             </span>
                                         ))}
                                     </div>
+                                    {item.tools?.length ? (
+                                        <div className="mt-5 border-t border-white/10 pt-4">
+                                            <div className="text-[10px] uppercase tracking-[0.24em] text-white/45">创作工具链</div>
+                                            <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1.5 text-xs leading-relaxed text-white/70">
+                                                {item.tools.map((tool) => (
+                                                    <span key={`${item.id}-${tool}`} className="inline-flex items-center gap-1.5">
+                                                        <span className="h-1 w-1 rounded-full bg-white/45" />
+                                                        {tool}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ) : null}
                                 </div>
 
                                 <div
-                                    className="relative aspect-video bg-black/70"
+                                    className="relative aspect-video w-full min-w-0 bg-black/70 rounded-2xl overflow-hidden shadow-[0_28px_80px_-38px_rgba(0,0,0,0.95)]"
                                     onClick={() => handleCardClick(item)}
                                 >
                                     <video
@@ -137,6 +165,18 @@ const VideoAIDetail: React.FC<VideoAIDetailProps> = ({ items }) => {
                                             </button>
                                         </div>
                                     )}
+
+                                    <button
+                                        type="button"
+                                        aria-label="全屏播放视频"
+                                        title="全屏播放视频"
+                                        className="absolute top-4 right-4 z-10 h-10 w-10 rounded-full border border-white/30 bg-black/35 text-white/90 backdrop-blur-sm flex items-center justify-center hover:bg-white hover:text-black transition-colors"
+                                        onClick={(e) => { e.stopPropagation(); handleFullscreen(item); }}
+                                    >
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                            <path d="M8 3H5a2 2 0 0 0-2 2v3" /><path d="M16 3h3a2 2 0 0 1 2 2v3" /><path d="M8 21H5a2 2 0 0 1-2-2v-3" /><path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+                                        </svg>
+                                    </button>
 
                                     <div className="absolute bottom-4 right-4 text-[10px] uppercase tracking-[0.3em] text-white/70 pointer-events-none">
                                         <span className={`px-3 py-1 rounded-full border ${isActive ? 'border-white/70 text-white' : 'border-white/30 text-white/70'}`}>

@@ -1276,7 +1276,7 @@ const Project5VelocityGallery: React.FC<{ images: string[]; onClose: () => void 
 
     useEffect(() => {
         const step = () => {
-            setRotation((prev) => (isInteracting ? prev : prev + 0.12));
+            setRotation((prev) => (isInteracting ? prev : prev + 0.09));
             autoRotateRef.current = requestAnimationFrame(step);
         };
 
@@ -1363,15 +1363,18 @@ const Project5VelocityGallery: React.FC<{ images: string[]; onClose: () => void 
             <div className="pointer-events-none absolute inset-x-[18%] top-[7%] h-[18%] rounded-full bg-white/[0.025] blur-[100px]" />
             <div className="pointer-events-none absolute inset-0 opacity-[0.04] [background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:88px_88px]" />
 
-            <div className="pointer-events-none absolute inset-x-0 top-3 z-20 flex flex-col items-center gap-1 text-center md:top-4">
-                <h2 className="font-albert-black text-[2rem] tracking-tight text-white/55 md:text-[3.4rem]">Poster Gallery</h2>
-                <p className="font-albert-light text-[10px] uppercase tracking-[0.28em] text-white/18 md:text-xs">
+            <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex flex-col items-center px-6 pt-5 text-center md:pt-8">
+                <h2 className="font-albert-black text-[2.25rem] leading-none tracking-tight text-white/80 md:text-[4.5rem]">全屏海报设计</h2>
+                <p className="mt-2 max-w-xl font-albert-light text-xs leading-[1.35] text-white/55 md:text-sm">
+                    以节日、情绪与品牌活动为主题的视觉海报系列，强调强烈画面张力与清晰的信息传达。
+                </p>
+                <p className="mt-2 font-albert-light text-[10px] uppercase tracking-[0.28em] text-white/28 md:text-xs">
                     Scroll or drag to rotate the collection
                 </p>
             </div>
 
             <div
-                className="absolute inset-x-2 inset-y-2 md:inset-x-4 md:inset-y-4"
+                className="absolute inset-x-0 top-[15%] bottom-[-2%] md:top-[14%] md:bottom-[-3%]"
                 style={{
                     transformStyle: 'preserve-3d',
                     transform: `rotateY(${rotation}deg)`,
@@ -1401,19 +1404,18 @@ const Project5VelocityGallery: React.FC<{ images: string[]; onClose: () => void 
                                 transform: `rotateY(${itemAngle}deg) translateZ(${radius}px)`,
                                 opacity,
                                 zIndex: zDepth,
-                                transition: 'opacity 220ms linear, filter 220ms linear, transform 220ms linear',
+                                transition: 'opacity 360ms cubic-bezier(0.22, 1, 0.36, 1), filter 360ms cubic-bezier(0.22, 1, 0.36, 1), transform 360ms cubic-bezier(0.22, 1, 0.36, 1)',
                                 filter: `blur(${blur}px) brightness(${0.62 + focus * 0.42}) saturate(${0.7 + focus * 0.45})`,
                             }}
                         >
                             <div
-                                className="group relative h-full w-full overflow-hidden rounded-[1.75rem] border border-white/8 bg-white/[0.03] shadow-[0_24px_64px_rgba(0,0,0,0.34)]"
+                                className="group relative h-full w-full overflow-hidden rounded-[1.25rem] bg-white/[0.03] shadow-[0_24px_64px_rgba(0,0,0,0.34)]"
                                 style={{
                                     transform: `scale(${scale}) rotateY(${(0.5 - focus) * 14}deg)`,
                                     transformStyle: 'preserve-3d',
                                 }}
                             >
-                                <div className="pointer-events-none absolute inset-0 rounded-[1.75rem] bg-gradient-to-b from-white/10 via-transparent to-black/18" />
-                                <div className="pointer-events-none absolute inset-[1px] rounded-[1.65rem] border border-white/12" />
+                                <div className="pointer-events-none absolute inset-0 rounded-[1.25rem] bg-gradient-to-b from-white/10 via-transparent to-black/18" />
                                 <img
                                     src={poster.src}
                                     alt={poster.title}
@@ -1437,15 +1439,24 @@ const GalleryModalView: React.FC<{ images: string[], projectId?: number, project
         return <VideoAIProjectView project={project} />;
     }
 
-    // 🟢 Special Render for PDF Project (Project 8)
-    if (project?.layout === 'pdf' && project.pdfUrl) {
+    // 🟢 Render PDF pages as regular images for reliable in-app viewing.
+    // The source PDF remains in the project assets, while the in-page view
+    // uses rendered pages for reliable browser support.
+    if (project?.layout === 'pdf' && project.detailImages?.length) {
         return (
-            <div className="w-full h-full bg-black overflow-hidden relative">
-                <iframe 
-                    src={`${project.pdfUrl}#toolbar=0&navpanes=0&scrollbar=1`} 
-                    className="w-full h-full border-none"
-                    title="PDF Viewer"
-                />
+            <div className="w-full h-full bg-black overflow-y-auto overflow-x-hidden floating-scrollbar relative">
+                <div className="w-full bg-black">
+                    {project.detailImages.map((src: string, index: number) => (
+                        <img
+                            key={src}
+                            src={src}
+                            className="w-full h-auto block"
+                            loading={index === 0 ? 'eager' : 'lazy'}
+                            decoding="async"
+                            alt={`Wefun anniversary project page ${index + 1}`}
+                        />
+                    ))}
+                </div>
             </div>
         );
     }
@@ -1458,7 +1469,7 @@ const GalleryModalView: React.FC<{ images: string[], projectId?: number, project
         );
     }
 
-    if (projectId === 5) {
+    if (projectId === 6) {
         return <Project5VelocityGallery images={images || []} onClose={onClose || (() => {})} />;
     }
 
@@ -1897,21 +1908,21 @@ const VinylProjects: React.FC = () => {
                                transition={{ type: "spring", damping: 25, stiffness: 300 }}
                                // 🟢 MODAL SIZE: Fixed 1000px on Desktop
                                 className={`relative overflow-hidden flex flex-col pointer-events-auto shadow-2xl bg-deep-space ${
-                                    selectedProject.id === 5
+                                    selectedProject.id <= 7
                                         ? 'w-[100vw] h-[100vh] rounded-none border-0'
                                         : 'w-[95vw] md:w-[1000px] rounded-[2rem] border border-pulse-orange/20 h-[90vh] md:h-[95vh]'
                                 }`}
                                 style={{
-                                    boxShadow: selectedProject.id === 5
+                                    boxShadow: selectedProject.id <= 7
                                         ? '0 40px 120px rgba(0,0,0,0.88)'
                                         : '0 0 0 1px rgba(255,95,31,0.1) inset, 0 0 40px rgba(255,95,31,0.05) inset, 0 50px 100px -20px rgba(0,0,0,0.9)'
                                 }}
                                 onClick={(e) => e.stopPropagation()}
                              >
-                                {selectedProject.id !== 5 && (
+                                {selectedProject.id > 7 && (
                                     <div className="absolute inset-0 rounded-[2rem] pointer-events-none z-50 border border-white/5" />
                                 )}
-                                {selectedProject.id !== 5 && (
+                                {selectedProject.id > 7 && (
                                     <LiquidIconButton
                                         onClick={() => setSelectedProject(null)}
                                         className="absolute top-6 right-6 z-[60] h-12 w-12 text-white"
@@ -1923,7 +1934,36 @@ const VinylProjects: React.FC = () => {
                                     </LiquidIconButton>
                                 )}
 
-                                {selectedProject.layout === 'gallery' || selectedProject.layout === 'horizontal-scroll' || selectedProject.layout === 'video-ai' ? (
+                                {selectedProject.id <= 7 && (
+                                    <>
+                                        <button
+                                            type="button"
+                                            aria-label="Back to projects"
+                                            title="Back to projects"
+                                            onClick={() => setSelectedProject(null)}
+                                            className="absolute top-5 left-5 z-[80] h-12 w-12 rounded-full border border-white/20 bg-black/55 text-white/90 backdrop-blur-md flex items-center justify-center transition-all duration-300 hover:bg-white hover:text-black hover:border-white focus:outline-none focus:ring-2 focus:ring-white/70"
+                                        >
+                                            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                                <path d="M19 12H5" />
+                                                <path d="m12 19-7-7 7-7" />
+                                            </svg>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            aria-label="Close project"
+                                            title="Close project"
+                                            onClick={() => setSelectedProject(null)}
+                                            className="absolute top-5 right-5 z-[80] h-12 w-12 rounded-full border border-white/20 bg-black/55 text-white/90 backdrop-blur-md flex items-center justify-center transition-all duration-300 hover:bg-white hover:text-black hover:border-white focus:outline-none focus:ring-2 focus:ring-white/70"
+                                        >
+                                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+                                                <path d="M6 6l12 12" />
+                                                <path d="M18 6 6 18" />
+                                            </svg>
+                                        </button>
+                                    </>
+                                )}
+
+                                {selectedProject.layout === 'gallery' || selectedProject.layout === 'horizontal-scroll' || selectedProject.layout === 'video-ai' || selectedProject.layout === 'pdf' ? (
                                     <GalleryModalView 
                                         images={selectedProject.detailImages || []} 
                                         projectId={selectedProject.id} 

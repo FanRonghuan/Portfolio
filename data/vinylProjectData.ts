@@ -37,6 +37,7 @@ export const VIDEO_AI_ITEMS = [
         description: `作品介绍：本作品是 90 秒温情治愈系 AI 影像短片，以 8 岁北方留守男孩的儿童视角展开，用“天气预报”作为亲情线索，讲述除夕大雪中等待父亲归家的暖心故事。整体采用乡村怀旧风格，前冷后暖的色调形成强烈情感反差，从等待的清冷压抑，到团圆的温暖治愈，完整呈现“爱超越距离与风雪”的核心内核。
 脚本包含分镜设计、运镜衔接、AI 绘画提示词、童声旁白与 BGM 规划，细节贴合生活化场景，情绪层层递进。通过老式电视、气象云图、除夕暴雪、车灯归程、父子相拥等画面，用极简叙事传递浓厚亲情，兼顾短片节奏感与影视化质感，适合短内容传播与情感向视觉作品展示。`,
         tags: ['叙事', '氛围', '剪辑'],
+        tools: ['即梦 Seedance 1.5', 'ChatGPT 脚本', 'Suno 背景音乐', '海螺声音还原'],
         videoUrl: `${ASSET_BASE}spring_festival.mp4`,
         posterUrl: `${ASSET_BASE}project6-4.jpg`,
         grid: { colSpan: 3, rowSpan: 1 }
@@ -48,6 +49,7 @@ export const VIDEO_AI_ITEMS = [
         description: `作品介绍：本作品为以“时空穿梭”为核心概念，塑造一位穿梭于多元时空的未来女战士形象。整体视觉以银色、橘红为主色调，融合赛博朋克霓虹、荒漠、宇宙三大场景，通过强烈的色彩对比与未来感场景，营造自信、神秘、高能的视觉基调。
 策划完整覆盖 Intro、Verse、Chorus、Bridge、Dance Break 全段落，精准匹配歌词节奏设计分镜、运镜与剪辑特效，包含 360° 环绕拍摄、子弹时间、Glitch 故障转场、能量粒子、时空残影等专业镜头语言，强化舞蹈张力与时空穿梭的视觉冲击。整套方案兼顾叙事逻辑、舞台表现力与影视化质感，完整呈现一支韩式流行 MV 的创意执行思路。`,
         tags: ['MV', '动线', '舞美'],
+        tools: ['即梦 Seedance 1.5', 'ChatGPT 分镜', 'Suno 音乐设计', '剪映'],
         videoUrl: `${ASSET_BASE}kpop_mv.mp4`,
         posterUrl: `${ASSET_BASE}project6-3.jpg`,
         grid: { colSpan: 2, rowSpan: 2 }
@@ -58,6 +60,7 @@ export const VIDEO_AI_ITEMS = [
         subtitle: 'Anime short',
         description: '作品介绍：本作品是一部“青春奇幻风 AI 动漫短片”，以“普通人闯入异能世界”为核心设定，讲述转学生林泽来到充满超能力的异世界高中，在重力操控、光影幻术等奇幻能力的包围下，以普通人的果敢与善良，在一场意外事故中赢得同伴认可，开启热血青春旅程的故事。',
         tags: ['分镜', '镜头', '节奏'],
+        tools: ['即梦 Seedance 1.5', 'ChatGPT 分镜', '海螺声音还原'],
         videoUrl: `${ASSET_BASE}dongman1.mp4`,
         posterUrl: `${ASSET_BASE}project6-1.jpg`,
         grid: { colSpan: 3, rowSpan: 2 }
@@ -69,6 +72,7 @@ export const VIDEO_AI_ITEMS = [
         description: `作品介绍：本作品是一部“近未来赛博风 AI 短漫短片”，以记忆交易为核心设定，构建了一个可将遗憾记忆明码标价的神秘空间「回响交易室」。故事围绕中年男子梁修展开，他为偿还巨债，被迫变卖关于亡妻的珍贵记忆，在执事零的引导下，重新体验封存的痛苦与甜蜜，最终换取财富却彻底遗忘挚爱，留下永恒遗憾。
 脚本设计融合现代巴洛克美学与赛博朋克视觉，通过全息记忆球、机械眼镜、记忆晶体等意象，探讨记忆、爱与代价的深刻主题。方案包含角色设定、分镜运镜、台词设计与视觉风格规划，兼具叙事张力与影视化质感，完整呈现 AI 影像的创意执行思路。`,
         tags: ['概念', '叙事', '情绪'],
+        tools: ['即梦 Seedance 1.5', 'ChatGPT 脚本', 'Suno 氛围音乐'],
         videoUrl: `${ASSET_BASE}dongman2.mp4`,
         posterUrl: `${ASSET_BASE}project6-2.jpg`,
         grid: { colSpan: 2, rowSpan: 1 }
@@ -368,14 +372,41 @@ export const PROJECTS_DATA = [
   },
   { 
       id: 5, 
+      title: 'Wefun 三周年盛典视觉设计', 
+      label: 'ANNIVERSARY VISUAL DESIGN', 
+      year: '2026', 
+      client: 'WEFUN DESIGN LAB',
+      color: '#8A2BE2', 
+      intensity: 5,
+      img: `${ASSET_BASE}wefun-anniversary-cover.png`, 
+      previewBgImg: `${ASSET_BASE}wefun-anniversary-cover.png`,
+      desc: 'Wefun 三周年盛典视觉设计，以音乐派对与奇幻庆典为视觉主线，完成周年主视觉及整套活动设计方案。',
+      tools: ['AI', 'PS', 'Figma'],
+      previewTextColor: {
+        year: '#FFFFFF',
+        label: '#FFFFFF',
+        title: '#FFFFFF',
+        description: '#F2E8FF',
+        tools: '#FFFFFF',
+        arrow: '#160022',
+        cardBorder: 'rgba(255,255,255,0.18)'
+      },
+      layout: 'pdf',
+      pdfUrl: `${ASSET_BASE}wefun-anniversary.pdf`,
+      detailImages: Array.from({ length: 11 }, (_, index) =>
+        `${ASSET_BASE}wefun-pages/page-${String(index + 1).padStart(2, '0')}.jpg`
+      )
+  },
+  { 
+      id: 6, 
       title: '海报设计', 
-      label: 'POSTER DESIGN', 
+      label: '全屏海报设计', 
       year: '2024-2026', 
       color: '#E0221E', 
       intensity: 4,
       img: `${ASSET_BASE}Project5-1.jpg`, 
       previewBgImg: `${ASSET_BASE}Project5-1.jpg`,
-      desc: '全屏海报与视觉海报系列设计集，侧重视觉张力与信息传达。',
+      desc: '全屏海报与视觉海报系列设计集，围绕节日、情绪与品牌活动展开，强调画面张力、信息层级与沉浸式浏览体验。',
       tools: ['AI', 'Figma', 'PS', 'LibLib','Gemini'],
       previewTextColor: {
         year: '#E6E6E6',
@@ -402,7 +433,7 @@ export const PROJECTS_DATA = [
       ]
   },
   {
-      id: 6,
+      id: 7,
       title: '2025-2026 AI VIDEO 视频',
       label: 'AI VIDEO',
       year: '2025-2026',

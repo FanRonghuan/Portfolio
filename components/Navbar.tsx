@@ -53,7 +53,7 @@ const SpotlightLink: React.FC<{
   );
 };
 
-const Navbar: React.FC = () => {
+const Navbar: React.FC<{ theme: 'dark' | 'light'; onToggleTheme: () => void }> = ({ theme, onToggleTheme }) => {
   const { scrollY } = useScroll();
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -129,6 +129,28 @@ const Navbar: React.FC = () => {
               onClick={(e) => handleScroll(e, link.id)}
             />
           ))}
+
+          <Magnetic>
+            <button
+              type="button"
+              aria-label={theme === 'dark' ? '切换到浅色模式' : '切换到深色模式'}
+              title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+              onClick={onToggleTheme}
+              className="group ml-1 flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/[0.06] text-white/80 backdrop-blur-md transition-all duration-300 hover:border-white/60 hover:bg-white/15"
+            >
+              <span className="sr-only">{theme === 'dark' ? 'Light mode' : 'Dark mode'}</span>
+              {theme === 'dark' ? (
+                <svg viewBox="0 0 24 24" className="h-4 w-4 transition-transform duration-300 group-hover:rotate-45" fill="none" stroke="currentColor" strokeWidth="1.7">
+                  <circle cx="12" cy="12" r="3.5" />
+                  <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" className="h-4 w-4 transition-transform duration-300 group-hover:-rotate-12" fill="none" stroke="currentColor" strokeWidth="1.7">
+                  <path d="M20.3 15.7A8.5 8.5 0 0 1 8.3 3.7 8.5 8.5 0 1 0 20.3 15.7Z" />
+                </svg>
+              )}
+            </button>
+          </Magnetic>
 
           <Magnetic>
             <motion.a
